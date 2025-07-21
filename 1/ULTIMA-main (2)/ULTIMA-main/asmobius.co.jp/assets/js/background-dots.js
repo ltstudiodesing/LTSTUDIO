@@ -16,14 +16,30 @@
         }
     };
 
-    // Escuchar errores globales y silenciar los de pushState
+    // Escuchar errores globales y silenciar los de pushState y CORS
     window.addEventListener('error', function(e) {
         if (e.message && e.message.includes('pushState')) {
             e.preventDefault();
             console.log('🔇 Error de pushState silenciado');
             return false;
         }
+
+        // Silenciar errores de CORS de imágenes
+        if (e.target && e.target.tagName === 'IMG') {
+            e.preventDefault();
+            console.log('🔇 Error de CORS de imagen silenciado:', e.target.src);
+            return false;
+        }
     });
+
+    // Manejar errores de recursos que no se pueden cargar (CORS)
+    document.addEventListener('error', function(e) {
+        if (e.target && (e.target.tagName === 'IMG' || e.target.tagName === 'SOURCE')) {
+            e.preventDefault();
+            console.log('🔇 Recurso CORS bloqueado silenciado:', e.target.src || e.target.srcset);
+            return false;
+        }
+    }, true);
     
     let dotsContainer;
     let dotsActive = false;
