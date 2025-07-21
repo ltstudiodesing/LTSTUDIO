@@ -1,6 +1,29 @@
 // Solo pelotitas de fondo - SIN tocar navegación del sitio original
 (function() {
     'use strict';
+
+    // Prevenir errores de SecurityError con pushState
+    const originalPushState = window.history.pushState;
+    window.history.pushState = function(state, title, url) {
+        try {
+            return originalPushState.call(this, state, title, url);
+        } catch (e) {
+            if (e.name === 'SecurityError') {
+                console.log('🔒 SecurityError ignorado:', e.message);
+                return;
+            }
+            throw e;
+        }
+    };
+
+    // Escuchar errores globales y silenciar los de pushState
+    window.addEventListener('error', function(e) {
+        if (e.message && e.message.includes('pushState')) {
+            e.preventDefault();
+            console.log('🔇 Error de pushState silenciado');
+            return false;
+        }
+    });
     
     let dotsContainer;
     let dotsActive = false;
