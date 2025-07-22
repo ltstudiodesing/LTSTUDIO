@@ -238,27 +238,21 @@
                         targetElement = element.closest('svg').parentElement || element.parentElement;
                     }
 
-                    // Forzar aplicación de imagen de fondo con !important
-                    targetElement.style.setProperty('background-image', backgroundImage, 'important');
-                    targetElement.style.setProperty('background-size', 'cover', 'important');
-                    targetElement.style.setProperty('background-position', 'center', 'important');
-                    targetElement.style.setProperty('background-repeat', 'no-repeat', 'important');
-
-                    // Aplicar estilos de círculo
-                    targetElement.style.setProperty('border-radius', '50%', 'important');
-                    targetElement.style.setProperty('position', 'relative', 'important');
-                    targetElement.style.setProperty('overflow', 'hidden', 'important');
-                    targetElement.style.setProperty('width', '100px', 'important');
-                    targetElement.style.setProperty('height', '100px', 'important');
-
-                    // También aplicar al SVG si existe
-                    const svgElement = targetElement.querySelector('svg');
-                    if (svgElement) {
-                        svgElement.style.setProperty('background-image', backgroundImage, 'important');
-                        svgElement.style.setProperty('background-size', 'cover', 'important');
-                        svgElement.style.setProperty('background-position', 'center', 'important');
-                        svgElement.style.setProperty('border-radius', '50%', 'important');
+                    // Aplicar imagen de fondo de manera suave sin romper el layout
+                    if (!targetElement.style.backgroundImage) {
+                        targetElement.style.backgroundImage = backgroundImage;
+                        targetElement.style.backgroundSize = 'cover';
+                        targetElement.style.backgroundPosition = 'center';
+                        targetElement.style.backgroundRepeat = 'no-repeat';
                     }
+
+                    // Solo aplicar border-radius si el elemento no lo tiene ya
+                    const computedStyle = window.getComputedStyle(targetElement);
+                    if (!computedStyle.borderRadius || computedStyle.borderRadius === '0px') {
+                        targetElement.style.borderRadius = '50%';
+                    }
+
+                    // NO forzar position, width, height ya que rompe el layout original
 
                     // Agregar overlay solo si no existe
                     if (!targetElement.querySelector('.project-overlay')) {
