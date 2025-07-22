@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LTSD - LT Studio Design</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: black;
+            color: white;
+            overflow: hidden;
+            cursor: none;
+        }
+        
+        /* INTRO SCREEN */
+        #intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .intro-text {
+            font-size: 48px;
+            font-weight: 500;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+        }
+        
+        .letter {
+            display: inline-block;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+        
+        .letter.filled {
+            color: white;
+        }
+        
+        /* MAIN SCREEN */
+        #main-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #main-screen.visible {
+            display: flex;
+        }
+        
+        /* CÍRCULO PRINCIPAL */
+        .circle-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+        
+        .main-circle {
+            width: 100%;
+            height: 100%;
+            border: 2px solid #333;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            transition: all 0.3s ease;
+        }
+        
+        .project-text {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .project-text.active {
+            opacity: 1;
+        }
+        
+        .project-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .project-location {
+            font-size: 14px;
+            color: #888;
+        }
+        
+        /* NAVEGACIÓN */
+        .nav-controls {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .nav-btn {
+            background: none;
+            border: 1px solid #333;
+            color: white;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            border-color: white;
+        }
+        
+        .counter {
+            font-size: 14px;
+            color: #888;
+        }
+        
+        /* CURSOR PERSONALIZADO */
+        #cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .intro-text {
+                font-size: 32px;
+                letter-spacing: 4px;
+            }
+            
+            .circle-container {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .project-name {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- CURSOR PERSONALIZADO -->
+    <div id="cursor"></div>
+    
+    <!-- INTRO SCREEN -->
+    <div id="intro-screen">
+        <div class="intro-text">LT STUDIO DESIGN</div>
+    </div>
+    
+    <!-- MAIN SCREEN -->
+    <div id="main-screen">
+        <div class="circle-container">
+            <div class="main-circle" id="main-circle"></div>
+            
+            <!-- TEXTOS DE PROYECTOS -->
+            <div class="project-text active" data-project="0">
+                <div class="project-name">PARK MANSION</div>
+                <div class="project-location">Minami Azabu</div>
+            </div>
+            <div class="project-text" data-project="1">
+                <div class="project-name">KAWANA</div>
+                <div class="project-location">Silence Kawana</div>
+            </div>
+            <div class="project-text" data-project="2">
+                <div class="project-name">PARK LE JADE</div>
+                <div class="project-location">Shirokane Residence</div>
+            </div>
+        </div>
+        
+        <!-- NAVEGACIÓN -->
+        <div class="nav-controls">
+            <button class="nav-btn" id="prev-btn">◀</button>
+            <div class="counter">
+                <span id="current-num">1</span> / <span id="total-num">12</span>
+            </div>
+            <button class="nav-btn" id="next-btn">▶</button>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURACIÓN
+        const PROJECTS = [
+            {
+                name: 'PARK MANSION',
+                location: 'Minami Azabu',
+                image: 'https://picsum.photos/seed/park-mansion/600/600'
+            },
+            {
+                name: 'KAWANA',
+                location: 'Silence Kawana',
+                image: 'https://picsum.photos/seed/kawana/600/600'
+            },
+            {
+                name: 'PARK LE JADE',
+                location: 'Shirokane Residence',
+                image: 'https://picsum.photos/seed/park-le-jade/600/600'
+            }
+        ];
+        
+        let currentProject = 0;
+        let isIntroActive = true;
+        
+        // CURSOR PERSONALIZADO
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
+        });
+        
+        // ANIMACIÓN DE TEXTO INTRO
+        function animateIntroText() {
+            console.log('📝 Iniciando animación de texto intro');
+            const introText = document.querySelector('.intro-text');
+            const text = 'LT STUDIO DESIGN';
+            
+            introText.innerHTML = '';
+            
+            const letters = [];
+            text.split('').forEach((letter, index) => {
+                const span = document.createElement('span');
+                span.className = 'letter';
+                span.textContent = letter === ' ' ? '\u00A0' : letter;
+                introText.appendChild(span);
+                letters.push(span);
+            });
+            
+            // Animar letra por letra
+            letters.forEach((letter, index) => {
+                setTimeout(() => {
+                    letter.classList.add('filled');
+                    
+                    // Si es la última letra, iniciar transición
+                    if (index === letters.length - 1) {
+                        setTimeout(() => {
+                            startTransition();
+                        }, 1000);
+                    }
+                }, index * 150);
+            });
+        }
+        
+        // TRANSICIÓN SUAVE
+        function startTransition() {
+            console.log('🌟 Iniciando transición suave');
+            
+            const introScreen = document.getElementById('intro-screen');
+            const mainScreen = document.getElementById('main-screen');
+            const introText = document.querySelector('.intro-text');
+            
+            // Animar texto hacia el centro
+            setTimeout(() => {
+                const letters = introText.querySelectorAll('.letter');
+                letters.forEach((letter, index) => {
+                    setTimeout(() => {
+                        letter.style.transition = 'all 0.6s ease-out';
+                        letter.style.transform = 'translateY(-30px) scale(0.8)';
+                        letter.style.opacity = '0';
+                    }, index * 40);
+                });
+            }, 300);
+            
+            // Fade out intro
+            setTimeout(() => {
+                introScreen.style.transition = 'opacity 1s ease-out';
+                introScreen.style.opacity = '0';
+            }, 1200);
+            
+            // Cambiar pantallas
+            setTimeout(() => {
+                introScreen.style.display = 'none';
+                mainScreen.style.display = 'flex';
+                mainScreen.style.opacity = '0';
+                mainScreen.style.transform = 'scale(0.95)';
+                mainScreen.classList.add('visible');
+                
+                setTimeout(() => {
+                    mainScreen.style.transition = 'opacity 0.8s ease-in, transform 0.8s ease-in';
+                    mainScreen.style.opacity = '1';
+                    mainScreen.style.transform = 'scale(1)';
+                    
+                    isIntroActive = false;
+                    initMainScreen();
+                }, 100);
+            }, 2200);
+        }
+        
+        // INICIALIZAR MAIN SCREEN
+        function initMainScreen() {
+            console.log('🏠 Inicializando main screen');
+            updateProject(0);
+            setupNavigation();
+        }
+        
+        // ACTUALIZAR PROYECTO
+        function updateProject(index) {
+            const circle = document.getElementById('main-circle');
+            const projectTexts = document.querySelectorAll('.project-text');
+            
+            // Actualizar imagen
+            if (PROJECTS[index]) {
+                circle.style.backgroundImage = `url("${PROJECTS[index].image}")`;
+            }
+            
+            // Actualizar texto activo
+            projectTexts.forEach(text => text.classList.remove('active'));
+            const activeText = document.querySelector(`[data-project="${index}"]`);
+            if (activeText) activeText.classList.add('active');
+            
+            // Actualizar contador
+            document.getElementById('current-num').textContent = index + 1;
+            
+            currentProject = index;
+        }
+        
+        // CONFIGURAR NAVEGACIÓN
+        function setupNavigation() {
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            prevBtn.addEventListener('click', () => {
+                if (currentProject > 0) {
+                    updateProject(currentProject - 1);
+                }
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                if (currentProject < PROJECTS.length - 1) {
+                    updateProject(currentProject + 1);
+                }
+            });
+            
+            // Actualizar total
+            document.getElementById('total-num').textContent = PROJECTS.length;
+        }
+        
+        // INICIALIZAR APLICACIÓN
+        function initApp() {
+            console.log('🚀 Inicializando aplicación LTSD');
+            
+            setTimeout(() => {
+                animateIntroText();
+            }, 500);
+        }
+        
+        // INICIAR CUANDO CARGUE LA PÁGINA
+        document.addEventListener('DOMContentLoaded', initApp);
+        
+        // Backup si ya cargó
+        if (document.readyState !== 'loading') {
+            setTimeout(initApp, 100);
+        }
+    </script>
+</body>
+</html>
