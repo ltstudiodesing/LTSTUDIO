@@ -1260,9 +1260,21 @@
         });
         
         // INICIAR CUANDO LA PÁGINA CARGUE
-        document.addEventListener('DOMContentLoaded', initApp);
-        
-        console.log('🎉 LTSD App cargada completamente');
+        console.log('🔄 Registrando DOMContentLoaded listener');
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('📱 DOM Content Loaded - iniciando app');
+            initApp();
+        });
+
+        // Backup en caso de que DOMContentLoaded ya haya pasado
+        if (document.readyState === 'loading') {
+            console.log('⏳ DOM still loading, waiting for DOMContentLoaded');
+        } else {
+            console.log('⚡ DOM already loaded, iniciando inmediatamente');
+            setTimeout(initApp, 100);
+        }
+
+        console.log('🎉 LTSD App script cargado completamente');
     </script>
 </body>
 </html>
