@@ -31,93 +31,110 @@
     });
 
     function updateLogoAndSetupBackgrounds() {
-        // Cambiar logo específico en la navegación (no el de la intro)
-        const logoTexts = document.querySelectorAll('.p-stage__logo text, .js-stage__logo text, .stage__logo text');
-        logoTexts.forEach(text => {
-            if (text.textContent && text.textContent.includes('LT STUDIO DESIGN')) {
-                text.textContent = 'LTSD';
-                text.setAttribute('letter-spacing', '6px');
-                console.log('🎨 Logo de navegación actualizado a LTSD');
-            }
-        });
-
-        // También buscar logos en elementos con clases específicas de navegación
-        const navElements = document.querySelectorAll('.p-stage__menu, .stage__menu, [class*="menu"] text');
-        navElements.forEach(element => {
-            const textElements = element.querySelectorAll('text');
-            textElements.forEach(text => {
-                if (text.textContent && text.textContent.includes('LT STUDIO DESIGN')) {
-                    text.textContent = 'LTSD';
-                    text.setAttribute('letter-spacing', '6px');
-                    console.log('🎨 Logo en navegación actualizado a LTSD');
+        // Esperar a que la intro termine antes de cambiar logos
+        setTimeout(() => {
+            // Buscar y cambiar solo el logo principal (no el de intro/loading)
+            const allTexts = document.querySelectorAll('text');
+            allTexts.forEach(text => {
+                const parent = text.closest('svg');
+                const parentElement = parent ? parent.parentElement : null;
+                
+                // Solo cambiar si NO está en loading/intro y contiene texto específico
+                if (text.textContent && (
+                    text.textContent.includes('LT STUDIO DESIGN') ||
+                    text.textContent.toLowerCase().includes('architecture')
+                )) {
+                    // Verificar que NO esté en elementos de loading/intro
+                    const isInLoading = parent?.classList.contains('p-loading__logo') ||
+                                       text.classList.contains('st-logo-load') ||
+                                       text.classList.contains('st-logo-load-back') ||
+                                       parentElement?.classList.contains('p-loading__back') ||
+                                       parentElement?.classList.contains('p-loading__inner');
+                    
+                    if (!isInLoading) {
+                        text.textContent = 'LTSD';
+                        text.setAttribute('letter-spacing', '8px');
+                        console.log('🎨 Logo principal actualizado a LTSD');
+                    }
                 }
             });
-        });
+        }, 3000); // Esperar 3 segundos para que la intro termine
 
-        // Buscar elementos de proyecto para aplicar imágenes de fondo
-        const projectElements = document.querySelectorAll('.js-canvas__target, .p-stage__menu__item');
+        // Aplicar imágenes de fondo solo a círculos de proyecto
+        setTimeout(() => {
+            const projectElements = document.querySelectorAll('.js-canvas__target, .p-stage__menu__item');
+            console.log('🔍 Elementos de proyecto encontrados:', projectElements.length);
 
-        projectElements.forEach((element, index) => {
-            const text = element.textContent || '';
-            let backgroundImage = '';
+            projectElements.forEach((element, index) => {
+                const text = element.textContent || '';
+                let backgroundImage = '';
 
-            // Mapear proyectos a sus primeras imágenes (usando la primera imagen de park mansion para ese proyecto)
-            if (text.toLowerCase().includes('park mansion')) {
-                backgroundImage = 'url("https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80")';
-            } else if (text.toLowerCase().includes('kawana')) {
-                backgroundImage = 'url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80")';
-            } else if (text.toLowerCase().includes('sevens villa')) {
-                backgroundImage = 'url("https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80")';
-            } else if (text.toLowerCase().includes('hikawa')) {
-                backgroundImage = 'url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80")';
-            } else {
-                backgroundImage = `url("https://images.unsplash.com/photo-${1600 + index}-${585154340 + index * 100}-be6161a56a0c?w=800&q=80")`;
-            }
+                // Mapear proyectos a sus primeras imágenes
+                if (text.toLowerCase().includes('park mansion')) {
+                    backgroundImage = 'url("https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80")';
+                } else if (text.toLowerCase().includes('kawana')) {
+                    backgroundImage = 'url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80")';
+                } else if (text.toLowerCase().includes('sevens villa')) {
+                    backgroundImage = 'url("https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80")';
+                } else if (text.toLowerCase().includes('hikawa')) {
+                    backgroundImage = 'url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80")';
+                } else {
+                    backgroundImage = `url("https://images.unsplash.com/photo-${1600 + index}-${585154340 + index * 100}-be6161a56a0c?w=800&q=80")`;
+                }
 
-            // Aplicar imagen de fondo al elemento solo si es un círculo de proyecto
-            if (element.classList.contains('js-canvas__target') || element.querySelector('circle')) {
-                element.style.backgroundImage = backgroundImage;
-                element.style.backgroundSize = 'cover';
-                element.style.backgroundPosition = 'center';
-                element.style.borderRadius = '50%';
-                element.style.position = 'relative';
-                element.style.overflow = 'hidden';
-                console.log('🖼️ Imagen de fondo aplicada a círculo de proyecto:', text.substring(0, 20));
-            }
+                // Verificar si es realmente un círculo de proyecto
+                const hasCircle = element.querySelector('circle') || element.classList.contains('js-canvas__target');
+                
+                if (hasCircle && backgroundImage) {
+                    // Aplicar imagen de fondo
+                    element.style.backgroundImage = backgroundImage;
+                    element.style.backgroundSize = 'cover';
+                    element.style.backgroundPosition = 'center';
+                    element.style.borderRadius = '50%';
+                    element.style.position = 'relative';
+                    element.style.overflow = 'hidden';
+                    
+                    // Agregar overlay para mejorar legibilidad del texto
+                    if (!element.querySelector('.project-overlay')) {
+                        const overlay = document.createElement('div');
+                        overlay.className = 'project-overlay';
+                        overlay.style.cssText = `
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            background: rgba(0, 0, 0, 0.4);
+                            border-radius: 50%;
+                            z-index: 1;
+                            transition: all 0.3s ease;
+                        `;
 
-            // Agregar overlay para mejorar legibilidad del texto
-            const overlay = document.createElement('div');
-            overlay.style.cssText = `
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.4);
-                border-radius: 50%;
-                z-index: 1;
-                transition: all 0.3s ease;
-            `;
+                        // Asegurar que el texto esté por encima del overlay
+                        const textElements = element.querySelectorAll('*');
+                        textElements.forEach(el => {
+                            if (el !== overlay) {
+                                el.style.position = 'relative';
+                                el.style.zIndex = '2';
+                            }
+                        });
 
-            // Asegurar que el texto esté por encima del overlay
-            const textElements = element.querySelectorAll('*');
-            textElements.forEach(el => {
-                el.style.position = 'relative';
-                el.style.zIndex = '2';
+                        element.appendChild(overlay);
+
+                        // Efecto hover
+                        element.addEventListener('mouseenter', function() {
+                            overlay.style.background = 'rgba(0, 0, 0, 0.2)';
+                        });
+
+                        element.addEventListener('mouseleave', function() {
+                            overlay.style.background = 'rgba(0, 0, 0, 0.4)';
+                        });
+                    }
+                    
+                    console.log('🖼️ Imagen de fondo aplicada a:', text.substring(0, 20));
+                }
             });
-
-            element.style.position = 'relative';
-            element.appendChild(overlay);
-
-            // Efecto hover
-            element.addEventListener('mouseenter', function() {
-                overlay.style.background = 'rgba(0, 0, 0, 0.2)';
-            });
-
-            element.addEventListener('mouseleave', function() {
-                overlay.style.background = 'rgba(0, 0, 0, 0.4)';
-            });
-        });
+        }, 2000);
     }
 
     function hideStuckCircle() {
@@ -168,12 +185,13 @@
     let attempts = 0;
     const interval = setInterval(() => {
         hideStuckCircle();
-        updateLogoAndSetupBackgrounds();
-        attempts++;
-        if (attempts >= 10) {
+        if (attempts >= 3) { // Solo ejecutar updateLogoAndSetupBackgrounds 3 veces
             clearInterval(interval);
+        } else {
+            updateLogoAndSetupBackgrounds();
         }
-    }, 1000);
+        attempts++;
+    }, 2000);
 
     // Configurar navegación de proyectos
     function setupProjectNavigation() {
