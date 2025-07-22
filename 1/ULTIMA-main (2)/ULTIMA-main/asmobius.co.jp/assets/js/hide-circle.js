@@ -1,135 +1,95 @@
-// SCRIPT MÍNIMO - SOLO AGREGAR IMÁGENES DE FONDO SINCRONIZADAS
+// SCRIPT ULTRA SIMPLE - SOLO UNA IMAGEN QUE SE VEA
 (function() {
-    console.log('🎯 AGREGANDO SOLO IMÁGENES DE FONDO A TU WEB ORIGINAL');
+    console.log('🔥 SCRIPT ULTRA SIMPLE - SOLO HACER QUE SE VEA UNA IMAGEN');
 
-    const IMAGENES_PROYECTOS = {
-        'PARK MANSION': 'https://picsum.photos/1200/800?random=1',
-        'KAWANA': 'https://picsum.photos/1200/800?random=2',
-        'SEVENS VILLA': 'https://picsum.photos/1200/800?random=3',
-        'PARK LE JADE': 'https://picsum.photos/1200/800?random=4',
-        'HIKAWA GARDENS': 'https://picsum.photos/1200/800?random=5',
-        'ONE AVENUE': 'https://picsum.photos/1200/800?random=6',
-        'CENTURY FOREST': 'https://picsum.photos/1200/800?random=7',
-        'PROUD': 'https://picsum.photos/1200/800?random=8'
-    };
+    // Aplicar imagen directamente al canvas
+    function aplicarImagenAlCanvas() {
+        const canvas = document.querySelector('canvas');
+        if (!canvas) {
+            console.log('❌ No se encontró canvas');
+            return;
+        }
 
-    let fondoActual = null;
-    let proyectoAnterior = '';
-    let timerImagen = null;
+        console.log('✅ Canvas encontrado:', canvas);
 
-    // Crear fondo DETRÁS de todo (z-index muy bajo)
-    function crearFondoImagen() {
-        if (fondoActual) return fondoActual;
+        // Aplicar imagen de fondo DIRECTAMENTE
+        const imagen = 'https://picsum.photos/1537/901?random=1';
 
-        fondoActual = document.createElement('div');
-        fondoActual.id = 'fondo-imagen-proyecto';
-        fondoActual.style.cssText = `
+        canvas.style.setProperty('background-image', `url("${imagen}")`, 'important');
+        canvas.style.setProperty('background-size', 'cover', 'important');
+        canvas.style.setProperty('background-position', 'center', 'important');
+        canvas.style.setProperty('background-repeat', 'no-repeat', 'important');
+
+        console.log('🖼️ IMAGEN APLICADA AL CANVAS:', imagen);
+        console.log('📏 Canvas size:', canvas.width, 'x', canvas.height);
+
+        // Verificar que se aplicó
+        const style = window.getComputedStyle(canvas);
+        console.log('🔍 Background aplicado:', style.backgroundImage);
+    }
+
+    // Crear div de fondo como backup
+    function crearDivFondo() {
+        // Eliminar div anterior si existe
+        const divAnterior = document.getElementById('fondo-simple');
+        if (divAnterior) divAnterior.remove();
+
+        const divFondo = document.createElement('div');
+        divFondo.id = 'fondo-simple';
+        divFondo.style.cssText = `
             position: fixed !important;
             top: 0 !important;
             left: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background-image: url('https://picsum.photos/1600/900?random=2') !important;
             background-size: cover !important;
             background-position: center !important;
             background-repeat: no-repeat !important;
-            z-index: -10 !important;
+            z-index: -50 !important;
             pointer-events: none !important;
-            opacity: 0.3 !important;
-            transition: none !important;
         `;
 
-        // Insertar AL PRINCIPIO del body para que esté detrás de todo
-        document.body.insertBefore(fondoActual, document.body.firstChild);
-        console.log('✅ Fondo de imagen creado DETRÁS de todo');
-        return fondoActual;
+        document.body.insertBefore(divFondo, document.body.firstChild);
+        console.log('✅ DIV DE FONDO CREADO COMO BACKUP');
     }
 
-    // Detectar proyecto actual de la lista
-    function detectarProyectoActual() {
-        const ul = document.querySelector('ul');
-        if (!ul) return null;
-
-        const texto = ul.textContent.toUpperCase();
-
-        // Buscar qu�� proyecto está activo
-        for (let proyecto in IMAGENES_PROYECTOS) {
-            if (texto.includes(proyecto)) {
-                return proyecto;
-            }
-        }
-        return null;
-    }
-
-    // Aplicar imagen y mantenerla durante EXACTAMENTE 3 segundos
-    function aplicarImagenSincronizada() {
-        const proyectoActual = detectarProyectoActual();
-
-        if (proyectoActual && proyectoActual !== proyectoAnterior) {
-            proyectoAnterior = proyectoActual;
-
-            const fondo = crearFondoImagen();
-            const imagen = IMAGENES_PROYECTOS[proyectoActual];
-
-            // Aplicar imagen inmediatamente
-            fondo.style.backgroundImage = `url("${imagen}")`;
-            fondo.style.opacity = '0.3';
-
-            console.log(`🖼️ Imagen aplicada: ${proyectoActual}`);
-
-            // Limpiar timer anterior
-            if (timerImagen) {
-                clearTimeout(timerImagen);
-            }
-
-            // Mantener imagen por EXACTAMENTE 3 segundos
-            timerImagen = setTimeout(() => {
-                // No hacer nada aquí - dejar que la imagen persista
-                // hasta que el siguiente proyecto la cambie
-                console.log(`⏰ 3 segundos completados para: ${proyectoActual}`);
-            }, 3000);
-        }
-    }
-
-    // Solo ocultar el círculo molesto del header
-    function ocultarCirculoHeader() {
+    // Ocultar círculo molesto
+    function ocultarCirculo() {
         const svg = document.querySelector('svg[viewBox="0 0 60 60"]');
         if (svg) {
             svg.style.display = 'none';
+            console.log('👻 Círculo molesto ocultado');
         }
     }
 
-    // Monitorear cambios en la lista de proyectos
-    function iniciarMonitoreo() {
-        // Aplicar imagen inicial
-        aplicarImagenSincronizada();
+    // Función principal
+    function main() {
+        console.log('🚀 EJECUTANDO FUNCIÓN PRINCIPAL');
 
-        // Observer para detectar cambios en la lista
-        const observer = new MutationObserver(() => {
-            aplicarImagenSincronizada();
-        });
+        ocultarCirculo();
+        aplicarImagenAlCanvas();
+        crearDivFondo();
 
-        const ul = document.querySelector('ul');
-        if (ul) {
-            observer.observe(ul, {
-                childList: true,
-                subtree: true,
-                attributes: true,
-                characterData: true
-            });
-        }
-
-        // También verificar cada 500ms como backup
-        setInterval(() => {
-            ocultarCirculoHeader();
-            aplicarImagenSincronizada();
-        }, 500);
+        console.log('✅ TODO EJECUTADO - DEBERÍA VERSE UNA IMAGEN');
     }
 
-    // Inicializar después de que cargue la página
-    setTimeout(() => {
-        ocultarCirculoHeader();
-        iniciarMonitoreo();
-        console.log('🚀 Imágenes sincronizadas activadas - Durarán 3 segundos completos');
+    // Ejecutar inmediatamente
+    main();
+
+    // Ejecutar cada 2 segundos para asegurar
+    setInterval(() => {
+        console.log('🔄 Verificando cada 2 segundos...');
+        main();
     }, 2000);
 
+    // Ejecutar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', main);
+    }
+
+    // Ejecutar cuando todo esté cargado
+    window.addEventListener('load', main);
+
+    console.log('🚀 SCRIPT ACTIVADO - SI NO SE VE IMAGEN HAY OTRO PROBLEMA');
 })();
