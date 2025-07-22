@@ -1162,7 +1162,21 @@
             // Configurar círculo de progreso
             if (progressCircle) {
                 console.log('✅ Progress circle encontrado, configurando...');
-                const radius = progressCircle.r.baseVal.value;
+
+                // Forzar el radio si no está definido correctamente
+                let radius = progressCircle.r.baseVal.value;
+                if (!radius || radius === 0) {
+                    // Calcular radio basado en el contenedor
+                    const container = progressCircle.closest('.circular-progress-bar');
+                    if (container) {
+                        radius = container.offsetWidth * 0.48; // 48% del contenedor
+                        progressCircle.setAttribute('r', radius);
+                    } else {
+                        radius = 288; // fallback: 48% de 600px
+                        progressCircle.setAttribute('r', radius);
+                    }
+                }
+
                 const circumference = 2 * Math.PI * radius;
                 progressCircle.style.strokeDasharray = circumference;
                 progressCircle.style.strokeDashoffset = circumference;
