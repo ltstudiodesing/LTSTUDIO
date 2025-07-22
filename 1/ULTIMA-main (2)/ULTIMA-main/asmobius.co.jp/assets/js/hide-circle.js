@@ -1,48 +1,88 @@
-// SCRIPT PARA IMAGEN DENTRO DEL CÍRCULO
+// SCRIPT DIRECTO PARA EL CÍRCULO SVG
 (function() {
-    console.log('🎯 Script para círculo específico');
+    console.log('🎯 Aplicando imagen al círculo SVG directamente');
 
     const IMAGENES = {
-        'PARK MANSION': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=800&fit=crop',
-        'KAWANA': 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=800&fit=crop',
-        'SEVENS VILLA': 'https://images.unsplash.com/photo-1600563438938-a42d1c941a96?w=800&h=800&fit=crop'
+        'PARK MANSION': 'https://picsum.photos/800/800?random=1',
+        'KAWANA': 'https://picsum.photos/800/800?random=2',
+        'SEVENS VILLA': 'https://picsum.photos/800/800?random=3'
     };
 
-    let circuloImagen = null;
     let proyectoActual = 'PARK MANSION';
 
-    // Crear div circular EXACTAMENTE donde está el círculo
-    function crearCirculoImagen() {
-        if (circuloImagen) return circuloImagen;
+    // Encontrar el círculo SVG específico que me mostraste
+    function encontrarCirculoSVG() {
+        // Buscar círculo con cx=777, cy=476.5, r=333.55 aproximadamente
+        const circulos = document.querySelectorAll('circle');
 
-        const canvas = document.querySelector('canvas');
-        if (!canvas) return null;
+        for (let circulo of circulos) {
+            const cx = parseFloat(circulo.getAttribute('cx') || 0);
+            const cy = parseFloat(circulo.getAttribute('cy') || 0);
+            const r = parseFloat(circulo.getAttribute('r') || 0);
 
-        // Crear un div circular que se posicione sobre el canvas
-        circuloImagen = document.createElement('div');
-        circuloImagen.id = 'imagen-circulo';
-        circuloImagen.style.cssText = `
-            position: absolute !important;
-            top: 50% !important;
-            left: 50% !important;
-            width: 600px !important;
-            height: 600px !important;
-            border-radius: 50% !important;
-            transform: translate(-50%, -50%) !important;
-            background-size: cover !important;
-            background-position: center !important;
-            z-index: 1 !important;
-            pointer-events: none !important;
-            opacity: 0.8 !important;
-        `;
-
-        // Insertar directamente sobre el canvas
-        canvas.parentNode.insertBefore(circuloImagen, canvas.nextSibling);
-        console.log('✅ Círculo de imagen creado');
-        return circuloImagen;
+            // Buscar el círculo grande que me mostraste
+            if (cx > 700 && cx < 800 && cy > 400 && cy < 500 && r > 300) {
+                console.log(`✅ Círculo SVG encontrado: cx=${cx}, cy=${cy}, r=${r}`);
+                return circulo;
+            }
+        }
+        return null;
     }
 
-    // Detectar proyecto simple y directo
+    // Aplicar imagen usando patrón SVG
+    function aplicarImagenSVG() {
+        const circulo = encontrarCirculoSVG();
+        if (!circulo) {
+            console.log('❌ No se encontró el círculo SVG');
+            return;
+        }
+
+        const svg = circulo.closest('svg');
+        if (!svg) return;
+
+        const proyecto = proyectoActual;
+        const imagen = IMAGENES[proyecto];
+
+        // Crear patrón de imagen si no existe
+        let defs = svg.querySelector('defs');
+        if (!defs) {
+            defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            svg.insertBefore(defs, svg.firstChild);
+        }
+
+        // Crear patrón de imagen
+        const patternId = 'imagen-proyecto';
+        let pattern = defs.querySelector(`#${patternId}`);
+        if (!pattern) {
+            pattern = document.createElementNS('http://www.w3.org/2000/svg', 'pattern');
+            pattern.setAttribute('id', patternId);
+            pattern.setAttribute('patternUnits', 'userSpaceOnUse');
+            pattern.setAttribute('width', '100%');
+            pattern.setAttribute('height', '100%');
+            defs.appendChild(pattern);
+        }
+
+        // Limpiar patrón anterior
+        pattern.innerHTML = '';
+
+        // Crear imagen dentro del patrón
+        const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+        image.setAttribute('href', imagen);
+        image.setAttribute('x', '0');
+        image.setAttribute('y', '0');
+        image.setAttribute('width', '100%');
+        image.setAttribute('height', '100%');
+        image.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+        pattern.appendChild(image);
+
+        // Aplicar patrón al círculo
+        circulo.setAttribute('fill', `url(#${patternId})`);
+        circulo.style.opacity = '0.8';
+
+        console.log(`🖼️ Imagen SVG aplicada: ${proyecto}`);
+    }
+
+    // Detectar proyecto
     function detectarProyecto() {
         const ul = document.querySelector('ul');
         if (!ul) return 'PARK MANSION';
@@ -53,22 +93,14 @@
         return 'PARK MANSION';
     }
 
-    // Aplicar imagen al círculo
-    function aplicarImagenCirculo() {
-        const canvas = document.querySelector('canvas');
-        if (!canvas || canvas.offsetWidth < 100) return;
+    // Cambiar proyecto y aplicar imagen
+    function actualizarProyecto() {
+        const nuevoProyecto = detectarProyecto();
 
-        const proyecto = detectarProyecto();
-
-        if (proyecto !== proyectoActual) {
-            proyectoActual = proyecto;
-            const circulo = crearCirculoImagen();
-
-            if (circulo) {
-                const imagen = IMAGENES[proyectoActual];
-                circulo.style.backgroundImage = `url("${imagen}")`;
-                console.log(`🖼️ Imagen aplicada al círculo: ${proyectoActual}`);
-            }
+        if (nuevoProyecto !== proyectoActual) {
+            proyectoActual = nuevoProyecto;
+            aplicarImagenSVG();
+            console.log(`🔄 Proyecto cambiado a: ${proyectoActual}`);
         }
     }
 
@@ -78,11 +110,17 @@
         if (svg) svg.style.display = 'none';
     }
 
-    // Verificar cada 2 segundos
+    // Aplicar imagen inicial
+    setTimeout(() => {
+        ocultarCirculo();
+        aplicarImagenSVG();
+    }, 1000);
+
+    // Verificar cambios cada 3 segundos
     setInterval(() => {
         ocultarCirculo();
-        aplicarImagenCirculo();
-    }, 2000);
+        actualizarProyecto();
+    }, 3000);
 
-    console.log('🚀 Script del círculo listo');
+    console.log('🚀 Script SVG listo');
 })();
