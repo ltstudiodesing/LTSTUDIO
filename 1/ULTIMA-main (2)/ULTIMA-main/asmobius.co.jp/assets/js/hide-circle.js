@@ -1,95 +1,88 @@
-// SCRIPT PARA FONDO SOLAMENTE
+// SCRIPT PARA IMAGEN DENTRO DEL CÍRCULO
 (function() {
-    console.log('🎯 Script de fondo activado');
+    console.log('🎯 Script para círculo específico');
 
     const IMAGENES = {
-        'PARK MANSION': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop',
-        'KAWANA': 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=800&fit=crop',
-        'SEVENS VILLA': 'https://images.unsplash.com/photo-1600563438938-a42d1c941a96?w=1200&h=800&fit=crop'
+        'PARK MANSION': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=800&fit=crop',
+        'KAWANA': 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=800&fit=crop',
+        'SEVENS VILLA': 'https://images.unsplash.com/photo-1600563438938-a42d1c941a96?w=800&h=800&fit=crop'
     };
 
-    let divFondo = null;
+    let circuloImagen = null;
     let proyectoActual = 'PARK MANSION';
-    let introTerminada = false;
 
-    // Detectar si la intro ya terminó
-    function checkIntro() {
+    // Crear div circular EXACTAMENTE donde está el círculo
+    function crearCirculoImagen() {
+        if (circuloImagen) return circuloImagen;
+
         const canvas = document.querySelector('canvas');
-        // Si hay canvas visible, la intro terminó
-        if (canvas && canvas.offsetWidth > 100) {
-            introTerminada = true;
-            console.log('✅ Intro terminada, aplicando imágenes');
-        }
-    }
+        if (!canvas) return null;
 
-    // Crear fondo MUY atrás
-    function crearFondo() {
-        if (divFondo) return divFondo;
-
-        divFondo = document.createElement('div');
-        divFondo.id = 'fondo-proyecto';
-        divFondo.style.cssText = `
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
+        // Crear un div circular que se posicione sobre el canvas
+        circuloImagen = document.createElement('div');
+        circuloImagen.id = 'imagen-circulo';
+        circuloImagen.style.cssText = `
+            position: absolute !important;
+            top: 50% !important;
+            left: 50% !important;
+            width: 600px !important;
+            height: 600px !important;
+            border-radius: 50% !important;
+            transform: translate(-50%, -50%) !important;
             background-size: cover !important;
             background-position: center !important;
-            z-index: -999 !important;
+            z-index: 1 !important;
             pointer-events: none !important;
-            opacity: 0.7 !important;
+            opacity: 0.8 !important;
         `;
 
-        document.body.insertBefore(divFondo, document.body.firstChild);
-        console.log('✅ Fondo creado muy atrás');
-        return divFondo;
+        // Insertar directamente sobre el canvas
+        canvas.parentNode.insertBefore(circuloImagen, canvas.nextSibling);
+        console.log('✅ Círculo de imagen creado');
+        return circuloImagen;
     }
 
-    // Detectar proyecto actual por texto visible
+    // Detectar proyecto simple y directo
     function detectarProyecto() {
         const ul = document.querySelector('ul');
         if (!ul) return 'PARK MANSION';
 
-        // Buscar qué proyecto está visible en el momento
         const texto = ul.textContent.toUpperCase();
-
         if (texto.includes('KAWANA')) return 'KAWANA';
         if (texto.includes('SEVENS VILLA')) return 'SEVENS VILLA';
         return 'PARK MANSION';
     }
 
-    // Aplicar imagen de fondo
-    function aplicarFondo() {
-        if (!introTerminada) return;
+    // Aplicar imagen al círculo
+    function aplicarImagenCirculo() {
+        const canvas = document.querySelector('canvas');
+        if (!canvas || canvas.offsetWidth < 100) return;
 
         const proyecto = detectarProyecto();
 
         if (proyecto !== proyectoActual) {
             proyectoActual = proyecto;
-            const fondo = crearFondo();
-            const imagen = IMAGENES[proyectoActual];
+            const circulo = crearCirculoImagen();
 
-            fondo.style.backgroundImage = `url("${imagen}")`;
-            console.log(`🖼️ Fondo cambiado a: ${proyectoActual}`);
+            if (circulo) {
+                const imagen = IMAGENES[proyectoActual];
+                circulo.style.backgroundImage = `url("${imagen}")`;
+                console.log(`🖼️ Imagen aplicada al círculo: ${proyectoActual}`);
+            }
         }
     }
 
-    // Ocultar círculo molesto SOLAMENTE
+    // Ocultar círculo molesto
     function ocultarCirculo() {
         const svg = document.querySelector('svg[viewBox="0 0 60 60"]');
         if (svg) svg.style.display = 'none';
     }
 
-    // Verificar cada 2 segundos sin molestar
+    // Verificar cada 2 segundos
     setInterval(() => {
-        checkIntro();
         ocultarCirculo();
-
-        if (introTerminada) {
-            aplicarFondo();
-        }
+        aplicarImagenCirculo();
     }, 2000);
 
-    console.log('🚀 Script de fondo listo - Esperando que termine intro');
+    console.log('🚀 Script del círculo listo');
 })();
