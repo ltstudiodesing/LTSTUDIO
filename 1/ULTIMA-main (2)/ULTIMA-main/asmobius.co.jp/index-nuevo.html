@@ -867,56 +867,33 @@
         function startFragmentTransition() {
             console.log('🌟 Iniciando transición fragmentada');
 
-            const overlay = document.getElementById('fragment-overlay');
-            const fragmentSize = 50;
-            const cols = Math.ceil(window.innerWidth / fragmentSize);
-            const rows = Math.ceil(window.innerHeight / fragmentSize);
+            const introScreen = document.getElementById('intro-screen');
+            const mainScreen = document.getElementById('main-screen');
 
-            overlay.innerHTML = '';
-            overlay.classList.add('active');
+            // Transición suave sin fragmentos complejos
+            introScreen.style.transition = 'opacity 1s ease-out, transform 1s ease-out';
+            introScreen.style.opacity = '0';
+            introScreen.style.transform = 'scale(0.8)';
 
-            // Crear y animar fragmentos
-            for (let row = 0; row < rows; row++) {
-                for (let col = 0; col < cols; col++) {
-                    const fragment = document.createElement('div');
-                    fragment.className = 'fragment';
-
-                    // Posición
-                    fragment.style.left = col * fragmentSize + 'px';
-                    fragment.style.top = row * fragmentSize + 'px';
-                    fragment.style.width = fragmentSize + 'px';
-                    fragment.style.height = fragmentSize + 'px';
-
-                    // Direcciones aleatorias
-                    const dx = (Math.random() - 0.5) * 800 + 'px';
-                    const dy = (Math.random() - 0.5) * 600 + 'px';
-                    const rotation = (Math.random() - 0.5) * 360 + 'deg';
-
-                    fragment.style.setProperty('--dx', dx);
-                    fragment.style.setProperty('--dy', dy);
-                    fragment.style.setProperty('--rotation', rotation);
-
-                    overlay.appendChild(fragment);
-
-                    // Animar después de un delay
-                    const delay = (row + col) * 20;
-                    setTimeout(() => {
-                        fragment.classList.add('animate-out');
-                    }, delay);
-                }
-            }
-
-            // Transición a página principal
             setTimeout(() => {
-                document.getElementById('intro-screen').classList.add('hidden');
-                document.getElementById('main-screen').classList.add('visible');
+                // Ocultar intro completamente
+                introScreen.classList.add('hidden');
+                introScreen.style.display = 'none';
 
+                // Mostrar main screen
+                mainScreen.classList.add('visible');
+                mainScreen.style.opacity = '1';
+                mainScreen.style.transform = 'scale(1)';
+
+                console.log('✅ Transición completada - Main screen visible');
+
+                // Inicializar main screen después de la transición
                 setTimeout(() => {
-                    overlay.classList.remove('active');
                     changeProject(0);
                     startProgress();
+                    console.log('✅ Main screen inicializado con proyecto 0');
                 }, 300);
-            }, 800);
+            }, 1000);
         }
 
         // CREAR PARTÍCULAS
