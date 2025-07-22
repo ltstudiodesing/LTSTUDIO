@@ -835,17 +835,21 @@
                 });
 
                 document.addEventListener('mousemove', (e) => {
-                    if (isDragging && isOverCircle) {
+                    if (isDragging) {
                         const deltaY = e.clientY - dragStartY;
-                        const sensitivity = 50; // px needed to change project
+                        const sensitivity = 40; // px needed to change project (más sensible)
                         const projectChange = Math.floor(deltaY / sensitivity);
 
                         let newProject = dragStartProject + projectChange;
                         newProject = Math.max(0, Math.min(PROJECTS.length - 1, newProject));
 
                         if (newProject !== currentProject) {
+                            console.log(`🎯 Cambiando proyecto por drag: ${currentProject} → ${newProject}`);
                             changeProject(newProject);
                         }
+
+                        // Visual feedback durante el drag
+                        circleContainer.style.transform = 'translate(-50%, -50%) scale(0.98)';
                     }
                 });
 
