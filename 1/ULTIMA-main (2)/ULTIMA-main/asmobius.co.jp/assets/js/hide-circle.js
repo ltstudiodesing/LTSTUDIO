@@ -30,93 +30,135 @@
         }
     });
 
-    // Aplicar imágenes de fondo usando múltiples métodos para asegurar que funcione
+    // Sistema de imágenes dinámicas por proyecto
     function applyCircleBackgrounds() {
-        console.log('🔄 Aplicando imagen de fondo con múltiples métodos...');
+        console.log('🔄 Inicializando sistema de imágenes dinámicas...');
 
-        let targetElement = null;
+        // Mapeo de proyectos a imágenes específicas
+        const projectImages = {
+            'park mansion': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'kawana': 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=1200&fit=crop',
+            'jade': 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=1200&fit=crop',
+            'sevens villa': 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200&h=1200&fit=crop',
+            'hikawa gardens': 'https://images.unsplash.com/photo-1600485154340-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'one avenue': 'https://images.unsplash.com/photo-1600485154355-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'century forest': 'https://images.unsplash.com/photo-1600485154343-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'proud': 'https://images.unsplash.com/photo-1600485154356-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'roppongi': 'https://images.unsplash.com/photo-1600485154345-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'nishiazabu': 'https://images.unsplash.com/photo-1600485154354-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'azabu gardens': 'https://images.unsplash.com/photo-1600485154341-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'park house': 'https://images.unsplash.com/photo-1600485154342-be6161a56a0c?w=1200&h=1200&fit=crop'
+        };
 
-        // Método 1: Buscar por estilo inline
-        targetElement = document.querySelector('div[style*="background-color: rgb(37, 37, 37)"]');
+        // Buscar elemento de fondo negro
+        let backgroundElement = null;
+        const allDivs = document.querySelectorAll('div');
+        for (const div of allDivs) {
+            const computedStyle = window.getComputedStyle(div);
+            if (computedStyle.backgroundColor === 'rgb(37, 37, 37)' &&
+                computedStyle.position === 'absolute' &&
+                computedStyle.width === '100%' &&
+                computedStyle.height === '100%') {
+                backgroundElement = div;
+                console.log('🎯 Elemento de fondo encontrado');
+                break;
+            }
+        }
 
-        // Método 2: Buscar por computed style
-        if (!targetElement) {
-            const allDivs = document.querySelectorAll('div');
-            for (const div of allDivs) {
-                const computedStyle = window.getComputedStyle(div);
-                if (computedStyle.backgroundColor === 'rgb(37, 37, 37)' &&
-                    computedStyle.position === 'fixed' &&
-                    computedStyle.width === '100%') {
-                    targetElement = div;
-                    break;
+        if (!backgroundElement) {
+            console.log('❌ No se encontró elemento de fondo');
+            return;
+        }
+
+        let currentProject = '';
+
+        // Función para cambiar imagen según proyecto
+        function changeProjectImage(projectName) {
+            const projectKey = Object.keys(projectImages).find(key =>
+                projectName.toLowerCase().includes(key)
+            );
+
+            if (projectKey) {
+                const imageUrl = projectImages[projectKey];
+                console.log('🖼️ Cambiando a:', projectName, '→', projectKey);
+
+                backgroundElement.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
+                backgroundElement.style.setProperty('background-size', 'cover', 'important');
+                backgroundElement.style.setProperty('background-position', 'center', 'important');
+                backgroundElement.style.setProperty('background-repeat', 'no-repeat', 'important');
+
+                // Overlay para legibilidad
+                if (!backgroundElement.querySelector('.dynamic-overlay')) {
+                    const overlay = document.createElement('div');
+                    overlay.className = 'dynamic-overlay';
+                    overlay.style.cssText = `
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: rgba(0, 0, 0, 0.4);
+                        z-index: 1;
+                        pointer-events: none;
+                        transition: background 0.3s ease;
+                    `;
+                    backgroundElement.appendChild(overlay);
                 }
+
+                currentProject = projectName;
             }
         }
 
-        // Método 3: Buscar el canvas parent
-        if (!targetElement) {
-            const canvas = document.querySelector('canvas');
-            if (canvas) {
-                targetElement = canvas.closest('div');
-                console.log('🎯 Usando elemento padre del canvas');
-            }
+        // Monitorear cambios en proyectos
+        function startProjectMonitor() {
+            const projectList = document.querySelectorAll('ul li');
+            console.log('📋 Proyectos encontrados:', projectList.length);
+
+            // Observador de cambios en el DOM
+            const observer = new MutationObserver(() => {
+                projectList.forEach(li => {
+                    const style = window.getComputedStyle(li);
+                    const transform = style.transform;
+
+                    // Detectar proyecto activo por transformación
+                    if (transform && transform !== 'none' &&
+                        (transform.includes('scale') || transform.includes('translate'))) {
+                        const projectText = li.textContent.trim();
+                        if (projectText && projectText !== currentProject) {
+                            changeProjectImage(projectText);
+                        }
+                    }
+                });
+            });
+
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['style']
+            });
+
+            // También monitorear por posición visible
+            setInterval(() => {
+                projectList.forEach(li => {
+                    const rect = li.getBoundingClientRect();
+                    const isVisible = rect.top >= -100 && rect.top <= window.innerHeight + 100;
+
+                    if (isVisible) {
+                        const projectText = li.textContent.trim();
+                        if (projectText && projectText !== currentProject && projectText.length > 3) {
+                            changeProjectImage(projectText);
+                        }
+                    }
+                });
+            }, 1000);
         }
 
-        // Método 4: Forzar con CSS
-        if (!targetElement) {
-            // Crear e insertar un div de fondo
-            targetElement = document.createElement('div');
-            targetElement.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgb(37, 37, 37);
-                z-index: -1;
-            `;
-            document.body.appendChild(targetElement);
-            console.log('🔨 Elemento de fondo creado forzadamente');
-        }
+        // Establecer imagen inicial
+        changeProjectImage('PARK MANSION');
 
-        if (targetElement) {
-            console.log('✅ Elemento de fondo encontrado/creado');
-
-            // Usar CSS con !important para forzar la imagen
-            const parkMansionImage = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=1200&fit=crop';
-
-            targetElement.style.setProperty('background-image', `url("${parkMansionImage}")`, 'important');
-            targetElement.style.setProperty('background-size', 'cover', 'important');
-            targetElement.style.setProperty('background-position', 'center', 'important');
-            targetElement.style.setProperty('background-repeat', 'no-repeat', 'important');
-
-            // Agregar overlay simple
-            if (!targetElement.querySelector('.simple-overlay')) {
-                const overlay = document.createElement('div');
-                overlay.className = 'simple-overlay';
-                overlay.style.cssText = `
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(0, 0, 0, 0.4);
-                    z-index: 1;
-                    pointer-events: none;
-                `;
-                targetElement.appendChild(overlay);
-            }
-
-            console.log('🖼️ Imagen aplicada exitosamente con !important');
-
-            // También aplicar al body como respaldo
-            document.body.style.setProperty('background-image', `url("${parkMansionImage}")`, 'important');
-            document.body.style.setProperty('background-size', 'cover', 'important');
-            document.body.style.setProperty('background-position', 'center', 'important');
-
-        } else {
-            console.log('❌ No se pudo encontrar/crear elemento de fondo');
-        }
+        // Iniciar monitoreo después de que la intro termine
+        setTimeout(startProjectMonitor, 3000);
     }
 
     function updateLogoAndSetupBackgrounds() {
