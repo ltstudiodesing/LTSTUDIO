@@ -1,53 +1,45 @@
-# Estructura de Imágenes para Proyectos
+# 📁 Carga Fácil de Imágenes
 
-## 📁 Cómo usar estas carpetas:
+## ✅ **YA ESTÁ LISTO** - El código ya apunta a estas carpetas!
 
-### 1. **Ubicación**:
+### 🎯 **Cómo usar (SÚPER FÁCIL)**:
+
+1. **Abre Visual Studio Code**
+2. **Ve a la carpeta**: `assets/projects/`
+3. **Arrastra tus imágenes** a cada carpeta de proyecto
+
+### 📂 **Estructura que YA FUNCIONA**:
 ```
 assets/projects/
-├── park-mansion/           → Proyecto 1
-├── kawana/                → Proyecto 2  
-├── park-le-jade/          → Proyecto 3
-├── sevens-villa/          → Proyecto 4
-├── hikawa-gardens/        → Proyecto 5
-├── one-avenue/            → Proyecto 6
-├── century-forest/        → Proyecto 7
-├── proud/                 → Proyecto 8
-├── nishiazabu-residence/  → Proyecto 9
-├── itohpia-jiyugaoka/     → Proyecto 10
-├── urban-villa/           → Proyecto 11
-└── modern-house/          → Proyecto 12
+├── park-mansion/        ← Arrastra aquí las imágenes del Park Mansion
+│   ├── main.jpg        ← IMPORTANTE: Esta aparece en el círculo
+│   ├── 01.jpg          ← Imágenes para la página del proyecto
+│   ├── 02.jpg
+│   └── 03.jpg
+├── kawana/             ← Arrastra aquí las imágenes de Kawana
+├── park-le-jade/       ← Y así para cada proyecto...
+├── sevens-villa/
+├── hikawa-gardens/
+├── one-avenue/
+├── century-forest/
+├── proud/
+├── nishiazabu-residence/
+├── itohpia-jiyugaoka/
+├── urban-villa/
+└── modern-house/
 ```
 
-### 2. **Qué poner en cada carpeta**:
-En cada carpeta de proyecto pon:
-- `main.jpg` → Imagen principal del círculo
-- `01.jpg`, `02.jpg`, `03.jpg`, etc. → Imágenes para las páginas de proyecto
+### 📏 **Tamaños recomendados**:
+- **main.jpg**: 800x800px (cuadrada) - Se ve en el círculo
+- **01.jpg, 02.jpg, etc**: 1200x800px - Para las páginas de proyecto
 
-### 3. **Formato recomendado**:
-- **Formato**: JPG o PNG
-- **Tamaño**: 800x800px para main.jpg (imagen del círculo)
-- **Tamaño**: 1200x800px para las otras imágenes
-- **Calidad**: Máxima calidad posible
+### ⚠️ **IMPORTANTE**:
+- ✅ Usa **main.jpg** exactamente (sin mayúsculas)
+- ✅ Solo **JPG o PNG**
+- ✅ Sin espacios en nombres: `mi-imagen.jpg` ✅ | `mi imagen.jpg` ❌
+- ✅ Solo minúsculas y números
 
-### 4. **Ejemplo de estructura para un proyecto**:
-```
-park-mansion/
-├── main.jpg     → Se ve en el círculo principal
-├── 01.jpg       → Primera imagen de la página del proyecto
-├── 02.jpg       → Segunda imagen
-├── 03.jpg       → Tercera imagen
-└── ...
-```
+### 🚀 **YA NO NECESITAS CAMBIAR CÓDIGO** 
+El sitio web ya busca automáticamente en estas carpetas!
 
-### 5. **Cómo actualizar el código**:
-Después de subir las imágenes, actualiza las rutas en `index-nuevo.html`:
-```javascript
-// Cambiar las URLs por rutas locales:
-image: 'assets/projects/park-mansion/main.jpg'
-```
-
-## ⚠️ IMPORTANTE:
-- Los nombres de archivo NO deben tener espacios (usa guiones: `my-image.jpg`)
-- Usa minúsculas para los nombres
-- Mantén la estructura exacta de carpetas
+Solo arrastra las imágenes y recarga la página 🎉
