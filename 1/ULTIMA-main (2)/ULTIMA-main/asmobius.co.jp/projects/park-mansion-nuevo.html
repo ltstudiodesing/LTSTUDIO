@@ -329,7 +329,8 @@
             const scrollDuration = 45000; // 45 segundos para scroll completo
             const scrollStep = scrollHeight / (scrollDuration / 16); // 60fps
             
-            let currentScroll = 0;
+            // Empezar desde la posición actual, no desde 0
+            let currentScroll = window.pageYOffset;
             
             function smoothScroll() {
                 if (currentScroll < scrollHeight && isScrolling) {
