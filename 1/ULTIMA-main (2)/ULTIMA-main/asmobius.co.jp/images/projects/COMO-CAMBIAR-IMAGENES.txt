@@ -1,0 +1,36 @@
+🖼️ CÓMO CAMBIAR LAS IMÁGENES DE TUS PROYECTOS
+
+¡MUY FÁCIL! Solo sigue estos pasos:
+
+1. Ve a la carpeta del proyecto que quieres cambiar
+2. Reemplaza el archivo "main.jpg" con tu imagen
+3. ¡IMPORTANTE! Tu nueva imagen DEBE llamarse exactamente "main.jpg"
+4. Refresca la página web y verás tu nueva imagen
+
+EJEMPLO PARA PARK MANSION:
+1. Ve a: images/projects/park-mansion/
+2. Borra el archivo "main.jpg" que está ahí
+3. Sube tu nueva imagen del proyecto Park Mansion
+4. Renómbrala a "main.jpg" (exactamente ese nombre)
+5. ¡Listo! La imagen aparecerá automáticamente en el sitio
+
+CARPETAS DISPONIBLES:
+- park-mansion → PARK MANSION (Minami Azabu)
+- kawana → KAWANA (Silence Kawana)
+- park-le-jade → PARK LE JADE (Shirokane Residence)
+- sevens-villa → SEVENS VILLA (Karuizawa)
+- hikawa-gardens → HIKAWA GARDENS (Tokyo)
+- one-avenue → ONE AVENUE (Central District)
+- century-forest → CENTURY FOREST (Urban Integration)
+- proud → PROUD (Rokakoen)
+- nishiazabu-residence → NISHIAZABU RESIDENCE (Nishiazabu)
+- itohpia-jiyugaoka → ITOHPIA JIYUGAOKA (Jiyugaoka)
+- urban-villa → URBAN VILLA (Central Tokyo)
+- modern-house → MODERN HOUSE (Shibuya)
+
+⚠️ IMPORTANTE:
+- Siempre usar el nombre "main.jpg"
+- Tamaño recomendado: mínimo 600x600 píxeles
+- Formato: .jpg (preferido) o .png
+- NO cambies los nombres de las carpetas
+- NO toques ningún archivo de código
