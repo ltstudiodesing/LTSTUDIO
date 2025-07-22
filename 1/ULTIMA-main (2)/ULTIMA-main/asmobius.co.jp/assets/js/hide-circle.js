@@ -33,57 +33,78 @@
     function updateLogoAndSetupBackgrounds() {
         // Función para reemplazar/ocultar el logo ASM problemático
         function replaceASMLogo() {
-            // Buscar el SVG específico que contiene "ASM" y "architecture"
-            const allSVGs = document.querySelectorAll('svg');
             let logoReplaced = false;
 
-            allSVGs.forEach(svg => {
-                const paths = svg.querySelectorAll('path');
-                const texts = svg.querySelectorAll('text');
+            // Buscar específicamente el SVG con viewBox="0 0 60 23.3" que es el que seleccionaste
+            const targetSVG = document.querySelector('svg[viewBox="0 0 60 23.3"]');
 
-                // Verificar si este SVG contiene texto "architecture" o tiene paths que forman "ASM"
-                let hasArchitecture = false;
-                texts.forEach(text => {
-                    if (text.textContent && text.textContent.toLowerCase().includes('architecture')) {
-                        hasArchitecture = true;
-                        // Cambiar el texto "architecture" por "LTSD"
-                        text.textContent = 'LTSD';
-                        text.setAttribute('letter-spacing', '4px');
-                        text.setAttribute('font-size', '12');
-                        console.log('🎨 Texto "architecture" cambiado a "LTSD"');
+            if (targetSVG) {
+                const parentElement = targetSVG.parentElement;
+                if (parentElement) {
+                    // Crear un nuevo SVG con "LTSD" que se vea similar
+                    const newLogoSVG = document.createElement('div');
+                    newLogoSVG.innerHTML = `
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 60 23.3" style="height: 25px; width: 65px; display: inline;">
+                            <style type="text/css">.st-logo { fill: #FFFFFF; }</style>
+                            <g>
+                                <!-- Texto principal LTSD -->
+                                <text x="30" y="12" text-anchor="middle" class="st-logo" font-family="butler_medium, serif" font-size="14" font-weight="bold" letter-spacing="3px">LTSD</text>
+                                <!-- Texto inferior design -->
+                                <text x="30" y="22" text-anchor="middle" class="st-logo" font-family="butler_medium, serif" font-size="8" font-weight="400" letter-spacing="2px">design</text>
+                            </g>
+                        </svg>
+                    `;
+
+                    // Reemplazar el SVG original
+                    parentElement.replaceChild(newLogoSVG.firstElementChild, targetSVG);
+                    logoReplaced = true;
+                    console.log('✅ Logo ASM específico reemplazado por LTSD');
+                }
+            }
+
+            // Si no encontramos el SVG específico, buscar por otros métodos
+            if (!logoReplaced) {
+                const allSVGs = document.querySelectorAll('svg');
+                allSVGs.forEach(svg => {
+                    const paths = svg.querySelectorAll('path');
+                    const texts = svg.querySelectorAll('text');
+
+                    // Buscar SVG que tiene muchos paths (probable logo ASM) y texto "architecture"
+                    let hasArchitecture = false;
+                    texts.forEach(text => {
+                        if (text.textContent && text.textContent.toLowerCase().includes('architect')) {
+                            hasArchitecture = true;
+                        }
+                    });
+
+                    // Si tiene más de 10 paths y texto "architecture", es probable que sea el logo ASM
+                    if (paths.length > 10 && hasArchitecture) {
+                        const parentElement = svg.parentElement;
+                        if (parentElement) {
+                            const newLogo = document.createElement('div');
+                            newLogo.innerHTML = `
+                                <div style="
+                                    position: relative;
+                                    display: inline-block;
+                                    font-family: 'butler_medium', serif;
+                                    font-size: 14px;
+                                    font-weight: 500;
+                                    letter-spacing: 4px;
+                                    color: #FFFFFF;
+                                    text-align: center;
+                                ">
+                                    <div style="font-size: 16px; font-weight: bold; margin-bottom: 2px;">LTSD</div>
+                                    <div style="font-size: 10px; letter-spacing: 2px;">design</div>
+                                </div>
+                            `;
+
+                            parentElement.replaceChild(newLogo, svg);
+                            logoReplaced = true;
+                            console.log('✅ Logo ASM alternativo reemplazado por LTSD');
+                        }
                     }
                 });
-
-                // Si encontramos el SVG con "architecture", es probable que también tenga "ASM" en paths
-                if (hasArchitecture && paths.length > 0) {
-                    // Ocultar todo el SVG y crear uno nuevo con "LTSD"
-                    const parentElement = svg.parentElement;
-                    if (parentElement) {
-                        // Crear un nuevo elemento de texto simple
-                        const newLogo = document.createElement('div');
-                        newLogo.innerHTML = `
-                            <div style="
-                                position: relative;
-                                display: inline-block;
-                                font-family: 'butler_medium', serif;
-                                font-size: 14px;
-                                font-weight: 500;
-                                letter-spacing: 4px;
-                                color: #666;
-                                text-align: center;
-                            ">
-                                <div style="font-size: 16px; font-weight: bold; margin-bottom: 2px;">LTSD</div>
-                                <div style="font-size: 10px; letter-spacing: 2px;">DESIGN</div>
-                            </div>
-                        `;
-
-                        // Reemplazar el SVG con el nuevo logo
-                        parentElement.replaceChild(newLogo, svg);
-                        logoReplaced = true;
-                        console.log('🎨 Logo ASM reemplazado completamente por LTSD');
-                    }
-                }
-            });
+            }
 
             return logoReplaced;
         }
@@ -119,46 +140,88 @@
             }
         }, 3000); // Esperar 3 segundos para que la intro termine
 
-        // Aplicar imágenes de fondo solo a círculos de proyecto
-        setTimeout(() => {
-            const projectElements = document.querySelectorAll('.js-canvas__target, .p-stage__menu__item');
-            console.log('🔍 Elementos de proyecto encontrados:', projectElements.length);
+        // Aplicar imágenes de fondo a círculos de proyecto con mejor detección
+        function applyCircleBackgrounds() {
+            console.log('🔄 Intentando aplicar imágenes a círculos...');
+
+            // Buscar elementos de proyecto con múltiples selectores
+            const selectors = [
+                '.js-canvas__target',
+                '.p-stage__menu__item',
+                '[class*="menu"][class*="item"]',
+                'svg circle',
+                '[data-project]'
+            ];
+
+            let projectElements = [];
+            selectors.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    if (!projectElements.includes(el)) {
+                        projectElements.push(el);
+                    }
+                });
+            });
+
+            console.log('🔍 Total elementos encontrados:', projectElements.length);
 
             projectElements.forEach((element, index) => {
-                const text = element.textContent || '';
-                let backgroundImage = '';
+                const text = element.textContent || element.getAttribute('data-project') || '';
+                console.log('📝 Procesando elemento:', text.substring(0, 50));
 
-                // Mapear proyectos a sus primeras imágenes (exactamente las mismas que en cada proyecto)
-                if (text.toLowerCase().includes('park mansion')) {
-                    // Usar la misma primera imagen que en park-mansion.html
-                    backgroundImage = 'url("https://picsum.photos/800/1000?random=1")';
+                let backgroundImage = '';
+                let projectName = '';
+
+                // Mapear proyectos a sus primeras imágenes (usar imágenes más pequeñas para mejor carga)
+                if (text.toLowerCase().includes('park mansion') || text.toLowerCase().includes('minami')) {
+                    backgroundImage = 'url("https://picsum.photos/400/400?random=1")';
+                    projectName = 'Park Mansion';
                 } else if (text.toLowerCase().includes('kawana')) {
-                    backgroundImage = 'url("https://picsum.photos/800/1000?random=2")';
+                    backgroundImage = 'url("https://picsum.photos/400/400?random=2")';
+                    projectName = 'Kawana';
                 } else if (text.toLowerCase().includes('sevens villa')) {
-                    backgroundImage = 'url("https://picsum.photos/800/1000?random=3")';
+                    backgroundImage = 'url("https://picsum.photos/400/400?random=3")';
+                    projectName = 'Sevens Villa';
                 } else if (text.toLowerCase().includes('hikawa')) {
-                    backgroundImage = 'url("https://picsum.photos/800/1000?random=4")';
-                } else {
-                    backgroundImage = `url("https://picsum.photos/800/1000?random=${index + 5}")`;
+                    backgroundImage = 'url("https://picsum.photos/400/400?random=4")';
+                    projectName = 'Hikawa';
+                } else if (text.trim().length > 3) { // Solo si hay texto significativo
+                    backgroundImage = `url("https://picsum.photos/400/400?random=${index + 5}")`;
+                    projectName = text.substring(0, 20);
                 }
 
-                // Verificar si es realmente un círculo de proyecto y aplicar imagen
-                const hasCircle = element.querySelector('circle') ||
-                                element.classList.contains('js-canvas__target') ||
-                                element.classList.contains('p-stage__menu__item');
+                // Verificar si es un círculo de proyecto
+                const isProjectElement = element.querySelector('circle') ||
+                                       element.classList.contains('js-canvas__target') ||
+                                       element.classList.contains('p-stage__menu__item') ||
+                                       element.tagName === 'circle' ||
+                                       (element.parentElement && element.parentElement.querySelector('circle'));
 
-                if (hasCircle && backgroundImage) {
-                    console.log('🔍 Aplicando imagen a círculo:', text.substring(0, 30), 'URL:', backgroundImage);
-                    // Aplicar imagen de fondo
-                    element.style.backgroundImage = backgroundImage;
-                    element.style.backgroundSize = 'cover';
-                    element.style.backgroundPosition = 'center';
-                    element.style.borderRadius = '50%';
-                    element.style.position = 'relative';
-                    element.style.overflow = 'hidden';
-                    
-                    // Agregar overlay para mejorar legibilidad del texto
-                    if (!element.querySelector('.project-overlay')) {
+                if (isProjectElement && backgroundImage && projectName) {
+                    console.log('🎯 Aplicando imagen a círculo de proyecto:', projectName);
+
+                    // Encontrar el elemento contenedor apropiado
+                    let targetElement = element;
+                    if (element.tagName === 'circle') {
+                        targetElement = element.closest('svg').parentElement || element.parentElement;
+                    }
+
+                    // Aplicar estilos de imagen de fondo
+                    targetElement.style.backgroundImage = backgroundImage;
+                    targetElement.style.backgroundSize = 'cover';
+                    targetElement.style.backgroundPosition = 'center';
+                    targetElement.style.backgroundRepeat = 'no-repeat';
+
+                    // Solo agregar border-radius si no tiene uno ya
+                    if (!targetElement.style.borderRadius) {
+                        targetElement.style.borderRadius = '50%';
+                    }
+
+                    targetElement.style.position = 'relative';
+                    targetElement.style.overflow = 'hidden';
+
+                    // Agregar overlay solo si no existe
+                    if (!targetElement.querySelector('.project-overlay')) {
                         const overlay = document.createElement('div');
                         overlay.className = 'project-overlay';
                         overlay.style.cssText = `
@@ -167,39 +230,50 @@
                             left: 0;
                             right: 0;
                             bottom: 0;
-                            background: rgba(0, 0, 0, 0.4);
-                            border-radius: 50%;
+                            background: rgba(0, 0, 0, 0.3);
+                            border-radius: inherit;
                             z-index: 1;
                             transition: all 0.3s ease;
+                            pointer-events: none;
                         `;
 
-                        // Asegurar que el texto esté por encima del overlay
-                        const textElements = element.querySelectorAll('*');
-                        textElements.forEach(el => {
-                            if (el !== overlay) {
-                                el.style.position = 'relative';
-                                el.style.zIndex = '2';
+                        // Asegurar que el contenido esté por encima
+                        const allChildren = targetElement.querySelectorAll('*');
+                        allChildren.forEach(child => {
+                            if (child !== overlay && !child.classList.contains('project-overlay')) {
+                                child.style.position = 'relative';
+                                child.style.zIndex = '2';
                             }
                         });
 
-                        element.appendChild(overlay);
+                        targetElement.appendChild(overlay);
 
                         // Efecto hover
-                        element.addEventListener('mouseenter', function() {
-                            overlay.style.background = 'rgba(0, 0, 0, 0.2)';
+                        targetElement.addEventListener('mouseenter', function() {
+                            overlay.style.background = 'rgba(0, 0, 0, 0.1)';
                         });
 
-                        element.addEventListener('mouseleave', function() {
-                            overlay.style.background = 'rgba(0, 0, 0, 0.4)';
+                        targetElement.addEventListener('mouseleave', function() {
+                            overlay.style.background = 'rgba(0, 0, 0, 0.3)';
                         });
                     }
-                    
-                    console.log('✅ Imagen de fondo aplicada exitosamente a:', text.substring(0, 20));
+
+                    console.log('✅ Imagen aplicada exitosamente a:', projectName);
                 } else {
-                    console.log('❌ No se pudo aplicar imagen a:', text.substring(0, 20), 'hasCircle:', hasCircle, 'backgroundImage:', !!backgroundImage);
+                    console.log('⚠️ Elemento omitido:', {
+                        text: text.substring(0, 30),
+                        isProject: isProjectElement,
+                        hasBackground: !!backgroundImage,
+                        hasName: !!projectName
+                    });
                 }
             });
-        }, 2000);
+        }
+
+        // Ejecutar aplicación de imágenes varias veces para asegurar que funcione
+        setTimeout(applyCircleBackgrounds, 1000);
+        setTimeout(applyCircleBackgrounds, 3000);
+        setTimeout(applyCircleBackgrounds, 5000);
     }
 
     function hideStuckCircle() {
