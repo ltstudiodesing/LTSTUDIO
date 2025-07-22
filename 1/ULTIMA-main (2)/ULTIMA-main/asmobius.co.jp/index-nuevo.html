@@ -1028,11 +1028,20 @@
 
         // ACTUALIZAR INDICADOR DE PROYECTOS
         function updateProjectIndicator(activeIndex) {
-            const dots = document.querySelectorAll('.indicator-dot');
+            const dots = document.querySelectorAll('.project-dot');
             dots.forEach((dot, index) => {
                 dot.classList.toggle('active', index === activeIndex);
             });
 
+            // Actualizar barra circular de progreso
+            const progressCircle = document.getElementById('progress-circle');
+            if (progressCircle) {
+                const progress = (activeIndex + 1) / PROJECTS.length;
+                const radius = progressCircle.r.baseVal.value;
+                const circumference = 2 * Math.PI * radius;
+                const offset = circumference - (progress * circumference);
+                progressCircle.style.strokeDashoffset = offset;
+            }
         }
 
         function startProgress() {
