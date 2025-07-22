@@ -318,6 +318,35 @@
             border-radius: 50%;
             mix-blend-mode: overlay;
         }
+
+        /* PROGRESO CIRCULAR */
+        .circular-progress {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 110%;
+            height: 110%;
+            z-index: 4;
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-circle {
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 2;
+            fill: transparent;
+        }
+
+        .progress-ring-progress {
+            stroke: white;
+            stroke-width: 2;
+            fill: transparent;
+            stroke-linecap: round;
+            transition: stroke-dasharray 0.3s ease;
+        }
         
         /* PROJECT TEXT */
         .project-text {
@@ -485,7 +514,7 @@
         <!-- LOGO -->
         <div class="logo">LTSD</div>
 
-        <!-- NAVEGACIÓN SUPERIOR -->
+        <!-- NAVEGACI��N SUPERIOR -->
         <div class="top-nav">
             <div class="top-nav-item" onclick="showAllProjects()">all</div>
             <div class="top-nav-item" onclick="showAbout()">about</div>
