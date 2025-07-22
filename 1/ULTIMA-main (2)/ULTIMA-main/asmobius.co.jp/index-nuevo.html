@@ -471,6 +471,9 @@
         
         // CAMBIAR PROYECTO
         function changeProject(index) {
+            // Limpiar intervalos
+            if (progressTimer) clearInterval(progressTimer);
+
             // Ocultar proyecto actual
             document.querySelectorAll('.project-background').forEach(bg => {
                 bg.classList.remove('active');
@@ -478,21 +481,24 @@
             document.querySelectorAll('.project-text').forEach(text => {
                 text.classList.remove('active');
             });
-            document.querySelectorAll('.project-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
+
             // Mostrar nuevo proyecto
-            const newBackground = document.querySelector(`[data-project="${index}"]`);
-            const newText = document.querySelectorAll('.project-text')[index];
-            const newItem = document.querySelectorAll('.project-item')[index];
-            
+            const newBackground = document.querySelector(`.project-background[data-project="${index}"]`);
+            const newText = document.querySelector(`.project-text[data-project="${index}"]`);
+
             if (newBackground) newBackground.classList.add('active');
             if (newText) newText.classList.add('active');
-            if (newItem) newItem.classList.add('active');
-            
+
             currentProject = index;
-            
+
+            // Actualizar contador
+            document.getElementById('current-num').textContent =
+                (index + 1).toString().padStart(2, '0');
+
+            // Actualizar botones de navegación
+            document.getElementById('prev-btn').disabled = (index === 0);
+            document.getElementById('next-btn').disabled = (index === PROJECTS.length - 1);
+
             console.log(`✅ Proyecto cambiado a: ${PROJECTS[index].name}`);
         }
         
