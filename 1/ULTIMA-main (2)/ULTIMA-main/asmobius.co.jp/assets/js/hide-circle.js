@@ -30,110 +30,83 @@
         }
     });
 
-    // SOLO aplicar imágenes cuando esté en la página principal (NO durante transiciones)
+    // Aplicar imagen directamente al div negro específico
     function applyCircleBackgrounds() {
-        console.log('🔄 Esperando a estar en página principal...');
+        console.log('🔄 Buscando div negro específico...');
 
-        // Imágenes para cada proyecto
-        const projectImages = {
-            'park mansion': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=1200&fit=crop',
-            'kawana': 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=1200&fit=crop',
-            'jade': 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=1200&fit=crop',
-            'sevens': 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200&h=1200&fit=crop',
-            'hikawa': 'https://images.unsplash.com/photo-1600485154340-be6161a56a0c?w=1200&h=1200&fit=crop',
-            'one avenue': 'https://images.unsplash.com/photo-1600485154355-be6161a56a0c?w=1200&h=1200&fit=crop',
-            'century': 'https://images.unsplash.com/photo-1600485154343-be6161a56a0c?w=1200&h=1200&fit=crop',
-            'proud': 'https://images.unsplash.com/photo-1600485154356-be6161a56a0c?w=1200&h=1200&fit=crop'
-        };
+        const parkMansionImage = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=1200&fit=crop';
 
-        let isInMainPage = false;
-        let currentProject = '';
-
-        // Detectar si estamos en la página principal (NO en intro ni transición)
-        function checkIfInMainPage() {
-            // Buscar indicadores de que estamos en página principal
-            const hasProjectList = document.querySelectorAll('ul li').length > 0;
-            const hasCanvas = document.querySelector('canvas') !== null;
-            const noIntroText = !document.querySelector('text[font-size="24"]') ||
-                               !document.querySelector('text')?.textContent?.includes('LT STUDIO DESIGN');
-
-            // Solo estamos en página principal si:
-            // 1. Hay lista de proyectos
-            // 2. Hay canvas
-            // 3. NO hay texto de intro visible
-            return hasProjectList && hasCanvas && noIntroText;
-        }
-
-        // Aplicar imagen solo al elemento específico del círculo
-        function applyImageToMainCircle(imageUrl) {
-            if (!isInMainPage) return;
-
-            // Buscar el div específico del círculo principal
+        // Buscar y aplicar imagen al div específico
+        function findAndApplyToTargetDiv() {
             const allDivs = document.querySelectorAll('div');
+            let found = false;
+
             for (const div of allDivs) {
                 const style = window.getComputedStyle(div);
+
+                // Buscar el div específico: backgroundColor rgb(37,37,37), zIndex 110
                 if (style.backgroundColor === 'rgb(37, 37, 37)' &&
                     style.zIndex === '110' &&
                     style.position === 'absolute' &&
                     style.width === '100%' &&
                     style.height === '100%') {
 
-                    div.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
+                    console.log('🎯 ¡Div objetivo encontrado! Aplicando imagen...');
+
+                    // Aplicar imagen con !important
+                    div.style.setProperty('background-image', `url("${parkMansionImage}")`, 'important');
                     div.style.setProperty('background-size', 'cover', 'important');
                     div.style.setProperty('background-position', 'center', 'important');
                     div.style.setProperty('background-repeat', 'no-repeat', 'important');
 
-                    console.log('🖼️ Imagen aplicada al círculo principal:', imageUrl);
-                    return;
-                }
-            }
-        }
-
-        // Monitorear proyectos activos
-        function monitorProjects() {
-            if (!isInMainPage) return;
-
-            const projectList = document.querySelectorAll('ul li');
-
-            projectList.forEach(li => {
-                const rect = li.getBoundingClientRect();
-                const isVisible = rect.top >= -200 && rect.top <= window.innerHeight + 200;
-
-                if (isVisible) {
-                    const projectText = li.textContent.trim().toLowerCase();
-
-                    if (projectText !== currentProject && projectText.length > 3) {
-                        // Buscar imagen correspondiente
-                        for (const [key, imageUrl] of Object.entries(projectImages)) {
-                            if (projectText.includes(key)) {
-                                console.log('📋 Proyecto activo:', projectText, '→', key);
-                                applyImageToMainCircle(imageUrl);
-                                currentProject = projectText;
-                                break;
-                            }
-                        }
+                    // Agregar overlay para legibilidad
+                    if (!div.querySelector('.circle-bg-overlay')) {
+                        const overlay = document.createElement('div');
+                        overlay.className = 'circle-bg-overlay';
+                        overlay.style.cssText = `
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            background: rgba(0, 0, 0, 0.4);
+                            z-index: 1;
+                            pointer-events: none;
+                        `;
+                        div.appendChild(overlay);
                     }
+
+                    console.log('✅ ¡IMAGEN APLICADA EXITOSAMENTE!');
+                    found = true;
+                    break;
                 }
-            });
-        }
-
-        // Verificar estado cada segundo
-        setInterval(() => {
-            const wasInMainPage = isInMainPage;
-            isInMainPage = checkIfInMainPage();
-
-            if (isInMainPage && !wasInMainPage) {
-                console.log('✅ Ahora estamos en página principal - aplicando imagen inicial');
-                applyImageToMainCircle(projectImages['park mansion']);
-                currentProject = 'park mansion';
             }
 
-            if (isInMainPage) {
-                monitorProjects();
+            if (!found) {
+                console.log('❌ Div objetivo no encontrado todavía...');
+            }
+
+            return found;
+        }
+
+        // Intentar aplicar imagen inmediatamente
+        findAndApplyToTargetDiv();
+
+        // Reintentar cada segundo hasta que funcione
+        const retryInterval = setInterval(() => {
+            if (findAndApplyToTargetDiv()) {
+                console.log('🎉 ¡Imagen aplicada! Deteniendo reintentos...');
+                clearInterval(retryInterval);
             }
         }, 1000);
 
-        console.log('🚀 Sistema de detección de página principal activado');
+        // Parar reintentos después de 30 segundos
+        setTimeout(() => {
+            clearInterval(retryInterval);
+            console.log('⏰ Tiempo de reintentos agotado');
+        }, 30000);
+
+        console.log('🚀 Sistema de aplicación directa activado');
     }
 
     function updateLogoAndSetupBackgrounds() {
