@@ -1175,18 +1175,8 @@
 
 
 
-            // Mostrar intro por 4 segundos (más tiempo para ver animación)
-            setTimeout(() => {
-                document.getElementById('intro-screen').classList.add('hidden');
-                document.getElementById('main-screen').classList.add('visible');
-
-                // Iniciar proyectos después de la transición
-                setTimeout(() => {
-                    changeProject(0);
-                    startProgress();
-                }, 1000);
-
-            }, 4000);
+            // La transición ahora se maneja automáticamente en animateIntroText()
+            // después de que termine la animación de las letras
         }
         
         // FUNCIONES DE MODAL
