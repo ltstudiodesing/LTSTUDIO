@@ -60,24 +60,23 @@
         .intro-text .letter {
             display: inline-block;
             color: #666;
-            opacity: 0.5;
-            transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            transform: translateY(0);
+            opacity: 0.3;
+            position: relative;
+            overflow: hidden;
         }
 
-        @keyframes letterFillIn {
-            0% {
-                color: #666;
-                opacity: 0.5;
-            }
-            50% {
-                color: #999;
-                opacity: 0.8;
-            }
-            100% {
-                color: white;
-                opacity: 1;
-            }
+        .intro-text .letter::before {
+            content: attr(data-letter);
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: white;
+            clip-path: inset(100% 0 0 0);
+            transition: clip-path 0.8s ease;
+        }
+
+        .intro-text .letter.filled::before {
+            clip-path: inset(0 0 0 0);
         }
         
         /* PARTICLES */
