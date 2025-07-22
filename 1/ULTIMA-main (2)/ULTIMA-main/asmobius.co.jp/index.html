@@ -954,52 +954,57 @@
                             const introScreen = document.getElementById('intro-screen');
                             const mainScreen = document.getElementById('main-screen');
 
-                            // EXPLOTAR CADA LETRA CON DELAY
+                            // 💥 EXPLOSIÓN SIMULTÁNEA DE TODAS LAS LETRAS 💥
+                            console.log('🎆 TODAS LAS LETRAS EXPLOTAN AL MISMO TIEMPO!');
+
                             letters.forEach((letter, i) => {
-                                setTimeout(() => {
-                                    console.log(`💥 Explosión letra ${i}`);
+                                console.log(`💥 Explosión letra ${i}: "${letter.textContent}"`);
 
-                                    // 3 copias volando por letra
-                                    for (let j = 0; j < 3; j++) {
-                                        const flying = letter.cloneNode(true);
-                                        flying.style.position = 'fixed';
-                                        flying.style.zIndex = '10000';
-                                        flying.style.fontSize = '2rem';
-                                        flying.style.fontWeight = 'bold';
-                                        flying.style.color = '#fff';
-                                        flying.style.pointerEvents = 'none';
+                                // Obtener posición de la letra ANTES de ocultarla
+                                const rect = letter.getBoundingClientRect();
 
-                                        // Posición inicial igual a la letra original
-                                        const rect = letter.getBoundingClientRect();
-                                        flying.style.left = rect.left + 'px';
-                                        flying.style.top = rect.top + 'px';
+                                // 5 fragmentos volando por letra para mayor espectacularidad
+                                for (let j = 0; j < 5; j++) {
+                                    const flying = letter.cloneNode(true);
+                                    flying.style.position = 'fixed';
+                                    flying.style.zIndex = '10000';
+                                    flying.style.fontSize = '48px';
+                                    flying.style.fontWeight = 'bold';
+                                    flying.style.color = '#fff';
+                                    flying.style.pointerEvents = 'none';
+                                    flying.style.left = rect.left + 'px';
+                                    flying.style.top = rect.top + 'px';
 
-                                        document.body.appendChild(flying);
+                                    document.body.appendChild(flying);
 
-                                        // Animación de vuelo
-                                        const angle = (Math.PI * 2 * j / 3) + (Math.random() * 0.5);
-                                        const distance = 300 + Math.random() * 400;
-                                        const endX = rect.left + Math.cos(angle) * distance;
-                                        const endY = rect.top + Math.sin(angle) * distance;
+                                    // Direcciones más dispersas y aleatorias
+                                    const angle = (Math.PI * 2 * j / 5) + (Math.random() * 1.2 - 0.6);
+                                    const distance = 400 + Math.random() * 600;
+                                    const endX = rect.left + Math.cos(angle) * distance;
+                                    const endY = rect.top + Math.sin(angle) * distance + (Math.random() * 200 - 100);
 
-                                        flying.style.transition = 'all 2s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-                                        flying.style.transform = `translate(${endX - rect.left}px, ${endY - rect.top}px) rotate(${360 * 3}deg) scale(${0.1 + Math.random() * 0.3})`;
+                                    // Animación más dramática
+                                    flying.style.transition = `all ${1.8 + Math.random() * 1.2}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+
+                                    // Usar requestAnimationFrame para activar inmediatamente
+                                    requestAnimationFrame(() => {
+                                        flying.style.transform = `translate(${endX - rect.left}px, ${endY - rect.top}px) rotate(${720 + Math.random() * 720}deg) scale(${0.2 + Math.random() * 0.4})`;
                                         flying.style.opacity = '0';
+                                    });
 
-                                        // Limpiar después de la animación
-                                        setTimeout(() => {
-                                            if (flying.parentNode) {
-                                                flying.parentNode.removeChild(flying);
-                                            }
-                                        }, 2000);
-                                    }
+                                    // Limpiar fragmento
+                                    setTimeout(() => {
+                                        if (flying.parentNode) {
+                                            flying.parentNode.removeChild(flying);
+                                        }
+                                    }, 3000);
+                                }
 
-                                    // Ocultar letra original con efecto
-                                    letter.style.transition = 'all 0.5s ease-out';
-                                    letter.style.transform = 'scale(0)';
-                                    letter.style.opacity = '0';
-
-                                }, i * 100);
+                                // Ocultar letra original inmediatamente
+                                letter.style.transition = 'all 0.3s ease-out';
+                                letter.style.transform = 'scale(0)';
+                                letter.style.opacity = '0';
+                            });
                             });
 
                             // Después de 4 segundos, hacer transición final
@@ -1019,7 +1024,7 @@
                                     setTimeout(() => {
                                         changeProject(0);
                                         startProgress();
-                                        console.log('�� Main screen inicializado');
+                                        console.log('✅ Main screen inicializado');
                                     }, 300);
                                 }, 1000);
                             }, 4000);
