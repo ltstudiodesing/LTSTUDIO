@@ -863,77 +863,60 @@
             }
         }
         
-        // TRANSICIÓN FRAGMENTADA
-        function createFragmentTransition() {
+        // TRANSICIÓN FRAGMENTADA SIMPLIFICADA
+        function startFragmentTransition() {
+            console.log('🌟 Iniciando transición fragmentada');
+
             const overlay = document.getElementById('fragment-overlay');
-            const fragmentSize = 40; // Tamaño de cada fragmento
+            const fragmentSize = 50;
             const cols = Math.ceil(window.innerWidth / fragmentSize);
             const rows = Math.ceil(window.innerHeight / fragmentSize);
 
             overlay.innerHTML = '';
+            overlay.classList.add('active');
 
-            // Crear fragmentos
+            // Crear y animar fragmentos
             for (let row = 0; row < rows; row++) {
                 for (let col = 0; col < cols; col++) {
                     const fragment = document.createElement('div');
                     fragment.className = 'fragment';
 
-                    // Posición del fragmento
+                    // Posición
                     fragment.style.left = col * fragmentSize + 'px';
                     fragment.style.top = row * fragmentSize + 'px';
                     fragment.style.width = fragmentSize + 'px';
                     fragment.style.height = fragmentSize + 'px';
 
-                    // Variables CSS para animación aleatoria más realista
-                    const randomX = (Math.random() - 0.5) * 1200 + 'px';
-                    const randomY = (Math.random() - 0.5) * 800 + 'px';
-                    const randomRotationX = (Math.random() - 0.5) * 720 + 'deg';
-                    const randomRotationY = (Math.random() - 0.5) * 720 + 'deg';
-                    const randomRotationZ = (Math.random() - 0.5) * 720 + 'deg';
+                    // Direcciones aleatorias
+                    const dx = (Math.random() - 0.5) * 800 + 'px';
+                    const dy = (Math.random() - 0.5) * 600 + 'px';
+                    const rotation = (Math.random() - 0.5) * 360 + 'deg';
 
-                    fragment.style.setProperty('--random-x', randomX);
-                    fragment.style.setProperty('--random-y', randomY);
-                    fragment.style.setProperty('--random-rotation-x', randomRotationX);
-                    fragment.style.setProperty('--random-rotation-y', randomRotationY);
-                    fragment.style.setProperty('--random-rotation-z', randomRotationZ);
+                    fragment.style.setProperty('--dx', dx);
+                    fragment.style.setProperty('--dy', dy);
+                    fragment.style.setProperty('--rotation', rotation);
 
                     overlay.appendChild(fragment);
+
+                    // Animar después de un delay
+                    const delay = (row + col) * 20;
+                    setTimeout(() => {
+                        fragment.classList.add('animate-out');
+                    }, delay);
                 }
             }
-        }
 
-        function startFragmentTransition() {
-            console.log('🌟 Iniciando transición fragmentada');
-
-            // Crear fragmentos
-            createFragmentTransition();
-
-            const overlay = document.getElementById('fragment-overlay');
-            const fragments = overlay.querySelectorAll('.fragment');
-
-            // Mostrar overlay
-            overlay.classList.add('active');
-
-            // Animar fragmentos con retraso escalonado
-            fragments.forEach((fragment, index) => {
-                setTimeout(() => {
-                    fragment.classList.add('animate');
-                }, index * 15); // 15ms entre fragmentos para efecto wave
-            });
-
-            // Ocultar intro y mostrar main después de la transición
+            // Transición a página principal
             setTimeout(() => {
                 document.getElementById('intro-screen').classList.add('hidden');
                 document.getElementById('main-screen').classList.add('visible');
 
-                // Quitar overlay después de completar transición
                 setTimeout(() => {
                     overlay.classList.remove('active');
-                    // Iniciar proyectos
                     changeProject(0);
                     startProgress();
-                }, 500);
-            }, 800); // Esperar que termine la mayor parte de la animación
+                }, 300);
+            }, 800);
         }
 
         // CREAR PARTÍCULAS
