@@ -850,11 +850,70 @@
             }, 4000);
         }
         
+        // FUNCIONES DE MODAL
+        function showAllProjects() {
+            const modal = document.getElementById('all-modal');
+            const grid = document.getElementById('projects-grid');
+
+            // Limpiar grid
+            grid.innerHTML = '';
+
+            // Crear cards para cada proyecto
+            PROJECTS.forEach((project, index) => {
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.style.backgroundImage = `url("${project.image}")`;
+                card.onclick = () => goToProject(index);
+
+                card.innerHTML = `
+                    <div class="project-card-overlay">
+                        <div class="project-card-title">${project.name}</div>
+                        <div class="project-card-location">${project.location}</div>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            modal.classList.add('visible');
+        }
+
+        function closeAllProjects() {
+            document.getElementById('all-modal').classList.remove('visible');
+        }
+
+        function showAbout() {
+            document.getElementById('about-modal').classList.add('visible');
+        }
+
+        function closeAbout() {
+            document.getElementById('about-modal').classList.remove('visible');
+        }
+
+        function goToProject(index) {
+            // Usar índice para crear URLs consistentes
+            const projectUrls = [
+                'projects/park-mansion-nuevo.html',
+                'projects/kawana-nuevo.html',
+                'projects/park-mansion-nuevo.html', // placeholder
+                'projects/kawana-nuevo.html', // placeholder
+                'projects/park-mansion-nuevo.html', // placeholder
+                'projects/kawana-nuevo.html', // placeholder
+                'projects/park-mansion-nuevo.html', // placeholder
+                'projects/kawana-nuevo.html', // placeholder
+                'projects/park-mansion-nuevo.html', // placeholder
+                'projects/kawana-nuevo.html', // placeholder
+                'projects/park-mansion-nuevo.html', // placeholder
+                'projects/kawana-nuevo.html' // placeholder
+            ];
+
+            window.location.href = projectUrls[index] || 'projects/park-mansion-nuevo.html';
+        }
+
         // CLICKS EN PROYECTOS (NAVEGACIÓN A PÁGINAS INDIVIDUALES)
         document.addEventListener('click', (e) => {
             if (e.target.closest('.circle-container')) {
-                const projectName = PROJECTS[currentProject].name.toLowerCase().replace(/ /g, '-');
-                window.location.href = `projects/${projectName}.html`;
+                goToProject(currentProject);
             }
         });
         
