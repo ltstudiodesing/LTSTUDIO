@@ -953,64 +953,65 @@
                             const introScreen = document.getElementById('intro-screen');
                             const mainScreen = document.getElementById('main-screen');
 
-                            // EXPLOTAR CADA LETRA CON FRAGMENTACIÓN REAL
+                            // EXPLOTAR TODAS LAS LETRAS AL MISMO TIEMPO
+                            console.log('💥 EXPLOSIÓN SIMULTÁNEA DE TODAS LAS LETRAS!');
+
                             letters.forEach((letter, i) => {
-                                setTimeout(() => {
-                                    console.log(`💥 FRAGMENTANDO letra ${i}: "${letter.textContent}"`);
+                                console.log(`💥 FRAGMENTANDO letra ${i}: "${letter.textContent}"`);
 
-                                    const rect = letter.getBoundingClientRect();
-                                    const letterText = letter.textContent;
+                                const rect = letter.getBoundingClientRect();
+                                const letterText = letter.textContent;
 
-                                    // Crear múltiples fragmentos por letra (8-12 fragmentos)
-                                    const fragmentCount = 8 + Math.floor(Math.random() * 5);
+                                // Crear múltiples fragmentos por letra (10-15 fragmentos)
+                                const fragmentCount = 10 + Math.floor(Math.random() * 6);
 
-                                    for (let j = 0; j < fragmentCount; j++) {
-                                        const fragment = document.createElement('div');
-                                        fragment.textContent = letterText;
-                                        fragment.style.position = 'fixed';
-                                        fragment.style.left = rect.left + 'px';
-                                        fragment.style.top = rect.top + 'px';
-                                        fragment.style.fontSize = '48px';
-                                        fragment.style.fontWeight = '300';
-                                        fragment.style.fontFamily = 'butler_medium, serif';
-                                        fragment.style.color = '#fff';
-                                        fragment.style.zIndex = '10000';
-                                        fragment.style.pointerEvents = 'none';
-                                        fragment.style.willChange = 'transform';
+                                for (let j = 0; j < fragmentCount; j++) {
+                                    const fragment = document.createElement('div');
+                                    fragment.textContent = letterText;
+                                    fragment.style.position = 'fixed';
+                                    fragment.style.left = rect.left + 'px';
+                                    fragment.style.top = rect.top + 'px';
+                                    fragment.style.fontSize = '48px';
+                                    fragment.style.fontWeight = '300';
+                                    fragment.style.fontFamily = 'butler_medium, serif';
+                                    fragment.style.color = '#fff';
+                                    fragment.style.zIndex = '10000';
+                                    fragment.style.pointerEvents = 'none';
+                                    fragment.style.willChange = 'transform';
 
-                                        // Añadir al DOM inmediatamente
-                                        document.body.appendChild(fragment);
+                                    // Añadir al DOM inmediatamente
+                                    document.body.appendChild(fragment);
 
-                                        // Calcular dirección aleatoria
-                                        const angle = (Math.PI * 2 * j / fragmentCount) + (Math.random() * 0.8 - 0.4);
-                                        const velocity = 200 + Math.random() * 600;
-                                        const endX = rect.left + Math.cos(angle) * velocity;
-                                        const endY = rect.top + Math.sin(angle) * velocity + (Math.random() * 200 - 100);
+                                    // Calcular dirección aleatoria más explosiva
+                                    const angle = (Math.PI * 2 * j / fragmentCount) + (Math.random() * 1.0 - 0.5);
+                                    const velocity = 300 + Math.random() * 800;
+                                    const endX = rect.left + Math.cos(angle) * velocity;
+                                    const endY = rect.top + Math.sin(angle) * velocity + (Math.random() * 300 - 150);
 
-                                        // Rotación aleatoria
-                                        const rotation = (Math.random() * 720 - 360);
-                                        const scale = 0.2 + Math.random() * 0.6;
+                                    // Rotación más dramática
+                                    const rotation = (Math.random() * 1440 - 720); // -720 a +720 grados
+                                    const scale = 0.1 + Math.random() * 0.4;
 
-                                        // Animación inmediata
-                                        requestAnimationFrame(() => {
-                                            fragment.style.transition = `all ${1.5 + Math.random() * 1}s cubic-bezier(0.17, 0.67, 0.83, 0.67)`;
-                                            fragment.style.transform = `translate(${endX - rect.left}px, ${endY - rect.top}px) rotate(${rotation}deg) scale(${scale})`;
-                                            fragment.style.opacity = '0';
-                                        });
+                                    // Animación inmediata MÁS RÁPIDA
+                                    requestAnimationFrame(() => {
+                                        fragment.style.transition = `all ${1.2 + Math.random() * 0.8}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+                                        fragment.style.transform = `translate(${endX - rect.left}px, ${endY - rect.top}px) rotate(${rotation}deg) scale(${scale})`;
+                                        fragment.style.opacity = '0';
+                                    });
 
-                                        // Limpiar fragmento
-                                        setTimeout(() => {
-                                            if (fragment.parentNode) {
-                                                fragment.parentNode.removeChild(fragment);
-                                            }
-                                        }, 3000);
-                                    }
+                                    // Limpiar fragmento
+                                    setTimeout(() => {
+                                        if (fragment.parentNode) {
+                                            fragment.parentNode.removeChild(fragment);
+                                        }
+                                    }, 2500);
+                                }
 
-                                    // Ocultar letra original inmediatamente
-                                    letter.style.opacity = '0';
-                                    letter.style.transform = 'scale(0)';
-
-                                }, i * 80);
+                                // Ocultar letra original inmediatamente
+                                letter.style.transition = 'all 0.3s ease-out';
+                                letter.style.opacity = '0';
+                                letter.style.transform = 'scale(0)';
+                            });
                             });
 
                             // Después de 4 segundos, hacer transición final
