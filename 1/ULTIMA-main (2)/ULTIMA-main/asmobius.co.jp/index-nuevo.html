@@ -758,12 +758,17 @@
         });
 
         // INTERACCIÓN CON EL CÍRCULO
+        let isDragging = false;
+        let dragStartY = 0;
+        let dragStartProject = 0;
+
         function setupCircleInteraction() {
             const circleContainer = document.querySelector('.circle-container');
             const circleBorder = document.querySelector('.circle-border');
             const circleInner = document.querySelector('.circle-inner');
 
             if (circleContainer) {
+                // Hover effects
                 circleContainer.addEventListener('mouseenter', () => {
                     isOverCircle = true;
                     cursor.style.transform = 'scale(2)';
@@ -781,6 +786,41 @@
                     circleBorder.style.borderColor = 'rgba(255, 255, 255, 0.4)';
                     if (circleInner) {
                         circleInner.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                    }
+                });
+
+                // Drag functionality
+                circleContainer.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    dragStartY = e.clientY;
+                    dragStartProject = currentProject;
+                    circleContainer.style.cursor = 'grabbing';
+                    e.preventDefault();
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    if (isDragging && isOverCircle) {
+                        const deltaY = e.clientY - dragStartY;
+                        const sensitivity = 50; // px needed to change project
+                        const projectChange = Math.floor(deltaY / sensitivity);
+
+                        let newProject = dragStartProject + projectChange;
+                        newProject = Math.max(0, Math.min(PROJECTS.length - 1, newProject));
+
+                        if (newProject !== currentProject) {
+                            changeProject(newProject);
+                        }
+                    }
+                });
+
+                document.addEventListener('mouseup', () => {
+                    if (isDragging) {
+                        isDragging = false;
+                        circleContainer.style.cursor = '';
+                        // Restart progress after drag
+                        setTimeout(() => {
+                            startProgress();
+                        }, 500);
                     }
                 });
             }
