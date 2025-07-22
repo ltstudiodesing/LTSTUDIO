@@ -30,6 +30,173 @@
         }
     });
 
+    // Aplicar imágenes de fondo a círculos de proyecto con mejor detección
+    function applyCircleBackgrounds() {
+        console.log('🔄 Intentando aplicar imágenes a círculos...');
+
+        // Buscar elementos de proyecto con múltiples selectores mejorados
+        const selectors = [
+            '.js-canvas__target',
+            '.p-stage__menu__item',
+            '[class*="menu"][class*="item"]',
+            'li[data-project]',
+            'li:has(svg circle)',
+            '.p-stage__menu li',
+            '[class*="stage"] li'
+        ];
+
+        let projectElements = [];
+
+        // Buscar por diferentes métodos
+        selectors.forEach(selector => {
+            try {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    if (!projectElements.includes(el)) {
+                        projectElements.push(el);
+                    }
+                });
+            } catch(e) {
+                // Si el selector no funciona, continuar
+            }
+        });
+
+        // Buscar específicamente elementos que contienen círculos SVG
+        const allLiElements = document.querySelectorAll('li');
+        allLiElements.forEach(li => {
+            const hasCircle = li.querySelector('circle') || li.querySelector('svg');
+            const hasText = li.textContent && li.textContent.trim().length > 2;
+            if (hasCircle && hasText && !projectElements.includes(li)) {
+                projectElements.push(li);
+            }
+        });
+
+        // Buscar elementos con clases que contengan "canvas" o "target"
+        const allElements = document.querySelectorAll('*');
+        allElements.forEach(el => {
+            try {
+                const className = String(el.className || '');
+                if ((className.includes('canvas') || className.includes('target') || className.includes('menu')) &&
+                    el.textContent && el.textContent.trim().length > 2 &&
+                    !projectElements.includes(el)) {
+                    projectElements.push(el);
+                }
+            } catch(e) {
+                // Skip elements that cause errors
+            }
+        });
+
+        console.log('🔍 Total elementos encontrados:', projectElements.length);
+
+        projectElements.forEach((element, index) => {
+            const text = element.textContent || element.getAttribute('data-project') || '';
+            console.log('📝 Procesando elemento:', text.substring(0, 50));
+
+            let backgroundImage = '';
+            let projectName = '';
+
+            // Mapear proyectos a sus primeras imágenes usando placeholders visibles
+            if (text.toLowerCase().includes('park mansion') || text.toLowerCase().includes('minami')) {
+                backgroundImage = 'url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=400&fit=crop")';
+                projectName = 'Park Mansion';
+            } else if (text.toLowerCase().includes('kawana')) {
+                backgroundImage = 'url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&h=400&fit=crop")';
+                projectName = 'Kawana';
+            } else if (text.toLowerCase().includes('sevens villa') || text.toLowerCase().includes('sevens')) {
+                backgroundImage = 'url("https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=400&h=400&fit=crop")';
+                projectName = 'Sevens Villa';
+            } else if (text.toLowerCase().includes('hikawa')) {
+                backgroundImage = 'url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=400&fit=crop")';
+                projectName = 'Hikawa';
+            } else if (text.toLowerCase().includes('proud')) {
+                backgroundImage = 'url("https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400&h=400&fit=crop")';
+                projectName = 'Proud';
+            } else if (text.trim().length > 3) { // Solo si hay texto significativo
+                const randomNum = Math.abs(text.charCodeAt(0) - 65) + 1;
+                backgroundImage = `url("https://images.unsplash.com/photo-16004851543${40 + randomNum}-be6161a56a0c?w=400&h=400&fit=crop")`;
+                projectName = text.substring(0, 20);
+            }
+
+            // Verificar si es un círculo de proyecto con mejor detección
+            const isProjectElement = element.querySelector('circle') ||
+                                   element.classList.contains('js-canvas__target') ||
+                                   element.classList.contains('p-stage__menu__item') ||
+                                   element.tagName === 'circle' ||
+                                   element.tagName === 'li' ||
+                                   (element.parentElement && element.parentElement.querySelector('circle')) ||
+                                   (element.querySelector('svg') && element.querySelector('svg').querySelector('circle'));
+
+            if (isProjectElement && backgroundImage && projectName) {
+                console.log('🎯 Aplicando imagen a círculo de proyecto:', projectName);
+
+                // Encontrar el elemento contenedor apropiado
+                let targetElement = element;
+                if (element.tagName === 'circle') {
+                    targetElement = element.closest('svg').parentElement || element.parentElement;
+                }
+
+                // Aplicar imagen de fondo de manera suave sin romper el layout
+                if (!targetElement.style.backgroundImage) {
+                    targetElement.style.backgroundImage = backgroundImage;
+                    targetElement.style.backgroundSize = 'cover';
+                    targetElement.style.backgroundPosition = 'center';
+                    targetElement.style.backgroundRepeat = 'no-repeat';
+                }
+
+                // Solo aplicar border-radius si el elemento no lo tiene ya
+                const computedStyle = window.getComputedStyle(targetElement);
+                if (!computedStyle.borderRadius || computedStyle.borderRadius === '0px') {
+                    targetElement.style.borderRadius = '50%';
+                }
+
+                // NO forzar position, width, height ya que rompe el layout original
+
+                // Agregar overlay muy simple solo si no existe
+                if (!targetElement.querySelector('.project-overlay')) {
+                    const overlay = document.createElement('div');
+                    overlay.className = 'project-overlay';
+                    overlay.style.cssText = `
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: rgba(0, 0, 0, 0.2);
+                        border-radius: inherit;
+                        z-index: 1;
+                        transition: background 0.3s ease;
+                        pointer-events: none;
+                    `;
+
+                    // Solo asegurar que targetElement tenga position relative
+                    if (targetElement.style.position !== 'absolute' && targetElement.style.position !== 'fixed') {
+                        targetElement.style.position = 'relative';
+                    }
+
+                    targetElement.appendChild(overlay);
+
+                    // Efecto hover simple
+                    targetElement.addEventListener('mouseenter', function() {
+                        overlay.style.background = 'rgba(0, 0, 0, 0.1)';
+                    });
+
+                    targetElement.addEventListener('mouseleave', function() {
+                        overlay.style.background = 'rgba(0, 0, 0, 0.2)';
+                    });
+                }
+
+                console.log('✅ Imagen aplicada exitosamente a:', projectName);
+            } else {
+                console.log('⚠️ Elemento omitido:', {
+                    text: text.substring(0, 30),
+                    isProject: isProjectElement,
+                    hasBackground: !!backgroundImage,
+                    hasName: !!projectName
+                });
+            }
+        });
+    }
+
     function updateLogoAndSetupBackgrounds() {
         // Función para reemplazar/ocultar el logo ASM problemático
         function replaceASMLogo() {
