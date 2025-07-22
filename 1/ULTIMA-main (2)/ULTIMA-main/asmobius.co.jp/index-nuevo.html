@@ -594,25 +594,28 @@
         // INICIALIZAR APLICACIÓN
         function initApp() {
             console.log('🚀 Inicializando aplicación LTSD');
-            
+
             // Crear partículas
             createParticles();
-            
+
+            // Animar texto intro
+            animateIntroText();
+
             // Inicializar imágenes
             initProjectImages();
-            
-            // Mostrar intro por 3 segundos
+
+            // Mostrar intro por 4 segundos (más tiempo para ver animación)
             setTimeout(() => {
                 document.getElementById('intro-screen').classList.add('hidden');
                 document.getElementById('main-screen').classList.add('visible');
-                
+
                 // Iniciar proyectos después de la transición
                 setTimeout(() => {
                     changeProject(0);
                     startProgress();
                 }, 1000);
-                
-            }, 3000);
+
+            }, 4000);
         }
         
         // CLICKS EN PROYECTOS (NAVEGACIÓN A PÁGINAS INDIVIDUALES)
