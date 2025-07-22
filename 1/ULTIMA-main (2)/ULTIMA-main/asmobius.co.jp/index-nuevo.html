@@ -1018,6 +1018,36 @@
             dots.forEach((dot, index) => {
                 dot.classList.toggle('active', index === activeIndex);
             });
+
+            // Actualizar barra lateral
+            updateSideProgress(activeIndex);
+        }
+
+        // CONFIGURAR BARRA LATERAL
+        function setupSideProgress() {
+            const sideProgress = document.getElementById('side-progress');
+            if (!sideProgress) return;
+
+            sideProgress.innerHTML = '';
+
+            // Crear líneas para cada proyecto
+            PROJECTS.forEach((project, index) => {
+                const item = document.createElement('div');
+                item.className = 'side-progress-item';
+                item.dataset.project = index;
+                sideProgress.appendChild(item);
+            });
+
+            // Activar el primer item
+            updateSideProgress(0);
+        }
+
+        // ACTUALIZAR BARRA LATERAL
+        function updateSideProgress(activeIndex) {
+            const items = document.querySelectorAll('.side-progress-item');
+            items.forEach((item, index) => {
+                item.classList.toggle('active', index === activeIndex);
+            });
         }
 
         function startProgress() {
