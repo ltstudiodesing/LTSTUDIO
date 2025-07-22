@@ -1270,39 +1270,66 @@
         function initApp() {
             console.log('🚀 Inicializando aplicación LTSD');
 
-            // Asegurar que intro esté visible y main oculto
+            // Verificar si viene de un proyecto (fragment #projects)
+            const skipIntro = window.location.hash === '#projects';
+
             const introScreen = document.getElementById('intro-screen');
             const mainScreen = document.getElementById('main-screen');
 
-            if (introScreen) {
-                introScreen.classList.remove('hidden');
-                introScreen.style.opacity = '1';
-                introScreen.style.transform = 'scale(1)';
-                console.log('✅ Intro screen visible');
+            if (skipIntro) {
+                console.log('🎯 Saltando intro, yendo directo a proyectos');
+                // Ocultar intro y mostrar proyectos directamente
+                if (introScreen) {
+                    introScreen.style.display = 'none';
+                    introScreen.classList.add('hidden');
+                }
+                if (mainScreen) {
+                    mainScreen.classList.add('visible');
+                    mainScreen.style.opacity = '1';
+                    mainScreen.style.transform = 'scale(1)';
+                }
+
+                // Inicializar sin intro
+                initProjectImages();
+                setupCircleInteraction();
+                setupProjectIndicator();
+                changeProject(0);
+                startProgress();
+
+                // Limpiar el hash después de usarlo
+                window.history.replaceState(null, null, window.location.pathname);
+            } else {
+                // Comportamiento normal con intro
+                if (introScreen) {
+                    introScreen.classList.remove('hidden');
+                    introScreen.style.opacity = '1';
+                    introScreen.style.transform = 'scale(1)';
+                    console.log('✅ Intro screen visible');
+                }
+
+                if (mainScreen) {
+                    mainScreen.classList.remove('visible');
+                    mainScreen.style.opacity = '0';
+                    console.log('✅ Main screen oculto');
+                }
+
+                // Crear partículas
+                createParticles();
+
+                // Animar texto intro (incluye transición automática)
+                setTimeout(() => {
+                    animateIntroText();
+                }, 500);
+
+                // Inicializar imágenes
+                initProjectImages();
+
+                // Configurar interacción del círculo
+                setupCircleInteraction();
+
+                // Configurar indicador de proyectos
+                setupProjectIndicator();
             }
-
-            if (mainScreen) {
-                mainScreen.classList.remove('visible');
-                mainScreen.style.opacity = '0';
-                console.log('✅ Main screen oculto');
-            }
-
-            // Crear partículas
-            createParticles();
-
-            // Animar texto intro (incluye transición automática)
-            setTimeout(() => {
-                animateIntroText();
-            }, 500); // Pequeño delay para asegurar que todo esté listo
-
-            // Inicializar imágenes
-            initProjectImages();
-
-            // Configurar interacción del círculo
-            setupCircleInteraction();
-
-            // Configurar indicador de proyectos
-            setupProjectIndicator();
         }
         
         // FUNCIONES DE MODAL
