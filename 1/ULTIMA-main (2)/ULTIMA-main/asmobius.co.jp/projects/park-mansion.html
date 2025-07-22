@@ -19,7 +19,7 @@
     <meta name="author" content="https://asmobius.co.jp">
     <meta name="copyright" content="LT STUDIO DESIGN">
     <meta name="description" content="Exclusive residential project in Minami Azabu, Tokyo - LT Studio Design architectural project">
-    <meta name="keywords" content="LT STUDIO DESIGN,今井敦,Atsushi Imai,建��,プロデュース,PARK MANSION MINAMI AZABU">
+    <meta name="keywords" content="LT STUDIO DESIGN,今井敦,Atsushi Imai,建築,プロデュース,PARK MANSION MINAMI AZABU">
     
     <link rel="apple-touch-icon" sizes="180x180" href="https://asmobius.co.jp/assets/favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicons/favicon-32x32.png">
@@ -618,99 +618,85 @@
                 imageContainers[0].classList.add('visible');
             }
 
-            // === AUTO-SCROLL FUNCTIONALITY ===
-            let autoScrollEnabled = true;
-            let autoScrollInterval;
+            // === SIMPLE AUTO-SCROLL FUNCTIONALITY ===
+            let autoScrollInterval = null;
             let currentImageIndex = 0;
-            let userInteracted = false;
+            let isAutoScrolling = false;
 
-            // Auto-scroll function
-            function startAutoScroll() {
-                if (!autoScrollEnabled || userInteracted) return;
+            // Simple auto-scroll function
+            function doAutoScroll() {
+                if (isAutoScrolling || imageContainers.length === 0) return;
 
-                autoScrollInterval = setInterval(() => {
-                    if (imageContainers.length === 0) return;
+                isAutoScrolling = true;
+                currentImageIndex = (currentImageIndex + 1) % imageContainers.length;
+                const targetImage = imageContainers[currentImageIndex];
 
-                    currentImageIndex = (currentImageIndex + 1) % imageContainers.length;
-                    const targetImage = imageContainers[currentImageIndex];
+                if (targetImage) {
+                    console.log('📸 Auto-scroll a imagen:', currentImageIndex + 1);
 
-                    if (targetImage) {
-                        targetImage.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'center'
-                        });
+                    // Scroll más suave
+                    const targetOffset = targetImage.offsetTop - (window.innerHeight / 2) + (targetImage.offsetHeight / 2);
 
-                        // Actualizar contador
-                        currentImageSpan.textContent = currentImageIndex + 1;
-                    }
-                }, 5000); // Cambiar cada 5 segundos
+                    window.scrollTo({
+                        top: targetOffset,
+                        behavior: 'smooth'
+                    });
+
+                    // Actualizar contador
+                    currentImageSpan.textContent = currentImageIndex + 1;
+
+                    // Marcar imagen como visible
+                    setTimeout(() => {
+                        targetImage.classList.add('visible');
+                        isAutoScrolling = false;
+                    }, 1000);
+                }
+            }
+
+            // Iniciar auto-scroll simple
+            function startSimpleAutoScroll() {
+                console.log('▶️ Iniciando auto-scroll...');
+                autoScrollInterval = setInterval(doAutoScroll, 6000); // Cada 6 segundos
             }
 
             function stopAutoScroll() {
                 if (autoScrollInterval) {
                     clearInterval(autoScrollInterval);
                     autoScrollInterval = null;
+                    console.log('⏹️ Auto-scroll detenido');
                 }
             }
 
-            // Detectar interacción del usuario
-            function handleUserInteraction() {
-                userInteracted = true;
+            // Detectar scroll manual y pausar auto-scroll temporalmente
+            let userScrollTimeout;
+            let isUserScrolling = false;
+
+            window.addEventListener('scroll', function() {
+                if (isAutoScrolling) return; // No interferir con auto-scroll
+
+                isUserScrolling = true;
                 stopAutoScroll();
 
-                // Reanudar auto-scroll después de 8 segundos sin interacción
-                setTimeout(() => {
-                    userInteracted = false;
-                    if (autoScrollEnabled) {
-                        startAutoScroll();
-                    }
-                }, 8000);
-            }
+                clearTimeout(userScrollTimeout);
+                userScrollTimeout = setTimeout(() => {
+                    isUserScrolling = false;
+                    console.log('🔄 Reanudando auto-scroll tras pausa...');
+                    startSimpleAutoScroll();
+                }, 5000); // Reanudar después de 5 segundos sin scroll manual
+            });
 
-            // Iniciar auto-scroll después de 4 segundos
+            // Iniciar auto-scroll después de cargar
             setTimeout(() => {
-                if (autoScrollEnabled) {
-                    startAutoScroll();
-                }
-            }, 4000);
+                startSimpleAutoScroll();
+            }, 3000);
 
-            // Detectar interacciones del usuario
-            let scrollTimeout;
-            window.addEventListener('scroll', function() {
-                handleUserInteraction();
-
-                // Actualizar índice actual basado en imagen visible
-                clearTimeout(scrollTimeout);
-                scrollTimeout = setTimeout(() => {
-                    imageContainers.forEach((container, index) => {
-                        const rect = container.getBoundingClientRect();
-                        const windowHeight = window.innerHeight;
-
-                        if (rect.top >= -windowHeight/3 && rect.top <= windowHeight/3) {
-                            currentImageIndex = index;
-                        }
-                    });
-                }, 150);
-            });
-
-            // Detectar clicks, toques y teclado
-            document.addEventListener('click', handleUserInteraction);
-            document.addEventListener('touchstart', handleUserInteraction);
-            document.addEventListener('keydown', function(e) {
-                if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
-                    handleUserInteraction();
-                }
-            });
-
-            // Función global para toggle auto-scroll (debugging)
+            // Función global para control manual
             window.toggleAutoScroll = function() {
-                autoScrollEnabled = !autoScrollEnabled;
-                if (autoScrollEnabled) {
-                    startAutoScroll();
-                } else {
+                if (autoScrollInterval) {
                     stopAutoScroll();
+                } else {
+                    startSimpleAutoScroll();
                 }
-                console.log('Auto-scroll:', autoScrollEnabled ? 'enabled' : 'disabled');
             };
 
             console.log('✅ Park Mansion con auto-scroll cargado correctamente');
