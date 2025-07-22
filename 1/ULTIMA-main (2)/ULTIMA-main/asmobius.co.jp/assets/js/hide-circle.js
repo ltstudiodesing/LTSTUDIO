@@ -33,28 +33,41 @@
     function updateLogoAndSetupBackgrounds() {
         // Esperar a que la intro termine antes de cambiar logos
         setTimeout(() => {
-            // Buscar y cambiar solo el logo principal (no el de intro/loading)
+            // Buscar específicamente el SVG con texto "architecture" y cambiarlo por "LTSD"
             const allTexts = document.querySelectorAll('text');
             allTexts.forEach(text => {
                 const parent = text.closest('svg');
                 const parentElement = parent ? parent.parentElement : null;
-                
-                // Solo cambiar si NO está en loading/intro y contiene texto específico
-                if (text.textContent && (
-                    text.textContent.includes('LT STUDIO DESIGN') ||
-                    text.textContent.toLowerCase().includes('architecture')
-                )) {
+
+                // Buscar texto que dice "architecture" y reemplazarlo
+                if (text.textContent && text.textContent.toLowerCase().includes('architecture')) {
                     // Verificar que NO esté en elementos de loading/intro
                     const isInLoading = parent?.classList.contains('p-loading__logo') ||
                                        text.classList.contains('st-logo-load') ||
                                        text.classList.contains('st-logo-load-back') ||
                                        parentElement?.classList.contains('p-loading__back') ||
                                        parentElement?.classList.contains('p-loading__inner');
-                    
+
                     if (!isInLoading) {
                         text.textContent = 'LTSD';
-                        text.setAttribute('letter-spacing', '8px');
-                        console.log('🎨 Logo principal actualizado a LTSD');
+                        text.setAttribute('letter-spacing', '4px');
+                        text.setAttribute('font-size', '14');
+                        console.log('🎨 Logo "architecture" actualizado a "LTSD"');
+                    }
+                }
+
+                // También buscar y cambiar las letras "ASM" en el mismo SVG
+                if (text.textContent && (text.textContent.includes('ASM') || text.textContent.includes('A S M'))) {
+                    const isInLoading = parent?.classList.contains('p-loading__logo') ||
+                                       text.classList.contains('st-logo-load') ||
+                                       text.classList.contains('st-logo-load-back') ||
+                                       parentElement?.classList.contains('p-loading__back') ||
+                                       parentElement?.classList.contains('p-loading__inner');
+
+                    if (!isInLoading) {
+                        text.textContent = 'LTSD';
+                        text.setAttribute('letter-spacing', '6px');
+                        console.log('🎨 Logo "ASM" actualizado a "LTSD"');
                     }
                 }
             });
@@ -69,17 +82,18 @@
                 const text = element.textContent || '';
                 let backgroundImage = '';
 
-                // Mapear proyectos a sus primeras imágenes
+                // Mapear proyectos a sus primeras imágenes (igual que en los proyectos)
                 if (text.toLowerCase().includes('park mansion')) {
-                    backgroundImage = 'url("https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80")';
+                    // Usar la misma primera imagen que en park-mansion.html
+                    backgroundImage = 'url("https://picsum.photos/400/400?random=1")';
                 } else if (text.toLowerCase().includes('kawana')) {
-                    backgroundImage = 'url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80")';
+                    backgroundImage = 'url("https://picsum.photos/400/400?random=2")';
                 } else if (text.toLowerCase().includes('sevens villa')) {
-                    backgroundImage = 'url("https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80")';
+                    backgroundImage = 'url("https://picsum.photos/400/400?random=3")';
                 } else if (text.toLowerCase().includes('hikawa')) {
-                    backgroundImage = 'url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80")';
+                    backgroundImage = 'url("https://picsum.photos/400/400?random=4")';
                 } else {
-                    backgroundImage = `url("https://images.unsplash.com/photo-${1600 + index}-${585154340 + index * 100}-be6161a56a0c?w=800&q=80")`;
+                    backgroundImage = `url("https://picsum.photos/400/400?random=${index + 5}")`;
                 }
 
                 // Verificar si es realmente un círculo de proyecto
