@@ -1044,25 +1044,31 @@
         function updateBackgroundImage(index) {
             const fullBg = document.getElementById('full-bg');
             if (fullBg && PROJECTS[index]) {
-                const imageUrl = PROJECTS[index].image;
+                const localImageUrl = PROJECTS[index].image;
                 const timestamp = Date.now();
-                const finalUrl = `${imageUrl}?cache=${timestamp}&id=${index}`;
 
                 const img = new Image();
                 img.onload = () => {
-                    console.log(`📥 Imagen de fondo cargada: ${PROJECTS[index].name}`);
-                    fullBg.style.backgroundImage = `url("${finalUrl}")`;
+                    console.log(`📥 Imagen local cargada: ${PROJECTS[index].name}`);
+                    fullBg.style.backgroundImage = `url("${localImageUrl}?cache=${timestamp}")`;
                     fullBg.classList.remove('active');
                     setTimeout(() => {
                         fullBg.classList.add('active');
                     }, 100);
                 };
                 img.onerror = () => {
-                    console.log(`❌ Error cargando imagen, usando fallback`);
-                    const fallbackUrl = `https://picsum.photos/seed/backup-${index}-${timestamp}/600/600`;
+                    console.log(`❌ Imagen local no encontrada, usando imagen temporal`);
+                    // Fallback a imagen temporal de picsum
+                    const fallbackSeeds = ['park-mansion', 'kawana', 'park-le-jade', 'sevens-villa', 'hikawa-gardens',
+                                          'one-avenue', 'century-forest', 'proud', 'nishiazabu', 'itohpia', 'urban-villa', 'modern-house'];
+                    const fallbackUrl = `https://picsum.photos/seed/${fallbackSeeds[index]}/600/600`;
                     fullBg.style.backgroundImage = `url("${fallbackUrl}")`;
+                    fullBg.classList.remove('active');
+                    setTimeout(() => {
+                        fullBg.classList.add('active');
+                    }, 100);
                 };
-                img.src = finalUrl;
+                img.src = localImageUrl;
             }
         }
         
