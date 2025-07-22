@@ -1,202 +1,135 @@
-// SOLUCIÓN COMPLETA PROPIA - ELIMINO TODO Y CREO NUEVO SISTEMA
+// SCRIPT MÍNIMO - SOLO AGREGAR IMÁGENES DE FONDO SINCRONIZADAS
 (function() {
-    console.log('🔥 ELIMINANDO TODO Y CREANDO SISTEMA PROPIO');
+    console.log('🎯 AGREGANDO SOLO IMÁGENES DE FONDO A TU WEB ORIGINAL');
 
-    const PROYECTOS = [
-        { nombre: 'PARK MANSION', imagen: 'https://picsum.photos/800/800?random=1' },
-        { nombre: 'KAWANA', imagen: 'https://picsum.photos/800/800?random=2' },
-        { nombre: 'SEVENS VILLA', imagen: 'https://picsum.photos/800/800?random=3' },
-        { nombre: 'PARK LE JADE', imagen: 'https://picsum.photos/800/800?random=4' },
-        { nombre: 'HIKAWA GARDENS', imagen: 'https://picsum.photos/800/800?random=5' }
-    ];
+    const IMAGENES_PROYECTOS = {
+        'PARK MANSION': 'https://picsum.photos/1200/800?random=1',
+        'KAWANA': 'https://picsum.photos/1200/800?random=2',
+        'SEVENS VILLA': 'https://picsum.photos/1200/800?random=3',
+        'PARK LE JADE': 'https://picsum.photos/1200/800?random=4',
+        'HIKAWA GARDENS': 'https://picsum.photos/1200/800?random=5',
+        'ONE AVENUE': 'https://picsum.photos/1200/800?random=6',
+        'CENTURY FOREST': 'https://picsum.photos/1200/800?random=7',
+        'PROUD': 'https://picsum.photos/1200/800?random=8'
+    };
 
-    let proyectoActual = 0;
-    let miSistema = null;
+    let fondoActual = null;
+    let proyectoAnterior = '';
+    let timerImagen = null;
 
-    // OCULTAR ELEMENTOS PROBLEMÁTICOS SIN ELIMINARLOS
-    function ocultarElementosProblematicos() {
-        // Ocultar canvas problemático (sin eliminarlo)
-        const canvas = document.querySelector('canvas');
-        if (canvas) {
-            canvas.style.visibility = 'hidden';
-            canvas.style.opacity = '0';
-            canvas.style.pointerEvents = 'none';
-            console.log('👻 Canvas ocultado');
-        }
+    // Crear fondo DETRÁS de todo (z-index muy bajo)
+    function crearFondoImagen() {
+        if (fondoActual) return fondoActual;
 
-        // Ocultar SVG problemáticos (sin eliminarlos)
-        const svgs = document.querySelectorAll('svg');
-        svgs.forEach(svg => {
-            svg.style.visibility = 'hidden';
-            svg.style.opacity = '0';
-            svg.style.pointerEvents = 'none';
-            console.log('👻 SVG ocultado');
-        });
-
-        // Ocultar lista (sin eliminarla)
-        const ul = document.querySelector('ul');
-        if (ul) {
-            ul.style.visibility = 'hidden';
-            ul.style.opacity = '0';
-            ul.style.pointerEvents = 'none';
-            console.log('👻 Lista ocultada');
-        }
-
-        // Ocultar elementos giratorios
-        const giratorios = document.querySelectorAll('[style*="animation-name: spin"]');
-        giratorios.forEach(el => {
-            el.style.visibility = 'hidden';
-            el.style.opacity = '0';
-            el.style.pointerEvents = 'none';
-            console.log('👻 Elemento giratorio ocultado');
-        });
-
-        // Ocultar elementos con mix-blend-mode
-        const mixBlend = document.querySelectorAll('[style*="mix-blend-mode"]');
-        mixBlend.forEach(el => {
-            el.style.visibility = 'hidden';
-            el.style.opacity = '0';
-            el.style.pointerEvents = 'none';
-            console.log('👻 Elemento mix-blend ocultado');
-        });
-    }
-
-    // CREAR MI PROPIO SISTEMA COMPLETO
-    function crearMiSistema() {
-        if (miSistema) return miSistema;
-
-        // Contenedor principal
-        miSistema = document.createElement('div');
-        miSistema.id = 'mi-sistema-completo';
-        miSistema.style.cssText = `
+        fondoActual = document.createElement('div');
+        fondoActual.id = 'fondo-imagen-proyecto';
+        fondoActual.style.cssText = `
             position: fixed !important;
             top: 0 !important;
             left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            background: #252525 !important;
-            z-index: 9999 !important;
-            overflow: hidden !important;
-        `;
-
-        // Mi logo LTSD
-        const logo = document.createElement('div');
-        logo.style.cssText = `
-            position: absolute !important;
-            top: 30px !important;
-            left: 30px !important;
-            color: white !important;
-            font-family: Arial, sans-serif !important;
-            font-size: 24px !important;
-            font-weight: bold !important;
-            letter-spacing: 2px !important;
-            z-index: 10000 !important;
-        `;
-        logo.textContent = 'LTSD';
-        miSistema.appendChild(logo);
-
-        // Mi círculo con imagen
-        const circulo = document.createElement('div');
-        circulo.id = 'mi-circulo';
-        circulo.style.cssText = `
-            position: absolute !important;
-            top: 50% !important;
-            left: 50% !important;
-            width: 600px !important;
-            height: 600px !important;
-            border-radius: 50% !important;
-            transform: translate(-50%, -50%) !important;
+            width: 100% !important;
+            height: 100% !important;
             background-size: cover !important;
             background-position: center !important;
             background-repeat: no-repeat !important;
-            border: 3px solid white !important;
-            box-shadow: 0 0 50px rgba(255,255,255,0.3) !important;
-            transition: background-image 0.8s ease !important;
-        `;
-        miSistema.appendChild(circulo);
-
-        // Texto del proyecto
-        const texto = document.createElement('div');
-        texto.id = 'mi-texto';
-        texto.style.cssText = `
-            position: absolute !important;
-            top: 50% !important;
-            left: 50% !important;
-            transform: translate(-50%, -50%) !important;
-            color: white !important;
-            font-family: Arial, sans-serif !important;
-            font-size: 32px !important;
-            font-weight: bold !important;
-            text-align: center !important;
-            z-index: 10001 !important;
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.8) !important;
-            transition: opacity 0.5s ease !important;
-        `;
-        miSistema.appendChild(texto);
-
-        // Lista de proyectos visible
-        const lista = document.createElement('div');
-        lista.style.cssText = `
-            position: absolute !important;
-            bottom: 100px !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            color: white !important;
-            font-family: Arial, sans-serif !important;
-            font-size: 16px !important;
-            text-align: center !important;
-            line-height: 1.8 !important;
+            z-index: -10 !important;
+            pointer-events: none !important;
+            opacity: 0.3 !important;
+            transition: none !important;
         `;
 
-        let listaHTML = '';
-        PROYECTOS.forEach((proyecto, index) => {
-            listaHTML += `<div style="opacity: ${index === 0 ? '1' : '0.5'}; transition: opacity 0.3s;">${proyecto.nombre}</div>`;
+        // Insertar AL PRINCIPIO del body para que esté detrás de todo
+        document.body.insertBefore(fondoActual, document.body.firstChild);
+        console.log('✅ Fondo de imagen creado DETRÁS de todo');
+        return fondoActual;
+    }
+
+    // Detectar proyecto actual de la lista
+    function detectarProyectoActual() {
+        const ul = document.querySelector('ul');
+        if (!ul) return null;
+
+        const texto = ul.textContent.toUpperCase();
+
+        // Buscar qu�� proyecto está activo
+        for (let proyecto in IMAGENES_PROYECTOS) {
+            if (texto.includes(proyecto)) {
+                return proyecto;
+            }
+        }
+        return null;
+    }
+
+    // Aplicar imagen y mantenerla durante EXACTAMENTE 3 segundos
+    function aplicarImagenSincronizada() {
+        const proyectoActual = detectarProyectoActual();
+
+        if (proyectoActual && proyectoActual !== proyectoAnterior) {
+            proyectoAnterior = proyectoActual;
+
+            const fondo = crearFondoImagen();
+            const imagen = IMAGENES_PROYECTOS[proyectoActual];
+
+            // Aplicar imagen inmediatamente
+            fondo.style.backgroundImage = `url("${imagen}")`;
+            fondo.style.opacity = '0.3';
+
+            console.log(`🖼️ Imagen aplicada: ${proyectoActual}`);
+
+            // Limpiar timer anterior
+            if (timerImagen) {
+                clearTimeout(timerImagen);
+            }
+
+            // Mantener imagen por EXACTAMENTE 3 segundos
+            timerImagen = setTimeout(() => {
+                // No hacer nada aquí - dejar que la imagen persista
+                // hasta que el siguiente proyecto la cambie
+                console.log(`⏰ 3 segundos completados para: ${proyectoActual}`);
+            }, 3000);
+        }
+    }
+
+    // Solo ocultar el círculo molesto del header
+    function ocultarCirculoHeader() {
+        const svg = document.querySelector('svg[viewBox="0 0 60 60"]');
+        if (svg) {
+            svg.style.display = 'none';
+        }
+    }
+
+    // Monitorear cambios en la lista de proyectos
+    function iniciarMonitoreo() {
+        // Aplicar imagen inicial
+        aplicarImagenSincronizada();
+
+        // Observer para detectar cambios en la lista
+        const observer = new MutationObserver(() => {
+            aplicarImagenSincronizada();
         });
-        lista.innerHTML = listaHTML;
-        miSistema.appendChild(lista);
 
-        document.body.appendChild(miSistema);
-        console.log('✅ MI SISTEMA COMPLETO CREADO');
-        return miSistema;
+        const ul = document.querySelector('ul');
+        if (ul) {
+            observer.observe(ul, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                characterData: true
+            });
+        }
+
+        // También verificar cada 500ms como backup
+        setInterval(() => {
+            ocultarCirculoHeader();
+            aplicarImagenSincronizada();
+        }, 500);
     }
 
-    // ACTUALIZAR PROYECTO
-    function actualizarProyecto() {
-        const sistema = crearMiSistema();
-        const circulo = sistema.querySelector('#mi-circulo');
-        const texto = sistema.querySelector('#mi-texto');
-        const lista = sistema.querySelectorAll('div[style*="opacity"]');
+    // Inicializar después de que cargue la página
+    setTimeout(() => {
+        ocultarCirculoHeader();
+        iniciarMonitoreo();
+        console.log('🚀 Imágenes sincronizadas activadas - Durarán 3 segundos completos');
+    }, 2000);
 
-        const proyecto = PROYECTOS[proyectoActual];
-
-        // Cambiar imagen y texto
-        circulo.style.backgroundImage = `url("${proyecto.imagen}")`;
-        texto.textContent = proyecto.nombre;
-
-        // Actualizar lista
-        lista.forEach((item, index) => {
-            item.style.opacity = index === proyectoActual ? '1' : '0.5';
-        });
-
-        console.log(`✅ PROYECTO: ${proyecto.nombre}`);
-
-        // Siguiente proyecto
-        proyectoActual = (proyectoActual + 1) % PROYECTOS.length;
-    }
-
-    // INICIALIZAR SISTEMA COMPLETO
-    function inicializar() {
-        ocultarElementosProblematicos();
-        crearMiSistema();
-        actualizarProyecto();
-        console.log('🎉 SISTEMA PROPIO FUNCIONANDO AL 100%');
-    }
-
-    // Esperar un poco para que la página cargue
-    setTimeout(inicializar, 1000);
-
-    // Cambiar proyecto cada 4 segundos
-    setInterval(actualizarProyecto, 4000);
-
-    console.log('🚀 SOLUCIÓN PROPIA DEFINITIVA ACTIVADA');
 })();
