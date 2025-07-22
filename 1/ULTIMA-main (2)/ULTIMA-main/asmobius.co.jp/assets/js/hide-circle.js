@@ -162,7 +162,7 @@
     }
 
     function updateLogoAndSetupBackgrounds() {
-        // Función para reemplazar/ocultar el logo ASM problemático
+        // Función para reemplazar/ocultar el logo ASM problem��tico
         function replaceASMLogo() {
             let logoReplaced = false;
 
@@ -294,40 +294,31 @@
         }
     }
     
-    // Ejecutar inmediatamente
+    // Ejecutar inmediatamente solo para ocultar círculo problemático
     hideStuckCircle();
-    updateLogoAndSetupBackgrounds();
 
-    // Ejecutar cuando el DOM esté listo
+    // Ejecutar después de que la intro termine (5 segundos)
+    setTimeout(() => {
+        hideStuckCircle();
+        updateLogoAndSetupBackgrounds();
+        applyCircleBackgrounds();
+    }, 5000);
+
+    // Ejecutar cuando el DOM esté listo (pero sin imágenes todavía)
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             hideStuckCircle();
-            updateLogoAndSetupBackgrounds();
         });
     }
 
     // Ejecutar después de que todo se haya cargado
     window.addEventListener('load', function() {
-        hideStuckCircle();
-        updateLogoAndSetupBackgrounds();
+        setTimeout(() => {
+            hideStuckCircle();
+            updateLogoAndSetupBackgrounds();
+            applyCircleBackgrounds();
+        }, 6000);
     });
-
-    // Ejecutar múltiples veces para asegurar que las imágenes se apliquen
-    let attempts = 0;
-    const interval = setInterval(() => {
-        hideStuckCircle();
-        updateLogoAndSetupBackgrounds();
-        attempts++;
-        if (attempts >= 20) {
-            clearInterval(interval);
-            console.log('🔄 Finalizados intentos de aplicar imágenes a círculos');
-            // Último intento directo
-            setTimeout(() => {
-                console.log('🎯 Último intento directo de aplicar imágenes');
-                applyCircleBackgrounds();
-            }, 2000);
-        }
-    }, 800);
 
     // Configurar navegación de proyectos
     function setupProjectNavigation() {
