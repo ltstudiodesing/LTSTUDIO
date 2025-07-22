@@ -1,0 +1,6 @@
+/* Ocultar solo el círculo problemático arriba a la izquierda */
+svg[style*="mix-blend-mode: exclusion"],
+svg[viewBox="0 0 60 60"][style*="position: fixed"],
+#app-mousePointer svg {
+    display: none !important;
+}
