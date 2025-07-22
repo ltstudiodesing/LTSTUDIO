@@ -104,24 +104,24 @@
             z-index: 100;
         }
 
-        /* FONDO COMPLETO DE IMAGEN */
+        /* FONDO COMPLETO DE IMAGEN ÚNICA */
         .full-background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-size: 120%; /* Ligeramente más grande para efecto inmersivo */
+            background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             background-color: #252525;
-            opacity: 0.25;
+            opacity: 0.6;
             z-index: 0;
             transition: all 1s ease;
         }
 
         .full-background.active {
-            opacity: 0.4;
+            opacity: 0.8;
         }
         
         #main-screen.visible {
@@ -899,7 +899,7 @@
                         bg.style.backgroundImage = `url("${finalUrl}")`;
                     };
                     img.onerror = () => {
-                        console.log(`❌ Error cargando imagen ${index + 1}, usando fallback`);
+                        console.log(`�� Error cargando imagen ${index + 1}, usando fallback`);
                         const fallbackUrl = `https://picsum.photos/seed/backup-${index}-${timestamp}/600/600`;
                         bg.style.backgroundImage = `url("${fallbackUrl}")`;
                     };
