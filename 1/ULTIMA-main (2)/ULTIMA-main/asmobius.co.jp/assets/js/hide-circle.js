@@ -282,28 +282,39 @@
     // Ejecutar inmediatamente solo para ocultar círculo problemático
     hideStuckCircle();
 
-    // Ejecutar después de que la intro termine (5 segundos)
-    setTimeout(() => {
-        hideStuckCircle();
-        updateLogoAndSetupBackgrounds();
-        applyCircleBackgrounds();
-    }, 5000);
+    // Ejecutar funciones básicas inmediatamente
+    hideStuckCircle();
 
-    // Ejecutar cuando el DOM esté listo (pero sin imágenes todavía)
+    // Aplicar imágenes de fondo después de la intro pero no muy tarde
+    setTimeout(() => {
+        console.log('🚀 Ejecutando aplicación de imágenes de fondo...');
+        applyCircleBackgrounds();
+    }, 3000);
+
+    // También ejecutar cuando el DOM esté listo
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             hideStuckCircle();
+            setTimeout(() => {
+                applyCircleBackgrounds();
+            }, 2000);
         });
     }
 
     // Ejecutar después de que todo se haya cargado
     window.addEventListener('load', function() {
+        hideStuckCircle();
         setTimeout(() => {
-            hideStuckCircle();
             updateLogoAndSetupBackgrounds();
             applyCircleBackgrounds();
-        }, 6000);
+        }, 1000);
     });
+
+    // Ejecutar una vez más después de 8 segundos para asegurar
+    setTimeout(() => {
+        console.log('🔄 Ejecución final de aplicación de imágenes...');
+        applyCircleBackgrounds();
+    }, 8000);
 
     // Configurar navegación de proyectos
     function setupProjectNavigation() {
