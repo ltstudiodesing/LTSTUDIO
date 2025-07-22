@@ -319,33 +319,35 @@
             mix-blend-mode: overlay;
         }
 
-        /* PROGRESO CIRCULAR */
-        .circular-progress {
+        /* INDICADOR CIRCULAR DE PROYECTOS */
+        .project-indicator {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 110%;
-            height: 110%;
+            width: 115%;
+            height: 115%;
             z-index: 4;
         }
 
-        .progress-ring {
-            transform: rotate(-90deg);
+        .indicator-dots {
+            position: relative;
+            width: 100%;
+            height: 100%;
         }
 
-        .progress-ring-circle {
-            stroke: rgba(255, 255, 255, 0.1);
-            stroke-width: 2;
-            fill: transparent;
+        .indicator-dot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transition: all 0.3s ease;
         }
 
-        .progress-ring-progress {
-            stroke: white;
-            stroke-width: 2;
-            fill: transparent;
-            stroke-linecap: round;
-            transition: stroke-dasharray 0.3s ease;
+        .indicator-dot.active {
+            background: white;
+            transform: scale(1.5);
         }
         
         /* PROJECT TEXT */
