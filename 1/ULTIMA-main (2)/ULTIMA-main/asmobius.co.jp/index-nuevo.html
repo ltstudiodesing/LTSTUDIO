@@ -939,8 +939,15 @@
 
         // ANIMAR TEXTO LETRA POR LETRA
         function animateIntroText() {
+            console.log('📝 Iniciando animación de texto intro');
             const introText = document.querySelector('.intro-text');
             const text = 'LT STUDIO DESIGN';
+
+            if (!introText) {
+                console.error('❌ No se encontró .intro-text');
+                return;
+            }
+
             introText.innerHTML = '';
 
             // Crear spans para cada letra
@@ -953,13 +960,17 @@
                 letters.push(span);
             });
 
+            console.log(`📝 Creadas ${letters.length} letras`);
+
             // Animar letra por letra de gris a blanco
             letters.forEach((letter, index) => {
                 setTimeout(() => {
                     letter.classList.add('filled');
+                    console.log(`✅ Letra ${index + 1} animada`);
 
                     // Si es la última letra, programar transición fragmentada
                     if (index === letters.length - 1) {
+                        console.log('🎯 Última letra completada, programando transición');
                         setTimeout(() => {
                             startFragmentTransition();
                         }, 1000); // 1 segundo después de que termine la última letra
