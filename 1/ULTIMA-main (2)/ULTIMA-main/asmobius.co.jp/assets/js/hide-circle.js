@@ -30,9 +30,9 @@
         }
     });
 
-    // Crear capa de fondo persistente que no se puede sobrescribir
+    // Aplicar imágenes SOLO al círculo interactivo después de la transición
     function applyCircleBackgrounds() {
-        console.log('🔄 Creando capa de fondo persistente...');
+        console.log('🔄 Esperando a que termine la transición...');
 
         // Imágenes para cada proyecto
         const projectImages = {
@@ -43,71 +43,90 @@
             'hikawa': 'https://images.unsplash.com/photo-1600485154340-be6161a56a0c?w=1200&h=1200&fit=crop',
             'one avenue': 'https://images.unsplash.com/photo-1600485154355-be6161a56a0c?w=1200&h=1200&fit=crop',
             'century': 'https://images.unsplash.com/photo-1600485154343-be6161a56a0c?w=1200&h=1200&fit=crop',
-            'proud': 'https://images.unsplash.com/photo-1600485154356-be6161a56a0c?w=1200&h=1200&fit=crop'
+            'proud': 'https://images.unsplash.com/photo-1600485154356-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'roppongi': 'https://images.unsplash.com/photo-1600485154345-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'nishiazabu': 'https://images.unsplash.com/photo-1600485154354-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'azabu': 'https://images.unsplash.com/photo-1600485154341-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'park house': 'https://images.unsplash.com/photo-1600485154342-be6161a56a0c?w=1200&h=1200&fit=crop'
         };
 
-        let currentImage = projectImages['park mansion'];
-        let backgroundLayer = null;
-
-        // Crear capa de fondo persistente
-        function createPersistentBackgroundLayer() {
-            // Verificar si ya existe
-            if (document.getElementById('persistent-background-layer')) {
-                backgroundLayer = document.getElementById('persistent-background-layer');
-                return;
-            }
-
-            backgroundLayer = document.createElement('div');
-            backgroundLayer.id = 'persistent-background-layer';
-            backgroundLayer.style.cssText = `
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                width: 100vw !important;
-                height: 100vh !important;
-                background-image: url("${currentImage}") !important;
-                background-size: cover !important;
-                background-position: center !important;
-                background-repeat: no-repeat !important;
-                z-index: -1 !important;
-                pointer-events: none !important;
-            `;
-
-            // Insertar al inicio del body para que esté atrás de todo
-            document.body.insertBefore(backgroundLayer, document.body.firstChild);
-            console.log('🎯 Capa de fondo persistente creada');
-        }
-
-        // Función para cambiar imagen
-        function changeBackgroundImage(imageUrl) {
-            if (backgroundLayer && currentImage !== imageUrl) {
-                currentImage = imageUrl;
-                backgroundLayer.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
-                console.log('🖼️ Imagen cambiada a:', imageUrl);
-            }
-        }
-
-        // Crear la capa inicial
-        createPersistentBackgroundLayer();
-
-        // Monitorear proyectos y cambiar imagen
+        let interactiveCircleElement = null;
         let currentProject = '';
-        function monitorProjects() {
+        let isTransitionComplete = false;
+
+        // Detectar cuando la transición ha terminado
+        function detectTransitionComplete() {
+            // Buscar el elemento del círculo interactivo principal
+            const allDivs = document.querySelectorAll('div');
+            for (const div of allDivs) {
+                const style = window.getComputedStyle(div);
+                if (style.backgroundColor === 'rgb(37, 37, 37)' &&
+                    style.zIndex === '110' &&
+                    style.position === 'absolute' &&
+                    style.width === '100%' &&
+                    style.height === '100%') {
+                    interactiveCircleElement = div;
+                    console.log('🎯 Círculo interactivo encontrado');
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Aplicar imagen al círculo interactivo
+        function applyImageToCircle(imageUrl) {
+            if (!interactiveCircleElement) return;
+
+            console.log('🖼️ Aplicando imagen al círculo:', imageUrl);
+
+            // Aplicar imagen de fondo al círculo interactivo
+            interactiveCircleElement.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
+            interactiveCircleElement.style.setProperty('background-size', 'cover', 'important');
+            interactiveCircleElement.style.setProperty('background-position', 'center', 'important');
+            interactiveCircleElement.style.setProperty('background-repeat', 'no-repeat', 'important');
+
+            // Agregar overlay para legibilidad (solo una vez)
+            if (!interactiveCircleElement.querySelector('.circle-image-overlay')) {
+                const overlay = document.createElement('div');
+                overlay.className = 'circle-image-overlay';
+                overlay.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.4);
+                    z-index: 1;
+                    pointer-events: none;
+                `;
+                interactiveCircleElement.appendChild(overlay);
+            }
+        }
+
+        // Monitorear proyectos activos
+        function monitorActiveProject() {
+            if (!isTransitionComplete || !interactiveCircleElement) return;
+
             const projectList = document.querySelectorAll('ul li');
 
+            // Buscar proyecto visible/activo
             projectList.forEach(li => {
                 const rect = li.getBoundingClientRect();
-                const isVisible = rect.top >= -200 && rect.top <= window.innerHeight + 200;
+                const transform = window.getComputedStyle(li).transform;
 
-                if (isVisible) {
+                // Detectar proyecto activo por posición o transformación
+                const isActive = (rect.top >= -100 && rect.top <= window.innerHeight + 100) ||
+                                (transform && transform !== 'none');
+
+                if (isActive) {
                     const projectText = li.textContent.trim().toLowerCase();
 
-                    if (projectText !== currentProject) {
+                    if (projectText !== currentProject && projectText.length > 3) {
                         // Buscar imagen correspondiente
                         for (const [key, imageUrl] of Object.entries(projectImages)) {
                             if (projectText.includes(key)) {
-                                console.log('📋 Proyecto detectado:', projectText, '→', key);
-                                changeBackgroundImage(imageUrl);
+                                console.log('📋 Proyecto activo:', projectText, '→', key);
+                                applyImageToCircle(imageUrl);
                                 currentProject = projectText;
                                 break;
                             }
@@ -117,49 +136,29 @@
             });
         }
 
-        // Proteger la capa para que no sea removida o modificada
-        function protectBackgroundLayer() {
-            if (!document.getElementById('persistent-background-layer')) {
-                console.log('⚠️ Capa de fondo removida, recreando...');
-                createPersistentBackgroundLayer();
-            } else {
-                // Verificar que los estilos no hayan sido modificados
-                const layer = document.getElementById('persistent-background-layer');
-                if (layer.style.zIndex !== '-1') {
-                    layer.style.setProperty('z-index', '-1', 'important');
+        // Esperar a que la transición termine antes de aplicar imágenes
+        function waitForTransition() {
+            const checkInterval = setInterval(() => {
+                if (detectTransitionComplete()) {
+                    console.log('✅ Transición completada, iniciando sistema de imágenes');
+                    isTransitionComplete = true;
+
+                    // Aplicar imagen inicial
+                    applyImageToCircle(projectImages['park mansion']);
+                    currentProject = 'park mansion';
+
+                    // Iniciar monitoreo de proyectos
+                    setInterval(monitorActiveProject, 500);
+
+                    clearInterval(checkInterval);
                 }
-                if (!layer.style.backgroundImage.includes(currentImage.split('/').pop())) {
-                    layer.style.setProperty('background-image', `url("${currentImage}")`, 'important');
-                }
-            }
+            }, 1000);
         }
 
-        // Ejecutar monitoreo cada 500ms
-        setInterval(() => {
-            protectBackgroundLayer();
-            monitorProjects();
-        }, 500);
-
-        // Observer para recrear la capa si es removida
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'childList') {
-                    mutation.removedNodes.forEach((node) => {
-                        if (node.id === 'persistent-background-layer') {
-                            console.log('🔄 Capa de fondo removida, recreando...');
-                            setTimeout(createPersistentBackgroundLayer, 100);
-                        }
-                    });
-                }
-            });
-        });
-
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-
-        console.log('✅ Sistema de capa de fondo persistente activado');
+        // Iniciar después de la intro
+        setTimeout(() => {
+            waitForTransition();
+        }, 8000); // Esperar 8 segundos para que termine completamente la intro y transición
     }
 
     function updateLogoAndSetupBackgrounds() {
