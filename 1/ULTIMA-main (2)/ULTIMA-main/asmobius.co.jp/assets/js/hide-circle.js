@@ -82,18 +82,18 @@
                 const text = element.textContent || '';
                 let backgroundImage = '';
 
-                // Mapear proyectos a sus primeras imágenes (igual que en los proyectos)
+                // Mapear proyectos a sus primeras imágenes (exactamente las mismas que en cada proyecto)
                 if (text.toLowerCase().includes('park mansion')) {
                     // Usar la misma primera imagen que en park-mansion.html
-                    backgroundImage = 'url("https://picsum.photos/400/400?random=1")';
+                    backgroundImage = 'url("https://picsum.photos/800/1000?random=1")';
                 } else if (text.toLowerCase().includes('kawana')) {
-                    backgroundImage = 'url("https://picsum.photos/400/400?random=2")';
+                    backgroundImage = 'url("https://picsum.photos/800/1000?random=2")';
                 } else if (text.toLowerCase().includes('sevens villa')) {
-                    backgroundImage = 'url("https://picsum.photos/400/400?random=3")';
+                    backgroundImage = 'url("https://picsum.photos/800/1000?random=3")';
                 } else if (text.toLowerCase().includes('hikawa')) {
-                    backgroundImage = 'url("https://picsum.photos/400/400?random=4")';
+                    backgroundImage = 'url("https://picsum.photos/800/1000?random=4")';
                 } else {
-                    backgroundImage = `url("https://picsum.photos/400/400?random=${index + 5}")`;
+                    backgroundImage = `url("https://picsum.photos/800/1000?random=${index + 5}")`;
                 }
 
                 // Verificar si es realmente un círculo de proyecto
