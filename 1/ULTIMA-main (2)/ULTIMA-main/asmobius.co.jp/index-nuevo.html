@@ -569,9 +569,13 @@
             <div class="circle-border"></div>
             <div class="circle-inner"></div>
 
-            <!-- INDICADOR DE PROYECTOS -->
-            <div class="project-indicator">
-                <div class="indicator-dots" id="project-dots">
+            <!-- BARRA CIRCULAR DE PROGRESO -->
+            <div class="circular-progress-bar">
+                <svg class="progress-circle-container" width="100%" height="100%">
+                    <circle class="progress-circle-bg" cx="50%" cy="50%" r="48%"></circle>
+                    <circle class="progress-circle-fill" cx="50%" cy="50%" r="48%" id="progress-circle"></circle>
+                </svg>
+                <div class="project-dots" id="project-dots">
                     <!-- Se generan dinámicamente -->
                 </div>
             </div>
