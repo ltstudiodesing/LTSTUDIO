@@ -525,6 +525,22 @@
         
         // SIGUIENTE PROYECTO
         function nextProject() {
+            if (currentProject < PROJECTS.length - 1) {
+                changeProject(currentProject + 1);
+                startProgress();
+            }
+        }
+
+        // PROYECTO ANTERIOR
+        function previousProject() {
+            if (currentProject > 0) {
+                changeProject(currentProject - 1);
+                startProgress();
+            }
+        }
+
+        // AUTO NEXT (para progreso automático)
+        function autoNextProject() {
             const nextIndex = (currentProject + 1) % PROJECTS.length;
             changeProject(nextIndex);
             startProgress();
