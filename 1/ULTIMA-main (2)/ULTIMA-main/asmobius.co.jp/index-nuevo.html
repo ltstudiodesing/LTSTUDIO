@@ -104,6 +104,25 @@
             transition: opacity 1s ease, transform 1s ease;
             z-index: 100;
         }
+
+        /* FONDO COMPLETO DE IMAGEN */
+        .full-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.1;
+            z-index: 0;
+            transition: all 1s ease;
+        }
+
+        .full-background.active {
+            opacity: 0.2;
+        }
         
         #main-screen.visible {
             opacity: 1;
