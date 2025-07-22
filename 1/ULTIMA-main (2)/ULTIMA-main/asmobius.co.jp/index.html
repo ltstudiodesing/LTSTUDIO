@@ -1113,15 +1113,20 @@
         // INICIAR BARRA DE PROGRESO
         // CONFIGURACIÓN DE INDICADOR DE PROYECTOS
         function setupProjectIndicator() {
+            console.log('🎯 Configurando indicador de proyectos');
             const progressCircle = document.getElementById('progress-circle');
             const dotsContainer = document.getElementById('project-dots');
 
             // Configurar círculo de progreso
             if (progressCircle) {
+                console.log('✅ Progress circle encontrado, configurando...');
                 const radius = progressCircle.r.baseVal.value;
                 const circumference = 2 * Math.PI * radius;
                 progressCircle.style.strokeDasharray = circumference;
                 progressCircle.style.strokeDashoffset = circumference;
+                console.log(`📊 Círculo configurado: radio=${radius}, circunferencia=${circumference}`);
+            } else {
+                console.error('❌ Progress circle NO encontrado');
             }
 
             // Configurar puntos de proyectos
