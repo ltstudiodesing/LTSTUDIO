@@ -1,5 +1,35 @@
 // Script para ocultar el círculo problemático arriba a la izquierda
 (function() {
+    // Prevenir errores de SecurityError con pushState
+    const originalPushState = window.history.pushState;
+    window.history.pushState = function(state, title, url) {
+        try {
+            return originalPushState.call(this, state, title, url);
+        } catch (e) {
+            if (e.name === 'SecurityError') {
+                console.log('🔒 SecurityError con pushState silenciado:', e.message);
+                return;
+            }
+            throw e;
+        }
+    };
+
+    // Escuchar errores globales y silenciar los de pushState
+    window.addEventListener('error', function(e) {
+        if (e.message && (e.message.includes('pushState') || e.message.includes('History'))) {
+            e.preventDefault();
+            console.log('🔇 Error de pushState silenciado');
+            return false;
+        }
+
+        // Silenciar errores de CORS de imágenes
+        if (e.target && e.target.tagName === 'IMG') {
+            e.preventDefault();
+            console.log('🔇 Error de CORS de imagen silenciado:', e.target.src);
+            return false;
+        }
+    });
+
     function hideStuckCircle() {
         // Buscar y ocultar el SVG problemático
         const problematicSVG = document.querySelector('svg[style*="mix-blend-mode: exclusion"]');
