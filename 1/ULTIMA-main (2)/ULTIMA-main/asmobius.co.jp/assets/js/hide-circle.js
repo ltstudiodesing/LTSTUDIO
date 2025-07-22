@@ -30,9 +30,9 @@
         }
     });
 
-    // Aplicar imágenes directamente al inicio
+    // SOLO aplicar imágenes cuando esté en la página principal (NO durante transiciones)
     function applyCircleBackgrounds() {
-        console.log('🔄 Aplicando imágenes directamente al inicio...');
+        console.log('🔄 Esperando a estar en página principal...');
 
         // Imágenes para cada proyecto
         const projectImages = {
@@ -46,56 +46,53 @@
             'proud': 'https://images.unsplash.com/photo-1600485154356-be6161a56a0c?w=1200&h=1200&fit=crop'
         };
 
+        let isInMainPage = false;
         let currentProject = '';
-        const mainImage = projectImages['park mansion'];
 
-        // Función para aplicar imagen a un elemento
-        function applyImageToElement(element, imageUrl) {
-            element.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
-            element.style.setProperty('background-size', 'cover', 'important');
-            element.style.setProperty('background-position', 'center', 'important');
-            element.style.setProperty('background-repeat', 'no-repeat', 'important');
-            console.log('🖼️ Imagen aplicada:', imageUrl);
+        // Detectar si estamos en la página principal (NO en intro ni transición)
+        function checkIfInMainPage() {
+            // Buscar indicadores de que estamos en página principal
+            const hasProjectList = document.querySelectorAll('ul li').length > 0;
+            const hasCanvas = document.querySelector('canvas') !== null;
+            const noIntroText = !document.querySelector('text[font-size="24"]') ||
+                               !document.querySelector('text')?.textContent?.includes('LT STUDIO DESIGN');
+
+            // Solo estamos en página principal si:
+            // 1. Hay lista de proyectos
+            // 2. Hay canvas
+            // 3. NO hay texto de intro visible
+            return hasProjectList && hasCanvas && noIntroText;
         }
 
-        // Aplicar imagen de fondo a TODOS los elementos posibles
-        function applyBackgroundEveryhere() {
-            // 1. Al body
-            applyImageToElement(document.body, mainImage);
+        // Aplicar imagen solo al elemento específico del círculo
+        function applyImageToMainCircle(imageUrl) {
+            if (!isInMainPage) return;
 
-            // 2. Al html
-            applyImageToElement(document.documentElement, mainImage);
-
-            // 3. A todos los divs negros grandes
+            // Buscar el div específico del círculo principal
             const allDivs = document.querySelectorAll('div');
-            allDivs.forEach(div => {
+            for (const div of allDivs) {
                 const style = window.getComputedStyle(div);
-
-                // Aplicar a divs negros con cualquier z-index
                 if (style.backgroundColor === 'rgb(37, 37, 37)' &&
-                    (style.width === '100%' || parseInt(style.width) > 300) &&
-                    (style.height === '100%' || parseInt(style.height) > 300)) {
-                    applyImageToElement(div, mainImage);
-                }
+                    style.zIndex === '110' &&
+                    style.position === 'absolute' &&
+                    style.width === '100%' &&
+                    style.height === '100%') {
 
-                // También aplicar a divs con z-index alto
-                if (style.backgroundColor === 'rgb(37, 37, 37)' &&
-                    parseInt(style.zIndex) > 50) {
-                    applyImageToElement(div, mainImage);
-                }
-            });
+                    div.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
+                    div.style.setProperty('background-size', 'cover', 'important');
+                    div.style.setProperty('background-position', 'center', 'important');
+                    div.style.setProperty('background-repeat', 'no-repeat', 'important');
 
-            // 4. Buscar canvas y aplicar a su contenedor
-            const canvas = document.querySelector('canvas');
-            if (canvas && canvas.parentElement) {
-                applyImageToElement(canvas.parentElement, mainImage);
+                    console.log('🖼️ Imagen aplicada al círculo principal:', imageUrl);
+                    return;
+                }
             }
-
-            console.log('✅ Imagen aplicada a todos los elementos posibles');
         }
 
-        // Cambiar imagen según proyecto activo
-        function updateProjectImage() {
+        // Monitorear proyectos activos
+        function monitorProjects() {
+            if (!isInMainPage) return;
+
             const projectList = document.querySelectorAll('ul li');
 
             projectList.forEach(li => {
@@ -109,20 +106,8 @@
                         // Buscar imagen correspondiente
                         for (const [key, imageUrl] of Object.entries(projectImages)) {
                             if (projectText.includes(key)) {
-                                console.log('📋 Cambiando a proyecto:', projectText, '→', key);
-
-                                // Aplicar nueva imagen a todos los elementos
-                                document.body.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
-                                document.documentElement.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
-
-                                const allDivs = document.querySelectorAll('div');
-                                allDivs.forEach(div => {
-                                    const style = window.getComputedStyle(div);
-                                    if (style.backgroundColor === 'rgb(37, 37, 37)') {
-                                        applyImageToElement(div, imageUrl);
-                                    }
-                                });
-
+                                console.log('📋 Proyecto activo:', projectText, '→', key);
+                                applyImageToMainCircle(imageUrl);
                                 currentProject = projectText;
                                 break;
                             }
@@ -132,16 +117,23 @@
             });
         }
 
-        // Aplicar imagen inicial inmediatamente
-        applyBackgroundEveryhere();
-
-        // Actualizar imagen cada segundo
+        // Verificar estado cada segundo
         setInterval(() => {
-            applyBackgroundEveryhere(); // Reaplica la imagen principal
-            updateProjectImage(); // Actualiza según proyecto activo
+            const wasInMainPage = isInMainPage;
+            isInMainPage = checkIfInMainPage();
+
+            if (isInMainPage && !wasInMainPage) {
+                console.log('✅ Ahora estamos en página principal - aplicando imagen inicial');
+                applyImageToMainCircle(projectImages['park mansion']);
+                currentProject = 'park mansion';
+            }
+
+            if (isInMainPage) {
+                monitorProjects();
+            }
         }, 1000);
 
-        console.log('🚀 Sistema de imágenes directo activado');
+        console.log('🚀 Sistema de detección de página principal activado');
     }
 
     function updateLogoAndSetupBackgrounds() {
