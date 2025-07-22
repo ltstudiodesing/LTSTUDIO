@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PARK MANSION - LTSD</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #252525;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        /* HEADER FIJO */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: rgba(37, 37, 37, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+        
+        .back-button {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* TÍTULO DEL PROYECTO */
+        .project-title {
+            position: fixed;
+            top: 50%;
+            right: 50px;
+            transform: translateY(-50%);
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            font-size: 48px;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            z-index: 100;
+            mix-blend-mode: exclusion;
+        }
+        
+        /* CONTADOR DE IMÁGENES */
+        .image-counter {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 100;
+            opacity: 0.7;
+        }
+        
+        /* CONTENEDOR PRINCIPAL */
+        .container {
+            padding-top: 80px;
+            min-height: 100vh;
+        }
+        
+        /* GALERÍA VERTICAL */
+        .gallery {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        /* ELEMENTOS DE MEDIA */
+        .media-item {
+            width: 100%;
+            margin-bottom: 60px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+        
+        .media-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .media-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .media-item video {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* DESCRIPCIÓN DE PROYECTO */
+        .project-info {
+            margin: 80px auto;
+            max-width: 800px;
+            text-align: center;
+            padding: 0 20px;
+        }
+        
+        .project-subtitle {
+            font-size: 18px;
+            font-weight: 300;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+        
+        .project-description {
+            font-size: 16px;
+            line-height: 1.6;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+        
+        .project-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .detail-item {
+            text-align: left;
+        }
+        
+        .detail-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.6;
+            margin-bottom: 8px;
+        }
+        
+        .detail-value {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        /* PROGRESO DE SCROLL */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: white;
+            z-index: 1001;
+            transition: width 0.1s ease;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .project-title {
+                position: static;
+                writing-mode: horizontal-tb;
+                text-align: center;
+                font-size: 32px;
+                margin: 40px 0;
+                mix-blend-mode: normal;
+            }
+            
+            .header {
+                padding: 0 20px;
+            }
+            
+            .logo {
+                font-size: 20px;
+            }
+            
+            .media-item {
+                margin-bottom: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- PROGRESO DE SCROLL -->
+    <div class="scroll-progress" id="scroll-progress"></div>
+    
+    <!-- HEADER -->
+    <div class="header">
+        <div class="logo">LTSD</div>
+        <button class="back-button" onclick="goBack()">← Volver</button>
+    </div>
+    
+    <!-- TÍTULO DEL PROYECTO -->
+    <div class="project-title">PARK MANSION</div>
+    
+    <!-- CONTADOR -->
+    <div class="image-counter">
+        <span id="current-image">01</span> / <span id="total-images">10</span>
+    </div>
+    
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="container">
+        <div class="gallery" id="gallery">
+            <!-- INFORMACIÓN DEL PROYECTO -->
+            <div class="project-info media-item">
+                <div class="project-subtitle">Minami Azabu, Tokyo</div>
+                <div class="project-description">
+                    Park Mansion representa la síntesis perfecta entre la elegancia contemporánea y la funcionalidad urbana. 
+                    Este proyecto residencial de lujo redefine el concepto de vida metropolitana, integrando espacios verdes 
+                    privados con una arquitectura minimalista que respeta el entorno urbano de Minami Azabu.
+                </div>
+                <div class="project-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Ubicación</div>
+                        <div class="detail-value">Minami Azabu, Tokyo</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Año</div>
+                        <div class="detail-value">2023</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Área</div>
+                        <div class="detail-value">450 m²</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Tipo</div>
+                        <div class="detail-value">Residencial</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- IMÁGENES DEL PROYECTO -->
+            <div class="media-item">
+                <img src="https://picsum.photos/1200/800?random=1" alt="Park Mansion - Vista principal">
+            </div>
+            
+            <div class="media-item">
+                <img src="https://picsum.photos/1200/600?random=2" alt="Park Mansion - Fachada">
+            </div>
+            
+            <div class="media-item">
+                <video controls poster="https://picsum.photos/1200/675?random=3">
+                    <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4">
+                    Tu navegador no soporta video HTML5.
+                </video>
+            </div>
+            
+            <div class="media-item">
+                <img src="https://picsum.photos/1200/900?random=4" alt="Park Mansion - Interior">
+            </div>
+            
+            <div class="media-item">
+                <img src="https://picsum.photos/1200/800?random=5" alt="Park Mansion - Salón principal">
+            </div>
+            
+            <div class="media-item">
+                <img src="https://picsum.photos/1200/600?random=6" alt="Park Mansion - Cocina">
+            </div>
+            
+            <div class="media-item">
+                <video controls poster="https://picsum.photos/1200/675?random=7">
+                    <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4" type="video/mp4">
+                    Tu navegador no soporta video HTML5.
+                </video>
+            </div>
+            
+            <div class="media-item">
+                <img src="https://picsum.photos/1200/800?random=8" alt="Park Mansion - Dormitorio">
+            </div>
+            
+            <div class="media-item">
+                <img src="https://picsum.photos/1200/700?random=9" alt="Park Mansion - Baño">
+            </div>
+            
+            <div class="media-item">
+                <img src="https://picsum.photos/1200/800?random=10" alt="Park Mansion - Vista nocturna">
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let isScrolling = false;
+        let currentImageIndex = 1;
+        
+        // VOLVER AL INICIO
+        function goBack() {
+            window.location.href = '../index-nuevo.html';
+        }
+        
+        // AUTO SCROLL SUAVE
+        function startAutoScroll() {
+            if (isScrolling) return;
+            
+            isScrolling = true;
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollDuration = 45000; // 45 segundos para scroll completo
+            const scrollStep = scrollHeight / (scrollDuration / 16); // 60fps
+            
+            let currentScroll = 0;
+            
+            function smoothScroll() {
+                if (currentScroll < scrollHeight && isScrolling) {
+                    currentScroll += scrollStep;
+                    window.scrollTo(0, currentScroll);
+                    requestAnimationFrame(smoothScroll);
+                } else {
+                    isScrolling = false;
+                }
+            }
+            
+            smoothScroll();
+        }
+        
+        // PAUSAR AUTO SCROLL EN INTERACCIÓN
+        function pauseAutoScroll() {
+            isScrolling = false;
+            
+            // Reanudar después de 5 segundos de inactividad
+            clearTimeout(window.resumeTimeout);
+            window.resumeTimeout = setTimeout(() => {
+                startAutoScroll();
+            }, 5000);
+        }
+        
+        // ACTUALIZAR PROGRESO DE SCROLL
+        function updateScrollProgress() {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            
+            document.getElementById('scroll-progress').style.width = scrollPercent + '%';
+        }
+        
+        // ACTUALIZAR CONTADOR DE IMÁGENES
+        function updateImageCounter() {
+            const mediaItems = document.querySelectorAll('.media-item');
+            const scrollTop = window.pageYOffset;
+            const windowHeight = window.innerHeight;
+            
+            let visibleIndex = 1;
+            
+            mediaItems.forEach((item, index) => {
+                const rect = item.getBoundingClientRect();
+                if (rect.top < windowHeight * 0.6) {
+                    visibleIndex = index + 1;
+                }
+            });
+            
+            currentImageIndex = Math.min(visibleIndex, mediaItems.length);
+            document.getElementById('current-image').textContent = 
+                currentImageIndex.toString().padStart(2, '0');
+        }
+        
+        // ANIMACIÓN DE ENTRADA DE ELEMENTOS
+        function animateElements() {
+            const mediaItems = document.querySelectorAll('.media-item');
+            const windowHeight = window.innerHeight;
+            
+            mediaItems.forEach(item => {
+                const rect = item.getBoundingClientRect();
+                if (rect.top < windowHeight * 0.8) {
+                    item.classList.add('visible');
+                }
+            });
+        }
+        
+        // EVENT LISTENERS
+        window.addEventListener('scroll', () => {
+            updateScrollProgress();
+            updateImageCounter();
+            animateElements();
+            pauseAutoScroll();
+        });
+        
+        window.addEventListener('wheel', pauseAutoScroll);
+        window.addEventListener('touchstart', pauseAutoScroll);
+        window.addEventListener('keydown', pauseAutoScroll);
+        
+        // INICIALIZACIÓN
+        document.addEventListener('DOMContentLoaded', () => {
+            // Contar total de imágenes
+            const totalItems = document.querySelectorAll('.media-item').length;
+            document.getElementById('total-images').textContent = 
+                totalItems.toString().padStart(2, '0');
+            
+            // Animación inicial
+            setTimeout(animateElements, 100);
+            
+            // Iniciar auto scroll después de 3 segundos
+            setTimeout(startAutoScroll, 3000);
+            
+            console.log('✅ Park Mansion cargado correctamente');
+        });
+    </script>
+</body>
+</html>
