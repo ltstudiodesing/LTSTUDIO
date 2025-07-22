@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135279002-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-135279002-1');
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="imagetoolbar" content="no">
+    <meta name="viewport" content="initial-scale=1.0,minimum-scale=1,maximum-scale=5">
+    <meta name="format-detection" content="telephone=no">
+    
+    <title>PARK MANSION MINAMI AZABU - LT STUDIO DESIGN</title>
+    <meta name="author" content="https://asmobius.co.jp">
+    <meta name="copyright" content="LT STUDIO DESIGN">
+    <meta name="description" content="Exclusive residential project in Minami Azabu, Tokyo - LT Studio Design architectural project">
+    <meta name="keywords" content="LT STUDIO DESIGN,今井敦,Atsushi Imai,建築,プロデュース,PARK MANSION MINAMI AZABU">
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="https://asmobius.co.jp/assets/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicons/favicon-16x16.png">
+    <link rel="manifest" href="../assets/favicons/site.webmanifest">
+    <link rel="mask-icon" href="https://asmobius.co.jp/assets/favicons/safari-pinned-tab.svg" color="#252525">
+    <meta name="msapplication-TileColor" content="#252525">
+    <meta name="theme-color" content="#ffffff">
+    
+    <link rel="stylesheet" href="../assets/css/bundle.css">
+    <link rel="stylesheet" href="../assets/css/background-dots.css">
+    
+    <style>
+        /* Ocultar elementos problemáticos */
+        svg[style*="mix-blend-mode: exclusion"],
+        svg[viewBox="0 0 60 60"][style*="position: fixed"],
+        #app-mousePointer svg {
+            display: none !important;
+        }
+        
+        /* Estilos para la página de proyecto */
+        body {
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        .project-container {
+            width: 100%;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+        
+        .project-header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .project-title {
+            font-family: 'butler_medium', serif;
+            font-size: 48px;
+            font-weight: 500;
+            letter-spacing: 6px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            color: #fff;
+        }
+        
+        .project-subtitle {
+            font-size: 16px;
+            letter-spacing: 2px;
+            opacity: 0.7;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+        
+        .gallery-section {
+            padding: 60px 0;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .gallery-main {
+            position: relative;
+            width: 90%;
+            max-width: 1200px;
+            height: 70vh;
+            min-height: 500px;
+            margin: 0 auto;
+            background: #111;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .gallery-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+        
+        .gallery-image.active {
+            opacity: 1;
+        }
+        
+        .gallery-controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 10;
+        }
+        
+        .gallery-btn {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .gallery-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .gallery-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        .gallery-counter {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            letter-spacing: 2px;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .gallery-thumbnails {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 30px;
+            padding: 0 20px;
+            overflow-x: auto;
+        }
+        
+        .gallery-thumb {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .gallery-thumb.active,
+        .gallery-thumb:hover {
+            opacity: 1;
+            border-color: #fff;
+            transform: scale(1.05);
+        }
+        
+        .videos-section {
+            margin-top: 80px;
+            padding: 60px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .videos-title {
+            font-family: 'butler_medium', serif;
+            font-size: 36px;
+            font-weight: 500;
+            letter-spacing: 4px;
+            text-align: center;
+            margin-bottom: 50px;
+            text-transform: uppercase;
+        }
+        
+        .videos-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .video-item {
+            position: relative;
+            aspect-ratio: 16/9;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #111;
+        }
+        
+        .video-player {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .back-button {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 14px;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: #fff;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .project-title {
+                font-size: 32px;
+                letter-spacing: 3px;
+            }
+            
+            .gallery-main {
+                width: 95%;
+                height: 50vh;
+                min-height: 300px;
+            }
+            
+            .videos-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .gallery-controls {
+                bottom: 20px;
+                gap: 15px;
+            }
+            
+            .gallery-btn {
+                padding: 10px 18px;
+                font-size: 12px;
+            }
+            
+            .back-button {
+                top: 20px;
+                left: 20px;
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .project-container {
+                padding-top: 70px;
+            }
+            
+            .project-title {
+                font-size: 24px;
+                letter-spacing: 2px;
+            }
+            
+            .project-subtitle {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body class="is-ready">
+    <div id="wrapper">
+        <!-- Header igual que la página principal -->
+        <header class="l-header js-header b-fonts__medium">
+            <div class="p-header l-wide-container">
+                <div class="p-header__left js-logo">
+                    <div class="p-header__left__inner">
+                        <a class="js-target--pointer__stateChange" href="../index.html">
+                            <div class="js-target__inner--pointer__stateChange js-target__parent--spring">
+                                <svg version="1.1" id="logo" class="p-header__logo js-logo" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 60 23.3" style="enable-background:new 0 0 60 23.3;" xml:space="preserve">
+                                    <style type="text/css">
+                                        .st-logo { fill: #FFFFFF; }
+                                    </style>
+                                    <g>
+                                        <g>
+                                            <path class="js-st-logo st-logo" d="M9.9,10.1C9.7,9.6,9.7,9.6,9,9.6l-3.4,0c-0.6,0-0.7,0.1-0.9,0.6l-0.9,2.6c-0.3,1-0.5,1.7-0.5,1.9	C3.4,14.9,3.5,15,4,15l0.8,0.1c0.2,0.1,0.2,0.5,0,0.6c-0.6,0-1.3,0-2.4-0.1c-0.8,0-1.6,0-2.2,0.1c-0.1-0.1-0.2-0.5,0-0.6L0.8,15	c0.6,0,1.1-0.3,1.4-1.1c0.4-1.1,1.1-2.6,2-5.2l2.4-6.2C6.9,1.7,7.1,1.2,7,0.9C7.6,0.7,8,0.3,8.2,0c0.1,0,0.3,0,0.3,0.2	c0.3,1,0.7,2.1,1,3.1l3.2,9.3c0.7,2,1,2.3,2,2.5l0.6,0.1c0.2,0.1,0.1,0.5,0,0.6c-0.9,0-1.8-0.1-2.8-0.1c-1.1,0-2,0-2.7,0.1	c-0.2-0.1-0.2-0.5,0-0.6l0.7-0.1c0.5,0,0.8-0.2,0.8-0.4c0-0.3-0.1-0.7-0.3-1.2L9.9,10.1z M5.4,8.2C5.2,8.7,5.3,8.8,5.9,8.8h2.8	c0.7,0,0.7-0.1,0.5-0.7L8,4.3C7.8,3.7,7.6,3.1,7.5,2.8h0C7.4,2.9,7.1,3.5,6.9,4.2L5.4,8.2z"/>
+                                            <path class="js-st-logo st-logo" d="M27.5,16c-1.9,0-3.2-0.6-3.6-0.9c-0.3-0.5-0.6-2.2-0.6-3.2c0.1-0.2,0.5-0.2,0.6-0.1c0.3,1.2,1.3,3.4,4,3.4	c1.9,0,2.9-1.3,2.9-2.7c0-1-0.2-2.1-1.9-3.2L26.6,8c-1.2-0.8-2.5-2.1-2.5-4c0-2.2,1.7-4,4.7-4c0.7,0,1.5,0.1,2.1,0.3	c0.3,0.1,0.6,0.1,0.8,0.1C32,1,32.2,2.3,32.2,3.3c-0.1,0.1-0.5,0.2-0.6,0.1c-0.3-1.1-0.9-2.6-3.1-2.6c-2.3,0-2.8,1.5-2.8,2.6	c0,1.3,1.1,2.3,2,2.8l1.8,1.2c1.5,0.9,2.9,2.2,2.9,4.4C32.4,14.3,30.5,16,27.5,16z"/>
+                                            <path class="js-st-logo st-logo" d="M48.7,9.5c0.5,1.1,1,2.1,1.6,3.2h0c0.6-1.1,1.2-2.3,1.8-3.5l2.2-4.4c1-2.1,1.7-3.4,1.8-4.4	c0.8,0.1,1.3,0.1,1.7,0.1c0.6,0,1.3,0,2.1-0.1c0.1,0.1,0.1,0.5,0,0.6l-0.5,0c-1.5,0.1-1.6,0.6-1.6,2.2c0,2.4,0.1,6.7,0.3,10.1	c0.1,1.2,0,1.8,1.1,1.9l0.7,0.1c0.1,0.1,0.1,0.5,0,0.6c-0.9,0-1.9-0.1-2.7-0.1c-0.8,0-1.8,0-2.8,0.1c-0.2-0.1-0.2-0.4,0-0.6L55,15	c1.1-0.1,1.1-0.5,1.1-2L56,3.4h0c-0.2,0.3-1,2.1-1.5,3l-2.1,4c-1,2-2.1,4.2-2.5,5.3c0,0.1-0.1,0.1-0.2,0.1c0,0-0.2,0-0.2-0.1	c-0.4-1.2-1.5-3.5-2-4.6l-2.1-4.5c-0.5-1.1-1-2.3-1.5-3.3h0c-0.1,1.4-0.2,2.8-0.2,4.1c-0.1,1.4-0.2,3.5-0.2,5.4	c0,1.7,0.1,2.1,1,2.2l0.9,0.1c0.2,0.1,0.1,0.5,0,0.6c-0.8,0-1.7-0.1-2.6-0.1c-0.7,0-1.6,0-2.4,0.1c-0.1-0.1-0.2-0.5,0-0.6l0.5-0.1	c1-0.1,1.3-0.3,1.4-1.9c0.1-1.5,0.3-2.8,0.4-5.1c0.1-1.9,0.2-3.9,0.3-5.2c0-1.5-0.1-1.8-1.5-2l-0.4,0c-0.1-0.1-0.1-0.5,0.1-0.6	c0.7,0,1.2,0.1,1.8,0.1c0.5,0,1.2,0,1.9-0.1c-0.1,0.9,0.5,2.3,1.2,3.8L48.7,9.5z"/>
+                                        </g>
+                                    </g>
+                                </svg>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+                <nav class="js-nav">
+                    <ul class="p-header__list">
+                        <li class="p-header__list__item works pc">
+                            <div class="p-header__list__item__inner--works">
+                                <div class="p-header__list__item--all">
+                                    <a class="js-nav__link js-target--pointer__stateChange" href="../index.html">
+                                        <span class="js-target__inner--pointer__stateChange js-target__parent--spring">All</span>
+                                    </a>
+                                </div>
+                                <div class="p-header__list__item--focus">
+                                    <a class="js-nav__link js-target--pointer__stateChange" href="../index.html">
+                                        <span class="js-target__inner--pointer__stateChange js-target__parent--spring">Focus</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="p-header__list__item has-children">
+                            <a class="js-nav__link js-target--pointer__stateChange about" href="../index.html">
+                                <span class="js-target__inner--pointer__stateChange js-target__parent--spring">About</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Contact igual que la página principal -->
+        <aside id="side-contact" class="p-sideContact">
+            <address class="l-wide-container">
+                <dl class="p-sideContact__inner js-target--sideFix">
+                    <div class="p-sideContact__unit">
+                        <dt class="b-fonts__medium">Hello.</dt>
+                        <dd>
+                            <a class="js-target--pointer__stateChange lang-fonts--en c-link--underline js-hover" href="mailto:info@asmobius.co.jp">
+                                <span class="js-target__inner--pointer__stateChange c-link--underline__inner">
+                                    info@asmobius.co.jp
+                                    <span class="c-link--underline__line"></span>
+                                </span>
+                            </a>
+                        </dd>
+                    </div>
+                    <div class="p-sideContact__unit">
+                        <dt class="b-fonts__medium">Work Together.</dt>
+                        <dd>
+                            <a class="js-target--pointer__stateChange lang-fonts--en c-link--underline js-hover" href="mailto:jobs@asmobius.co.jp">
+                                <span class="js-target__inner--pointer__stateChange c-link--underline__inner">
+                                    jobs@asmobius.co.jp
+                                    <span class="c-link--underline__line"></span>
+                                </span>
+                            </a>
+                        </dd>
+                    </div>
+                </dl>
+            </address>
+        </aside>
+
+        <!-- Botón de regreso -->
+        <a href="../index.html" class="back-button">← Volver</a>
+
+        <!-- Contenido del Proyecto -->
+        <div class="project-container">
+            <div class="project-header">
+                <h1 class="project-title">PARK MANSION</h1>
+                <h2 class="project-subtitle">MINAMI AZABU</h2>
+                <p class="project-subtitle">Exclusive residential project in the heart of Tokyo</p>
+            </div>
+
+            <div class="gallery-section">
+                <div class="gallery-main">
+                    <div class="gallery-counter">
+                        <span id="current-image">1</span> / <span id="total-images">8</span>
+                    </div>
+                    
+                    <div class="gallery-controls">
+                        <button class="gallery-btn" id="prev-btn">← Anterior</button>
+                        <button class="gallery-btn" id="next-btn">Siguiente →</button>
+                    </div>
+                    
+                    <!-- 8 Imágenes - Aquí pondrás las tuyas más adelante -->
+                    <img class="gallery-image active" src="https://picsum.photos/1200/800?random=1" alt="Park Mansion - Imagen 1">
+                    <img class="gallery-image" src="https://picsum.photos/1200/800?random=2" alt="Park Mansion - Imagen 2">
+                    <img class="gallery-image" src="https://picsum.photos/1200/800?random=3" alt="Park Mansion - Imagen 3">
+                    <img class="gallery-image" src="https://picsum.photos/1200/800?random=4" alt="Park Mansion - Imagen 4">
+                    <img class="gallery-image" src="https://picsum.photos/1200/800?random=5" alt="Park Mansion - Imagen 5">
+                    <img class="gallery-image" src="https://picsum.photos/1200/800?random=6" alt="Park Mansion - Imagen 6">
+                    <img class="gallery-image" src="https://picsum.photos/1200/800?random=7" alt="Park Mansion - Imagen 7">
+                    <img class="gallery-image" src="https://picsum.photos/1200/800?random=8" alt="Park Mansion - Imagen 8">
+                </div>
+                
+                <!-- Miniaturas -->
+                <div class="gallery-thumbnails">
+                    <img class="gallery-thumb active" src="https://picsum.photos/80/60?random=1" alt="Thumbnail 1" data-index="0">
+                    <img class="gallery-thumb" src="https://picsum.photos/80/60?random=2" alt="Thumbnail 2" data-index="1">
+                    <img class="gallery-thumb" src="https://picsum.photos/80/60?random=3" alt="Thumbnail 3" data-index="2">
+                    <img class="gallery-thumb" src="https://picsum.photos/80/60?random=4" alt="Thumbnail 4" data-index="3">
+                    <img class="gallery-thumb" src="https://picsum.photos/80/60?random=5" alt="Thumbnail 5" data-index="4">
+                    <img class="gallery-thumb" src="https://picsum.photos/80/60?random=6" alt="Thumbnail 6" data-index="5">
+                    <img class="gallery-thumb" src="https://picsum.photos/80/60?random=7" alt="Thumbnail 7" data-index="6">
+                    <img class="gallery-thumb" src="https://picsum.photos/80/60?random=8" alt="Thumbnail 8" data-index="7">
+                </div>
+            </div>
+
+            <!-- Sección de Videos -->
+            <div class="videos-section">
+                <h2 class="videos-title">Project Videos</h2>
+                <div class="videos-grid">
+                    <div class="video-item">
+                        <video class="video-player" controls poster="https://picsum.photos/580/350?random=9">
+                            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                            Tu navegador no soporta videos HTML5.
+                        </video>
+                    </div>
+                    <div class="video-item">
+                        <video class="video-player" controls poster="https://picsum.photos/580/350?random=10">
+                            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4">
+                            Tu navegador no soporta videos HTML5.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/js/background-dots.js"></script>
+    <script>
+        // Funcionalidad de la galería
+        document.addEventListener('DOMContentLoaded', function() {
+            const images = document.querySelectorAll('.gallery-image');
+            const thumbs = document.querySelectorAll('.gallery-thumb');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const currentImageSpan = document.getElementById('current-image');
+            
+            let currentIndex = 0;
+            const totalImages = images.length;
+            
+            function showImage(index) {
+                // Ocultar todas las imágenes
+                images.forEach(img => img.classList.remove('active'));
+                thumbs.forEach(thumb => thumb.classList.remove('active'));
+                
+                // Mostrar imagen actual
+                images[index].classList.add('active');
+                thumbs[index].classList.add('active');
+                
+                // Actualizar contador
+                currentImageSpan.textContent = index + 1;
+                
+                // Actualizar botones
+                prevBtn.disabled = index === 0;
+                nextBtn.disabled = index === totalImages - 1;
+                
+                currentIndex = index;
+            }
+            
+            // Navegación con botones
+            prevBtn.addEventListener('click', function() {
+                if (currentIndex > 0) {
+                    showImage(currentIndex - 1);
+                }
+            });
+            
+            nextBtn.addEventListener('click', function() {
+                if (currentIndex < totalImages - 1) {
+                    showImage(currentIndex + 1);
+                }
+            });
+            
+            // Navegación con miniaturas
+            thumbs.forEach((thumb, index) => {
+                thumb.addEventListener('click', function() {
+                    showImage(index);
+                });
+            });
+            
+            // Navegación con teclado
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                    showImage(currentIndex - 1);
+                } else if (e.key === 'ArrowRight' && currentIndex < totalImages - 1) {
+                    showImage(currentIndex + 1);
+                }
+            });
+            
+            // Inicializar
+            showImage(0);
+            
+            console.log('✅ Park Mansion project loaded successfully');
+        });
+        
+        // Prevenir errores de CORS
+        window.addEventListener('error', function(e) {
+            if (e.target && e.target.tagName === 'IMG') {
+                e.preventDefault();
+                return false;
+            }
+        }, true);
+    </script>
+</body>
+</html>
