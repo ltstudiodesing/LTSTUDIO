@@ -538,8 +538,7 @@
             currentProject = index;
 
             // Actualizar contador
-            document.getElementById('current-num').textContent =
-                (index + 1).toString().padStart(2, '0');
+            document.getElementById('current-num').textContent = (index + 1).toString();
 
             // Actualizar botones de navegación
             document.getElementById('prev-btn').disabled = (index === 0);
