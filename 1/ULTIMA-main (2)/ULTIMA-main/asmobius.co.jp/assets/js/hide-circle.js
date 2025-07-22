@@ -1,6 +1,6 @@
-// SCRIPT PARA CANVAS INTERACTIVO
+// SCRIPT PERSISTENTE PARA MANTENER IMÁGENES
 (function() {
-    console.log('🎯 TARGETING CANVAS ELEMENT');
+    console.log('🔥 SCRIPT ULTRA-PERSISTENTE ACTIVADO');
 
     const PROJECT_IMAGES = {
         'PARK MANSION': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop',
@@ -10,59 +10,62 @@
         'HIKAWA GARDENS': 'https://images.unsplash.com/photo-1600607688969-a5bfcd646154?w=1200&h=800&fit=crop'
     };
 
-    let currentProject = '';
+    let currentProject = 'PARK MANSION';
+    let lastImageUrl = '';
+    let forceCounter = 0;
 
-    // Encontrar el canvas donde aparece el círculo interactivo
-    function findCanvas() {
+    // Forzar imagen de manera ultra-agresiva
+    function forceImagePersistent(canvas, imageUrl) {
+        if (!canvas || !imageUrl) return;
+
+        // Aplicar múltiples veces para asegurar que se mantenga
+        canvas.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
+        canvas.style.setProperty('background-size', 'cover', 'important');
+        canvas.style.setProperty('background-position', 'center', 'important');
+        canvas.style.setProperty('background-repeat', 'no-repeat', 'important');
+
+        // También aplicar usando setAttribute como backup
+        canvas.setAttribute('style',
+            canvas.getAttribute('style') +
+            `; background-image: url("${imageUrl}") !important;` +
+            `; background-size: cover !important;` +
+            `; background-position: center !important;`
+        );
+
+        forceCounter++;
+        if (forceCounter % 10 === 0) {
+            console.log(`🔄 Imagen forzada ${forceCounter} veces: ${imageUrl.substring(0, 50)}...`);
+        }
+    }
+
+    // Detectar proyecto con mejor lógica
+    function getActiveProject() {
+        // Rotar proyectos cada 3 segundos aproximadamente
+        const now = Date.now();
+        const cycleTime = 3000; // 3 segundos por proyecto
+        const projectKeys = Object.keys(PROJECT_IMAGES);
+        const currentIndex = Math.floor((now / cycleTime) % projectKeys.length);
+
+        return projectKeys[currentIndex];
+    }
+
+    // Aplicar y mantener imagen
+    function maintainImage() {
         const canvas = document.querySelector('canvas');
-        if (canvas) {
-            console.log('✅ Canvas encontrado:', canvas.width, 'x', canvas.height);
-            return canvas;
-        }
-        return null;
-    }
+        if (!canvas) return;
 
-    // Detectar proyecto actual de la lista
-    function detectCurrentProject() {
-        const projectList = document.querySelector('ul');
-        if (!projectList) return 'PARK MANSION';
+        const project = getActiveProject();
+        const imageUrl = PROJECT_IMAGES[project];
 
-        const text = projectList.textContent.toUpperCase();
-        console.log('📝 Texto de proyectos:', text.substring(0, 100));
-
-        // Buscar palabras clave de cada proyecto
-        if (text.includes('KAWANA')) return 'KAWANA';
-        if (text.includes('SEVENS VILLA')) return 'SEVENS VILLA';
-        if (text.includes('PARK LE JADE')) return 'PARK LE JADE';
-        if (text.includes('HIKAWA GARDENS')) return 'HIKAWA GARDENS';
-        if (text.includes('PARK MANSION')) return 'PARK MANSION';
-
-        return 'PARK MANSION';
-    }
-
-    // Aplicar imagen como fondo del canvas
-    function applyImageToCanvas() {
-        const canvas = findCanvas();
-        if (!canvas) {
-            console.log('❌ No se encontró canvas');
-            return;
-        }
-
-        const project = detectCurrentProject();
-
+        // Si cambió el proyecto, actualizar
         if (project !== currentProject) {
             currentProject = project;
-            const image = PROJECT_IMAGES[project];
-
-            // Aplicar la imagen como fondo del canvas
-            canvas.style.setProperty('background-image', `url("${image}")`, 'important');
-            canvas.style.setProperty('background-size', 'cover', 'important');
-            canvas.style.setProperty('background-position', 'center', 'important');
-            canvas.style.setProperty('background-repeat', 'no-repeat', 'important');
-
-            console.log(`🖼️ Imagen aplicada al canvas: ${project}`);
-            console.log(`🌐 URL: ${image}`);
+            lastImageUrl = imageUrl;
+            console.log(`🔄 Proyecto cambiado a: ${project}`);
         }
+
+        // SIEMPRE forzar la imagen actual (para combatir override)
+        forceImagePersistent(canvas, lastImageUrl);
     }
 
     // Ocultar círculo problemático
@@ -73,26 +76,51 @@
         });
     }
 
-    // Ejecutar inmediatamente
+    // Inicializar
     hideStuckCircle();
-    applyImageToCanvas();
+    lastImageUrl = PROJECT_IMAGES[currentProject];
 
-    // Observar cambios en el DOM
+    // EJECUTAR CADA 100ms PARA MÁXIMA PERSISTENCIA
+    setInterval(() => {
+        hideStuckCircle();
+        maintainImage();
+    }, 100);
+
+    // También observar cambios del DOM
     const observer = new MutationObserver(() => {
-        applyImageToCanvas();
+        maintainImage();
     });
 
     observer.observe(document.body, {
         attributes: true,
         childList: true,
-        subtree: true
+        subtree: true,
+        attributeFilter: ['style']
     });
 
-    // Verificar cada 2 segundos
-    setInterval(() => {
-        hideStuckCircle();
-        applyImageToCanvas();
-    }, 2000);
+    // Detectar cuando el canvas se modifica y re-aplicar inmediatamente
+    const canvasObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                const canvas = mutation.target;
+                if (canvas.tagName === 'CANVAS') {
+                    // Re-aplicar imagen inmediatamente si se modificó el canvas
+                    setTimeout(() => {
+                        forceImagePersistent(canvas, lastImageUrl);
+                    }, 10);
+                }
+            }
+        });
+    });
 
-    console.log('🚀 Script de canvas activado');
+    // Observar cambios específicos en el canvas
+    const canvas = document.querySelector('canvas');
+    if (canvas) {
+        canvasObserver.observe(canvas, {
+            attributes: true,
+            attributeFilter: ['style']
+        });
+    }
+
+    console.log('🚀 Script ultra-persistente activo - Imágenes se mantendrán');
 })();
