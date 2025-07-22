@@ -300,4 +300,16 @@
 
     // Configurar navegación después de un delay
     setTimeout(setupProjectNavigation, 1000);
+
+    // Ejecutar una vez más después de 5 segundos para asegurar que las imágenes se carguen
+    setTimeout(() => {
+        console.log('🔄 Ejecución final para asegurar imágenes en círculos');
+        updateLogoAndSetupBackgrounds();
+    }, 5000);
+
+    // Y otra vez después de 10 segundos por si la página tarda en cargar
+    setTimeout(() => {
+        console.log('🔄 Último intento para aplicar imágenes a círculos');
+        updateLogoAndSetupBackgrounds();
+    }, 10000);
 })();
