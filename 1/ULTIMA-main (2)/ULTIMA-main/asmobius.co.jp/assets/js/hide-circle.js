@@ -13,41 +13,51 @@
     let proyectoActual = 0;
     let miSistema = null;
 
-    // ELIMINAR TODO LO PROBLEMÁTICO DEL SITIO ORIGINAL
-    function eliminarTodoProblematico() {
-        // Eliminar canvas problemático
+    // OCULTAR ELEMENTOS PROBLEMÁTICOS SIN ELIMINARLOS
+    function ocultarElementosProblematicos() {
+        // Ocultar canvas problemático (sin eliminarlo)
         const canvas = document.querySelector('canvas');
         if (canvas) {
-            canvas.remove();
-            console.log('🗑️ Canvas problemático eliminado');
+            canvas.style.visibility = 'hidden';
+            canvas.style.opacity = '0';
+            canvas.style.pointerEvents = 'none';
+            console.log('👻 Canvas ocultado');
         }
 
-        // Eliminar SVG problemáticos
+        // Ocultar SVG problemáticos (sin eliminarlos)
         const svgs = document.querySelectorAll('svg');
         svgs.forEach(svg => {
-            svg.remove();
-            console.log('🗑️ SVG problemático eliminado');
+            svg.style.visibility = 'hidden';
+            svg.style.opacity = '0';
+            svg.style.pointerEvents = 'none';
+            console.log('👻 SVG ocultado');
         });
 
-        // Eliminar lista oculta
+        // Ocultar lista (sin eliminarla)
         const ul = document.querySelector('ul');
         if (ul) {
-            ul.remove();
-            console.log('🗑️ Lista problemática eliminada');
+            ul.style.visibility = 'hidden';
+            ul.style.opacity = '0';
+            ul.style.pointerEvents = 'none';
+            console.log('👻 Lista ocultada');
         }
 
-        // Eliminar elementos giratorios
+        // Ocultar elementos giratorios
         const giratorios = document.querySelectorAll('[style*="animation-name: spin"]');
         giratorios.forEach(el => {
-            el.remove();
-            console.log('🗑️ Elemento giratorio eliminado');
+            el.style.visibility = 'hidden';
+            el.style.opacity = '0';
+            el.style.pointerEvents = 'none';
+            console.log('👻 Elemento giratorio ocultado');
         });
 
-        // Eliminar elementos con mix-blend-mode
+        // Ocultar elementos con mix-blend-mode
         const mixBlend = document.querySelectorAll('[style*="mix-blend-mode"]');
         mixBlend.forEach(el => {
-            el.remove();
-            console.log('🗑️ Elemento mix-blend eliminado');
+            el.style.visibility = 'hidden';
+            el.style.opacity = '0';
+            el.style.pointerEvents = 'none';
+            console.log('👻 Elemento mix-blend ocultado');
         });
     }
 
