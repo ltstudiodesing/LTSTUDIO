@@ -985,34 +985,45 @@
         // INICIAR BARRA DE PROGRESO
         // CONFIGURACIÓN DE INDICADOR DE PROYECTOS
         function setupProjectIndicator() {
+            const progressCircle = document.getElementById('progress-circle');
             const dotsContainer = document.getElementById('project-dots');
-            if (!dotsContainer) return;
 
-            dotsContainer.innerHTML = '';
+            // Configurar círculo de progreso
+            if (progressCircle) {
+                const radius = progressCircle.r.baseVal.value;
+                const circumference = 2 * Math.PI * radius;
+                progressCircle.style.strokeDasharray = circumference;
+                progressCircle.style.strokeDashoffset = circumference;
+            }
 
-            // Crear puntos para cada proyecto alrededor del círculo
-            PROJECTS.forEach((project, index) => {
-                const dot = document.createElement('div');
-                dot.className = 'indicator-dot';
-                dot.dataset.project = index;
+            // Configurar puntos de proyectos
+            if (dotsContainer) {
+                dotsContainer.innerHTML = '';
 
-                // Calcular posición alrededor del círculo
-                const angle = (index / PROJECTS.length) * 360 - 90; // -90 para empezar arriba
-                const radian = (angle * Math.PI) / 180;
-                const radius = 50; // porcentaje del contenedor
+                // Crear puntos para cada proyecto alrededor del círculo
+                PROJECTS.forEach((project, index) => {
+                    const dot = document.createElement('div');
+                    dot.className = 'project-dot';
+                    dot.dataset.project = index;
 
-                const x = 50 + radius * Math.cos(radian);
-                const y = 50 + radius * Math.sin(radian);
+                    // Calcular posición alrededor del círculo
+                    const angle = (index / PROJECTS.length) * 360 - 90; // -90 para empezar arriba
+                    const radian = (angle * Math.PI) / 180;
+                    const radius = 50; // porcentaje del contenedor
 
-                dot.style.left = x + '%';
-                dot.style.top = y + '%';
-                dot.style.transform = 'translate(-50%, -50%)';
+                    const x = 50 + radius * Math.cos(radian);
+                    const y = 50 + radius * Math.sin(radian);
 
-                dotsContainer.appendChild(dot);
-            });
+                    dot.style.left = x + '%';
+                    dot.style.top = y + '%';
+                    dot.style.transform = 'translate(-50%, -50%)';
 
-            // Activar el primer punto
-            updateProjectIndicator(0);
+                    dotsContainer.appendChild(dot);
+                });
+
+                // Activar el primer punto
+                updateProjectIndicator(0);
+            }
         }
 
         // ACTUALIZAR INDICADOR DE PROYECTOS
