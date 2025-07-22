@@ -60,19 +60,25 @@
         .intro-text .letter {
             display: inline-block;
             color: #666;
-            animation: letterFillIn 0.8s ease forwards;
+            opacity: 0.3;
+            transition: all 0.6s ease;
+        }
+
+        .intro-text .letter.filled {
+            color: white;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         @keyframes letterFillIn {
             0% {
                 color: #666;
-                transform: translateY(20px);
-            }
-            50% {
-                transform: translateY(0);
+                opacity: 0.3;
+                transform: translateY(10px);
             }
             100% {
                 color: white;
+                opacity: 1;
                 transform: translateY(0);
             }
         }
@@ -606,73 +612,73 @@
             {
                 name: 'PARK MANSION',
                 location: 'Minami Azabu',
-                image: 'https://picsum.photos/600/600?random=101',
+                image: 'https://picsum.photos/seed/park-mansion/600/600',
                 duration: 4000
             },
             {
                 name: 'KAWANA',
                 location: 'Silence Kawana',
-                image: 'https://picsum.photos/600/600?random=102',
+                image: 'https://picsum.photos/seed/kawana/600/600',
                 duration: 4000
             },
             {
                 name: 'PARK LE JADE',
                 location: 'Shirokane Residence',
-                image: 'https://picsum.photos/600/600?random=103',
+                image: 'https://picsum.photos/seed/park-le-jade/600/600',
                 duration: 4000
             },
             {
                 name: 'SEVENS VILLA',
                 location: 'Karuizawa',
-                image: 'https://picsum.photos/600/600?random=104',
+                image: 'https://picsum.photos/seed/sevens-villa/600/600',
                 duration: 4000
             },
             {
                 name: 'HIKAWA GARDENS',
                 location: 'Tokyo',
-                image: 'https://picsum.photos/600/600?random=105',
+                image: 'https://picsum.photos/seed/hikawa-gardens/600/600',
                 duration: 4000
             },
             {
                 name: 'ONE AVENUE',
                 location: 'Central District',
-                image: 'https://picsum.photos/600/600?random=106',
+                image: 'https://picsum.photos/seed/one-avenue/600/600',
                 duration: 4000
             },
             {
                 name: 'CENTURY FOREST',
                 location: 'Urban Integration',
-                image: 'https://picsum.photos/600/600?random=107',
+                image: 'https://picsum.photos/seed/century-forest/600/600',
                 duration: 4000
             },
             {
                 name: 'PROUD',
                 location: 'Rokakoen',
-                image: 'https://picsum.photos/600/600?random=108',
+                image: 'https://picsum.photos/seed/proud/600/600',
                 duration: 4000
             },
             {
                 name: 'NISHIAZABU RESIDENCE',
                 location: 'Nishiazabu',
-                image: 'https://picsum.photos/600/600?random=109',
+                image: 'https://picsum.photos/seed/nishiazabu/600/600',
                 duration: 4000
             },
             {
                 name: 'ITOHPIA JIYUGAOKA',
                 location: 'Jiyugaoka',
-                image: 'https://picsum.photos/600/600?random=110',
+                image: 'https://picsum.photos/seed/itohpia/600/600',
                 duration: 4000
             },
             {
                 name: 'URBAN VILLA',
                 location: 'Central Tokyo',
-                image: 'https://picsum.photos/600/600?random=111',
+                image: 'https://picsum.photos/seed/urban-villa/600/600',
                 duration: 4000
             },
             {
                 name: 'MODERN HOUSE',
                 location: 'Shibuya',
-                image: 'https://picsum.photos/600/600?random=112',
+                image: 'https://picsum.photos/seed/modern-house/600/600',
                 duration: 4000
             }
         ];
