@@ -19,7 +19,7 @@
     <meta name="author" content="https://asmobius.co.jp">
     <meta name="copyright" content="LT STUDIO DESIGN">
     <meta name="description" content="Exclusive residential project in Minami Azabu, Tokyo - LT Studio Design architectural project">
-    <meta name="keywords" content="LT STUDIO DESIGN,今井敦,Atsushi Imai,建築,プロデュース,PARK MANSION MINAMI AZABU">
+    <meta name="keywords" content="LT STUDIO DESIGN,今井敦,Atsushi Imai,建��,プロデュース,PARK MANSION MINAMI AZABU">
     
     <link rel="apple-touch-icon" sizes="180x180" href="https://asmobius.co.jp/assets/favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicons/favicon-32x32.png">
@@ -618,7 +618,102 @@
                 imageContainers[0].classList.add('visible');
             }
 
-            console.log('✅ Park Mansion minimalista cargado correctamente');
+            // === AUTO-SCROLL FUNCTIONALITY ===
+            let autoScrollEnabled = true;
+            let autoScrollInterval;
+            let currentImageIndex = 0;
+            let userInteracted = false;
+
+            // Auto-scroll function
+            function startAutoScroll() {
+                if (!autoScrollEnabled || userInteracted) return;
+
+                autoScrollInterval = setInterval(() => {
+                    if (imageContainers.length === 0) return;
+
+                    currentImageIndex = (currentImageIndex + 1) % imageContainers.length;
+                    const targetImage = imageContainers[currentImageIndex];
+
+                    if (targetImage) {
+                        targetImage.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+
+                        // Actualizar contador
+                        currentImageSpan.textContent = currentImageIndex + 1;
+                    }
+                }, 5000); // Cambiar cada 5 segundos
+            }
+
+            function stopAutoScroll() {
+                if (autoScrollInterval) {
+                    clearInterval(autoScrollInterval);
+                    autoScrollInterval = null;
+                }
+            }
+
+            // Detectar interacción del usuario
+            function handleUserInteraction() {
+                userInteracted = true;
+                stopAutoScroll();
+
+                // Reanudar auto-scroll después de 8 segundos sin interacción
+                setTimeout(() => {
+                    userInteracted = false;
+                    if (autoScrollEnabled) {
+                        startAutoScroll();
+                    }
+                }, 8000);
+            }
+
+            // Iniciar auto-scroll después de 4 segundos
+            setTimeout(() => {
+                if (autoScrollEnabled) {
+                    startAutoScroll();
+                }
+            }, 4000);
+
+            // Detectar interacciones del usuario
+            let scrollTimeout;
+            window.addEventListener('scroll', function() {
+                handleUserInteraction();
+
+                // Actualizar índice actual basado en imagen visible
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    imageContainers.forEach((container, index) => {
+                        const rect = container.getBoundingClientRect();
+                        const windowHeight = window.innerHeight;
+
+                        if (rect.top >= -windowHeight/3 && rect.top <= windowHeight/3) {
+                            currentImageIndex = index;
+                        }
+                    });
+                }, 150);
+            });
+
+            // Detectar clicks, toques y teclado
+            document.addEventListener('click', handleUserInteraction);
+            document.addEventListener('touchstart', handleUserInteraction);
+            document.addEventListener('keydown', function(e) {
+                if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
+                    handleUserInteraction();
+                }
+            });
+
+            // Función global para toggle auto-scroll (debugging)
+            window.toggleAutoScroll = function() {
+                autoScrollEnabled = !autoScrollEnabled;
+                if (autoScrollEnabled) {
+                    startAutoScroll();
+                } else {
+                    stopAutoScroll();
+                }
+                console.log('Auto-scroll:', autoScrollEnabled ? 'enabled' : 'disabled');
+            };
+
+            console.log('✅ Park Mansion con auto-scroll cargado correctamente');
         });
 
         // Prevenir errores de CORS
