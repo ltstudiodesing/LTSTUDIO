@@ -475,7 +475,7 @@
         // CREAR PARTÍCULAS
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
-            
+
             for (let i = 0; i < 50; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
@@ -485,9 +485,24 @@
                 particle.style.height = particle.style.width;
                 particle.style.animationDelay = Math.random() * 6 + 's';
                 particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
-                
+
                 particlesContainer.appendChild(particle);
             }
+        }
+
+        // ANIMAR TEXTO LETRA POR LETRA
+        function animateIntroText() {
+            const introText = document.querySelector('.intro-text');
+            const text = 'LT STUDIO DESIGN';
+            introText.innerHTML = '';
+
+            text.split('').forEach((letter, index) => {
+                const span = document.createElement('span');
+                span.className = 'letter';
+                span.textContent = letter === ' ' ? '\u00A0' : letter;
+                span.style.animationDelay = (index * 0.1) + 's';
+                introText.appendChild(span);
+            });
         }
         
         // INICIALIZAR IMÁGENES DE PROYECTOS
