@@ -874,40 +874,40 @@
             });
         }
         
-        // INICIALIZAR IMÁGENES DE PROYECTOS
+        // INICIALIZAR PRIMERA IMAGEN DE FONDO
         function initProjectImages() {
-            const backgrounds = document.querySelectorAll('.project-background');
-            console.log(`🖼️ Inicializando ${backgrounds.length} imágenes de fondo`);
+            console.log(`🖼️ Inicializando imagen de fondo única`);
 
-            backgrounds.forEach((bg, index) => {
-                if (PROJECTS[index]) {
-                    const imageUrl = PROJECTS[index].image;
-                    bg.style.backgroundImage = `url("${imageUrl}")`;
-                    bg.style.backgroundSize = 'cover';
-                    bg.style.backgroundPosition = 'center';
-                    bg.style.backgroundRepeat = 'no-repeat';
+            // Configurar primera imagen
+            if (PROJECTS[0]) {
+                updateBackgroundImage(0);
+            }
+        }
 
-                    console.log(`✅ Imagen ${index + 1} configurada: ${PROJECTS[index].name} - ${imageUrl}`);
+        // ACTUALIZAR IMAGEN DE FONDO
+        function updateBackgroundImage(index) {
+            const fullBg = document.getElementById('full-bg');
+            if (fullBg && PROJECTS[index]) {
+                const imageUrl = PROJECTS[index].image;
+                const timestamp = Date.now();
+                const finalUrl = `${imageUrl}?cache=${timestamp}&id=${index}`;
 
-                    // Precargar imagen con timestamp para evitar cache
-                    const img = new Image();
-                    const timestamp = Date.now();
-                    const finalUrl = `${imageUrl}?cache=${timestamp}&id=${index}`;
-
-                    img.onload = () => {
-                        console.log(`📥 Imagen ${index + 1} cargada exitosamente: ${PROJECTS[index].name}`);
-                        bg.style.backgroundImage = `url("${finalUrl}")`;
-                    };
-                    img.onerror = () => {
-                        console.log(`❌ Error cargando imagen ${index + 1}, usando fallback`);
-                        const fallbackUrl = `https://picsum.photos/seed/backup-${index}-${timestamp}/600/600`;
-                        bg.style.backgroundImage = `url("${fallbackUrl}")`;
-                    };
-                    img.src = finalUrl;
-                } else {
-                    console.log(`⚠️ No hay proyecto para background ${index}`);
-                }
-            });
+                const img = new Image();
+                img.onload = () => {
+                    console.log(`📥 Imagen de fondo cargada: ${PROJECTS[index].name}`);
+                    fullBg.style.backgroundImage = `url("${finalUrl}")`;
+                    fullBg.classList.remove('active');
+                    setTimeout(() => {
+                        fullBg.classList.add('active');
+                    }, 100);
+                };
+                img.onerror = () => {
+                    console.log(`❌ Error cargando imagen, usando fallback`);
+                    const fallbackUrl = `https://picsum.photos/seed/backup-${index}-${timestamp}/600/600`;
+                    fullBg.style.backgroundImage = `url("${fallbackUrl}")`;
+                };
+                img.src = finalUrl;
+            }
         }
         
         // CAMBIAR PROYECTO
