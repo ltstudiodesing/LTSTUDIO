@@ -1,66 +1,113 @@
-// SCRIPT PRECISO PARA CÍRCULO INTERACTIVO
+// SCRIPT DINÁMICO PARA PROYECTOS CON IMÁGENES INMERSIVAS
 (function() {
-    console.log('🎯 INICIANDO SCRIPT PRECISO PARA CÍRCULO');
+    console.log('🌟 INICIANDO SCRIPT DINÁMICO CON IMÁGENES POR PROYECTO');
 
-    const PARK_MANSION_IMAGE = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=1200&fit=crop';
+    // MAPEO DE IMÁGENES POR PROYECTO
+    const PROJECT_IMAGES = {
+        'PARK MANSION': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&h=1080&fit=crop',
+        'KAWANA': 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1920&h=1080&fit=crop',
+        'SEVENS VILLA': 'https://images.unsplash.com/photo-1600563438938-a42d1c941a96?w=1920&h=1080&fit=crop',
+        'PARK LE JADE': 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&h=1080&fit=crop',
+        'HIKAWA GARDENS': 'https://images.unsplash.com/photo-1600607688969-a5bfcd646154?w=1920&h=1080&fit=crop',
+        'ONE AVENUE': 'https://images.unsplash.com/photo-1600607688608-8029ab8bf4b7?w=1920&h=1080&fit=crop',
+        'CENTURY FOREST': 'https://images.unsplash.com/photo-1600607688878-6b7f47e3f6a0?w=1920&h=1080&fit=crop',
+        'PROUD': 'https://images.unsplash.com/photo-1600607688964-d6b3c0b47b42?w=1920&h=1080&fit=crop'
+    };
 
-    // Función para aplicar imagen SOLO al círculo interactivo
-    function applyBackgroundToCircle() {
-        console.log('🔍 Buscando círculo interactivo...');
+    let currentProject = '';
+    let fullScreenOverlay = null;
 
-        // Buscar círculo por diferentes métodos
-        const possibleCircles = [
-            // Por clase o ID específico
-            document.querySelector('[data-circle="true"]'),
-            document.querySelector('.interactive-circle'),
-            document.querySelector('#circle'),
-            // Por CSS que indique círculo (border-radius: 50%)
-            ...Array.from(document.querySelectorAll('div')).filter(div => {
-                const style = window.getComputedStyle(div);
-                return style.borderRadius.includes('50%') &&
-                       (parseInt(style.width) > 200 || parseInt(style.height) > 200);
-            }),
-            // Por tamaño cuadrado y grande (típico círculo)
-            ...Array.from(document.querySelectorAll('div')).filter(div => {
-                const style = window.getComputedStyle(div);
-                const width = parseInt(style.width) || 0;
-                const height = parseInt(style.height) || 0;
-                return width > 300 && height > 300 && Math.abs(width - height) < 50;
-            })
-        ];
+    // Crear overlay de pantalla completa para inmersión
+    function createFullScreenOverlay() {
+        if (fullScreenOverlay) return fullScreenOverlay;
 
-        // Encontrar el círculo correcto (el más grande)
-        let targetCircle = null;
-        let maxSize = 0;
+        fullScreenOverlay = document.createElement('div');
+        fullScreenOverlay.id = 'project-immersion-overlay';
+        fullScreenOverlay.style.cssText = `
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            z-index: 5 !important;
+            pointer-events: none !important;
+            opacity: 0.8 !important;
+            transition: background-image 0.8s ease-in-out !important;
+        `;
 
-        possibleCircles.forEach(circle => {
-            if (!circle) return;
-            const style = window.getComputedStyle(circle);
-            const width = parseInt(style.width) || 0;
-            const height = parseInt(style.height) || 0;
-            const size = width * height;
+        document.body.appendChild(fullScreenOverlay);
+        console.log('✅ Overlay de pantalla completa creado');
+        return fullScreenOverlay;
+    }
 
-            if (size > maxSize) {
-                maxSize = size;
-                targetCircle = circle;
+    // Detectar proyecto actual
+    function detectCurrentProject() {
+        // Buscar en la lista de proyectos visible
+        const projectList = document.querySelector('ul');
+        if (!projectList) return null;
+
+        const listItems = projectList.querySelectorAll('li');
+
+        // Buscar el proyecto más visible o activo
+        for (let item of listItems) {
+            const style = window.getComputedStyle(item);
+            const text = item.textContent.toUpperCase().trim();
+
+            // Si el item está visible y tiene opacidad alta
+            if (style.opacity > 0.7 || style.transform.includes('scale(1)')) {
+                // Extraer nombre del proyecto
+                for (let projectName in PROJECT_IMAGES) {
+                    if (text.includes(projectName)) {
+                        return projectName;
+                    }
+                }
             }
+        }
+
+        return null;
+    }
+
+    // Aplicar imagen del proyecto actual
+    function updateProjectImage() {
+        const project = detectCurrentProject();
+
+        if (project && project !== currentProject) {
+            currentProject = project;
+            const image = PROJECT_IMAGES[project];
+
+            if (image) {
+                // Crear/actualizar overlay de pantalla completa
+                const overlay = createFullScreenOverlay();
+                overlay.style.setProperty('background-image', `url("${image}")`, 'important');
+
+                console.log(`🖼️ Imagen cambiada a proyecto: ${project}`);
+                console.log(`🌐 URL de imagen: ${image}`);
+            }
+        }
+    }
+
+    // Observar cambios en el DOM para detectar rotación de proyectos
+    function observeProjectChanges() {
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' || mutation.type === 'childList') {
+                    updateProjectImage();
+                }
+            });
         });
 
-        if (targetCircle) {
-            console.log('✅ Círculo encontrado:', targetCircle);
+        // Observar cambios en toda la página
+        observer.observe(document.body, {
+            attributes: true,
+            childList: true,
+            subtree: true,
+            attributeFilter: ['style', 'class']
+        });
 
-            // SOLO aplicar la imagen, preservar todo lo demás
-            targetCircle.style.setProperty('background-image', `url("${PARK_MANSION_IMAGE}")`, 'important');
-            targetCircle.style.setProperty('background-size', 'cover', 'important');
-            targetCircle.style.setProperty('background-position', 'center', 'important');
-            targetCircle.style.setProperty('background-repeat', 'no-repeat', 'important');
-
-            console.log('🖼️ Imagen aplicada al círculo correctamente');
-            return true;
-        } else {
-            console.log('❌ No se encontró círculo interactivo');
-            return false;
-        }
+        console.log('👁️ Observer de cambios de proyecto activado');
     }
 
     // Ocultar círculo problemático del header
@@ -68,36 +115,30 @@
         const problematicElements = document.querySelectorAll('svg[style*="mix-blend-mode: exclusion"], svg[viewBox="0 0 60 60"]');
         problematicElements.forEach(el => {
             el.style.display = 'none';
-            console.log('🔧 Elemento problemático ocultado');
         });
     }
 
     // Función principal
     function main() {
         hideStuckCircle();
-        const success = applyBackgroundToCircle();
+        updateProjectImage();
 
-        if (success) {
-            console.log('🎉 ¡Imagen aplicada exitosamente!');
-        } else {
-            console.log('⚠️ Reintentando en 1 segundo...');
+        // Si no hay proyecto detectado, usar imagen por defecto
+        if (!currentProject) {
+            const overlay = createFullScreenOverlay();
+            overlay.style.setProperty('background-image', `url("${PROJECT_IMAGES['PARK MANSION']}")`, 'important');
+            console.log('🔄 Aplicando imagen por defecto (PARK MANSION)');
         }
     }
 
-    // Ejecutar inmediatamente
+    // Inicializar sistema
     main();
+    observeProjectChanges();
 
-    // Intentar cada segundo solo por 30 segundos (más conservador)
-    let attempts = 0;
-    const interval = setInterval(() => {
-        main();
-        attempts++;
-
-        if (attempts >= 30) {
-            clearInterval(interval);
-            console.log('⏰ Intentos completados');
-        }
-    }, 1000);
+    // Verificar cambios cada 2 segundos
+    setInterval(() => {
+        updateProjectImage();
+    }, 2000);
 
     // Eventos del DOM
     if (document.readyState === 'loading') {
@@ -105,5 +146,5 @@
     }
     window.addEventListener('load', main);
 
-    console.log('🚀 Script preciso activado');
+    console.log('🚀 Sistema din��mico de proyectos activado - Imágenes cambiarán automáticamente');
 })();
