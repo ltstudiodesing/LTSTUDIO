@@ -899,6 +899,9 @@
             // Actualizar contador
             document.getElementById('current-num').textContent = (index + 1).toString();
 
+            // Actualizar indicador de proyectos
+            updateProjectIndicator(index);
+
             // Actualizar botones de navegación
             document.getElementById('prev-btn').disabled = (index === 0);
             document.getElementById('next-btn').disabled = (index === PROJECTS.length - 1);
