@@ -39,194 +39,67 @@
         #app-mousePointer svg {
             display: none !important;
         }
-        
-        /* Estilos para la página de proyecto */
+
+        /* Quitar partículas de fondo para diseño minimalista */
+        .background-dots-container,
+        .floating-dot {
+            display: none !important;
+        }
+
+        /* Estilos para la página de proyecto - Scroll vertical minimalista */
         body {
             background: #000;
             color: #fff;
             overflow-x: hidden;
+            margin: 0;
+            padding: 0;
         }
-        
-        .project-container {
-            width: 100%;
-            min-height: 100vh;
-            padding-top: 80px;
+
+        /* Header fijo que se mantiene al hacer scroll */
+        .l-header {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            z-index: 1000 !important;
+            background: rgba(0, 0, 0, 0.9) !important;
+            backdrop-filter: blur(10px) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
-        
-        .project-header {
-            text-align: center;
-            padding: 60px 20px 40px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+
+        /* Contact fijo */
+        .p-sideContact {
+            position: fixed !important;
+            z-index: 999 !important;
         }
-        
-        .project-title {
-            font-family: 'butler_medium', serif;
-            font-size: 48px;
-            font-weight: 500;
-            letter-spacing: 6px;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            color: #fff;
-        }
-        
-        .project-subtitle {
-            font-size: 16px;
-            letter-spacing: 2px;
-            opacity: 0.7;
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.8;
-        }
-        
-        .gallery-section {
-            padding: 60px 0;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .gallery-main {
-            position: relative;
-            width: 90%;
-            max-width: 1200px;
-            height: 70vh;
-            min-height: 500px;
-            margin: 0 auto;
-            background: #111;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        
-        .gallery-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0;
-            transition: opacity 0.6s ease;
-        }
-        
-        .gallery-image.active {
-            opacity: 1;
-        }
-        
-        .gallery-controls {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 20px;
-            z-index: 10;
-        }
-        
-        .gallery-btn {
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 14px;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-        
-        .gallery-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-        
-        .gallery-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-        
-        .gallery-counter {
-            position: absolute;
+
+        /* Logo de la web arriba a la derecha - FIJO */
+        .site-logo {
+            position: fixed;
             top: 30px;
             right: 30px;
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-size: 16px;
-            letter-spacing: 2px;
-            z-index: 10;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .gallery-thumbnails {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 30px;
-            padding: 0 20px;
-            overflow-x: auto;
-        }
-        
-        .gallery-thumb {
-            width: 80px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 6px;
-            cursor: pointer;
-            opacity: 0.5;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-        
-        .gallery-thumb.active,
-        .gallery-thumb:hover {
-            opacity: 1;
-            border-color: #fff;
-            transform: scale(1.05);
-        }
-        
-        .videos-section {
-            margin-top: 80px;
-            padding: 60px 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            max-width: 1400px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .videos-title {
+            z-index: 1001;
             font-family: 'butler_medium', serif;
-            font-size: 36px;
+            font-size: 24px;
             font-weight: 500;
             letter-spacing: 4px;
-            text-align: center;
-            margin-bottom: 50px;
-            text-transform: uppercase;
+            color: #fff;
+            text-decoration: none;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
-        
-        .videos-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            max-width: 1200px;
-            margin: 0 auto;
+
+        .site-logo:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.4);
+            color: #fff;
         }
-        
-        .video-item {
-            position: relative;
-            aspect-ratio: 16/9;
-            border-radius: 8px;
-            overflow: hidden;
-            background: #111;
-        }
-        
-        .video-player {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
+
+        /* Back button fijo */
         .back-button {
             position: fixed;
             top: 30px;
@@ -241,63 +114,221 @@
             letter-spacing: 1px;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
-            z-index: 1000;
+            z-index: 1001;
         }
-        
+
         .back-button:hover {
             background: rgba(255, 255, 255, 0.1);
             border-color: rgba(255, 255, 255, 0.5);
             color: #fff;
         }
-        
+
+        /* Contador fijo abajo a la derecha con estilo de página de inicio */
+        .gallery-counter {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-size: 16px;
+            letter-spacing: 3px;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            font-family: 'butler_medium', serif;
+            font-weight: 500;
+            text-transform: uppercase;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Container principal con scroll vertical */
+        .project-container {
+            width: 100%;
+            padding-top: 120px;
+            padding-bottom: 100px;
+        }
+
+        /* Header del proyecto */
+        .project-header {
+            text-align: center;
+            padding: 80px 20px 60px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .project-title {
+            font-family: 'butler_medium', serif;
+            font-size: 56px;
+            font-weight: 500;
+            letter-spacing: 8px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            color: #fff;
+            line-height: 1.1;
+        }
+
+        .project-subtitle {
+            font-size: 18px;
+            letter-spacing: 3px;
+            opacity: 0.7;
+            margin: 10px 0;
+            line-height: 1.6;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+
+        /* Galería vertical */
+        .gallery-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .gallery-image-container {
+            margin-bottom: 60px;
+            display: block;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .gallery-image-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 0;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Sección de videos */
+        .videos-section {
+            margin-top: 120px;
+            padding: 80px 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .videos-title {
+            font-family: 'butler_medium', serif;
+            font-size: 42px;
+            font-weight: 500;
+            letter-spacing: 6px;
+            text-align: center;
+            margin-bottom: 80px;
+            text-transform: uppercase;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .videos-title.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .videos-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .video-item {
+            position: relative;
+            aspect-ratio: 16/9;
+            border-radius: 0;
+            overflow: hidden;
+            background: #111;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .video-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .video-player {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .project-title {
-                font-size: 32px;
-                letter-spacing: 3px;
+                font-size: 36px;
+                letter-spacing: 4px;
             }
-            
-            .gallery-main {
-                width: 95%;
-                height: 50vh;
-                min-height: 300px;
+
+            .project-subtitle {
+                font-size: 16px;
+                letter-spacing: 2px;
             }
-            
+
+            .gallery-section {
+                padding: 0 20px;
+            }
+
+            .videos-section {
+                padding: 60px 20px;
+            }
+
             .videos-grid {
                 grid-template-columns: 1fr;
-                gap: 30px;
+                gap: 40px;
             }
-            
-            .gallery-controls {
-                bottom: 20px;
-                gap: 15px;
+
+            .gallery-counter {
+                bottom: 30px;
+                right: 30px;
+                padding: 12px 20px;
+                font-size: 14px;
+                letter-spacing: 2px;
             }
-            
-            .gallery-btn {
-                padding: 10px 18px;
-                font-size: 12px;
-            }
-            
-            .back-button {
+
+            .back-button, .site-logo {
                 top: 20px;
-                left: 20px;
                 padding: 10px 16px;
                 font-size: 12px;
             }
-        }
-        
-        @media (max-width: 480px) {
-            .project-container {
-                padding-top: 70px;
-            }
-            
-            .project-title {
-                font-size: 24px;
+
+            .site-logo {
+                right: 20px;
+                font-size: 18px;
                 letter-spacing: 2px;
             }
-            
+        }
+
+        @media (max-width: 480px) {
+            .project-container {
+                padding-top: 100px;
+            }
+
+            .project-title {
+                font-size: 28px;
+                letter-spacing: 2px;
+            }
+
             .project-subtitle {
                 font-size: 14px;
+                letter-spacing: 1px;
+            }
+
+            .gallery-image-container {
+                margin-bottom: 40px;
             }
         }
     </style>
