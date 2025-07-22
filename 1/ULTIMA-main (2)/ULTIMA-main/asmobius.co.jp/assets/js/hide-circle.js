@@ -30,9 +30,9 @@
         }
     });
 
-    // Aplicar imágenes SOLO al círculo interactivo después de la transición
+    // Aplicar imágenes directamente al inicio
     function applyCircleBackgrounds() {
-        console.log('🔄 Esperando a que termine la transición...');
+        console.log('🔄 Aplicando imágenes directamente al inicio...');
 
         // Imágenes para cada proyecto
         const projectImages = {
@@ -43,90 +43,86 @@
             'hikawa': 'https://images.unsplash.com/photo-1600485154340-be6161a56a0c?w=1200&h=1200&fit=crop',
             'one avenue': 'https://images.unsplash.com/photo-1600485154355-be6161a56a0c?w=1200&h=1200&fit=crop',
             'century': 'https://images.unsplash.com/photo-1600485154343-be6161a56a0c?w=1200&h=1200&fit=crop',
-            'proud': 'https://images.unsplash.com/photo-1600485154356-be6161a56a0c?w=1200&h=1200&fit=crop',
-            'roppongi': 'https://images.unsplash.com/photo-1600485154345-be6161a56a0c?w=1200&h=1200&fit=crop',
-            'nishiazabu': 'https://images.unsplash.com/photo-1600485154354-be6161a56a0c?w=1200&h=1200&fit=crop',
-            'azabu': 'https://images.unsplash.com/photo-1600485154341-be6161a56a0c?w=1200&h=1200&fit=crop',
-            'park house': 'https://images.unsplash.com/photo-1600485154342-be6161a56a0c?w=1200&h=1200&fit=crop'
+            'proud': 'https://images.unsplash.com/photo-1600485154356-be6161a56a0c?w=1200&h=1200&fit=crop'
         };
 
-        let interactiveCircleElement = null;
         let currentProject = '';
-        let isTransitionComplete = false;
+        const mainImage = projectImages['park mansion'];
 
-        // Detectar cuando la transición ha terminado
-        function detectTransitionComplete() {
-            // Buscar el elemento del círculo interactivo principal
+        // Función para aplicar imagen a un elemento
+        function applyImageToElement(element, imageUrl) {
+            element.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
+            element.style.setProperty('background-size', 'cover', 'important');
+            element.style.setProperty('background-position', 'center', 'important');
+            element.style.setProperty('background-repeat', 'no-repeat', 'important');
+            console.log('🖼️ Imagen aplicada:', imageUrl);
+        }
+
+        // Aplicar imagen de fondo a TODOS los elementos posibles
+        function applyBackgroundEveryhere() {
+            // 1. Al body
+            applyImageToElement(document.body, mainImage);
+
+            // 2. Al html
+            applyImageToElement(document.documentElement, mainImage);
+
+            // 3. A todos los divs negros grandes
             const allDivs = document.querySelectorAll('div');
-            for (const div of allDivs) {
+            allDivs.forEach(div => {
                 const style = window.getComputedStyle(div);
+
+                // Aplicar a divs negros con cualquier z-index
                 if (style.backgroundColor === 'rgb(37, 37, 37)' &&
-                    style.zIndex === '110' &&
-                    style.position === 'absolute' &&
-                    style.width === '100%' &&
-                    style.height === '100%') {
-                    interactiveCircleElement = div;
-                    console.log('🎯 Círculo interactivo encontrado');
-                    return true;
+                    (style.width === '100%' || parseInt(style.width) > 300) &&
+                    (style.height === '100%' || parseInt(style.height) > 300)) {
+                    applyImageToElement(div, mainImage);
                 }
+
+                // También aplicar a divs con z-index alto
+                if (style.backgroundColor === 'rgb(37, 37, 37)' &&
+                    parseInt(style.zIndex) > 50) {
+                    applyImageToElement(div, mainImage);
+                }
+            });
+
+            // 4. Buscar canvas y aplicar a su contenedor
+            const canvas = document.querySelector('canvas');
+            if (canvas && canvas.parentElement) {
+                applyImageToElement(canvas.parentElement, mainImage);
             }
-            return false;
+
+            console.log('✅ Imagen aplicada a todos los elementos posibles');
         }
 
-        // Aplicar imagen al círculo interactivo
-        function applyImageToCircle(imageUrl) {
-            if (!interactiveCircleElement) return;
-
-            console.log('🖼️ Aplicando imagen al círculo:', imageUrl);
-
-            // Aplicar imagen de fondo al círculo interactivo
-            interactiveCircleElement.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
-            interactiveCircleElement.style.setProperty('background-size', 'cover', 'important');
-            interactiveCircleElement.style.setProperty('background-position', 'center', 'important');
-            interactiveCircleElement.style.setProperty('background-repeat', 'no-repeat', 'important');
-
-            // Agregar overlay para legibilidad (solo una vez)
-            if (!interactiveCircleElement.querySelector('.circle-image-overlay')) {
-                const overlay = document.createElement('div');
-                overlay.className = 'circle-image-overlay';
-                overlay.style.cssText = `
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(0, 0, 0, 0.4);
-                    z-index: 1;
-                    pointer-events: none;
-                `;
-                interactiveCircleElement.appendChild(overlay);
-            }
-        }
-
-        // Monitorear proyectos activos
-        function monitorActiveProject() {
-            if (!isTransitionComplete || !interactiveCircleElement) return;
-
+        // Cambiar imagen según proyecto activo
+        function updateProjectImage() {
             const projectList = document.querySelectorAll('ul li');
 
-            // Buscar proyecto visible/activo
             projectList.forEach(li => {
                 const rect = li.getBoundingClientRect();
-                const transform = window.getComputedStyle(li).transform;
+                const isVisible = rect.top >= -200 && rect.top <= window.innerHeight + 200;
 
-                // Detectar proyecto activo por posición o transformación
-                const isActive = (rect.top >= -100 && rect.top <= window.innerHeight + 100) ||
-                                (transform && transform !== 'none');
-
-                if (isActive) {
+                if (isVisible) {
                     const projectText = li.textContent.trim().toLowerCase();
 
                     if (projectText !== currentProject && projectText.length > 3) {
                         // Buscar imagen correspondiente
                         for (const [key, imageUrl] of Object.entries(projectImages)) {
                             if (projectText.includes(key)) {
-                                console.log('📋 Proyecto activo:', projectText, '→', key);
-                                applyImageToCircle(imageUrl);
+                                console.log('📋 Cambiando a proyecto:', projectText, '→', key);
+
+                                // Aplicar nueva imagen a todos los elementos
+                                document.body.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
+                                document.documentElement.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
+
+                                const allDivs = document.querySelectorAll('div');
+                                allDivs.forEach(div => {
+                                    const style = window.getComputedStyle(div);
+                                    if (style.backgroundColor === 'rgb(37, 37, 37)') {
+                                        applyImageToElement(div, imageUrl);
+                                    }
+                                });
+
                                 currentProject = projectText;
                                 break;
                             }
@@ -136,29 +132,16 @@
             });
         }
 
-        // Esperar a que la transición termine antes de aplicar imágenes
-        function waitForTransition() {
-            const checkInterval = setInterval(() => {
-                if (detectTransitionComplete()) {
-                    console.log('✅ Transición completada, iniciando sistema de imágenes');
-                    isTransitionComplete = true;
+        // Aplicar imagen inicial inmediatamente
+        applyBackgroundEveryhere();
 
-                    // Aplicar imagen inicial
-                    applyImageToCircle(projectImages['park mansion']);
-                    currentProject = 'park mansion';
+        // Actualizar imagen cada segundo
+        setInterval(() => {
+            applyBackgroundEveryhere(); // Reaplica la imagen principal
+            updateProjectImage(); // Actualiza según proyecto activo
+        }, 1000);
 
-                    // Iniciar monitoreo de proyectos
-                    setInterval(monitorActiveProject, 500);
-
-                    clearInterval(checkInterval);
-                }
-            }, 1000);
-        }
-
-        // Iniciar después de la intro
-        setTimeout(() => {
-            waitForTransition();
-        }, 8000); // Esperar 8 segundos para que termine completamente la intro y transición
+        console.log('🚀 Sistema de imágenes directo activado');
     }
 
     function updateLogoAndSetupBackgrounds() {
