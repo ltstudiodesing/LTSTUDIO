@@ -885,14 +885,18 @@
                     fragment.style.width = fragmentSize + 'px';
                     fragment.style.height = fragmentSize + 'px';
 
-                    // Variables CSS para animación aleatoria
-                    const randomX = (Math.random() - 0.5) * 800 + 'px';
-                    const randomY = (Math.random() - 0.5) * 600 + 'px';
-                    const randomRotation = (Math.random() - 0.5) * 360 + 'deg';
+                    // Variables CSS para animación aleatoria más realista
+                    const randomX = (Math.random() - 0.5) * 1200 + 'px';
+                    const randomY = (Math.random() - 0.5) * 800 + 'px';
+                    const randomRotationX = (Math.random() - 0.5) * 720 + 'deg';
+                    const randomRotationY = (Math.random() - 0.5) * 720 + 'deg';
+                    const randomRotationZ = (Math.random() - 0.5) * 720 + 'deg';
 
                     fragment.style.setProperty('--random-x', randomX);
                     fragment.style.setProperty('--random-y', randomY);
-                    fragment.style.setProperty('--random-rotation', randomRotation);
+                    fragment.style.setProperty('--random-rotation-x', randomRotationX);
+                    fragment.style.setProperty('--random-rotation-y', randomRotationY);
+                    fragment.style.setProperty('--random-rotation-z', randomRotationZ);
 
                     overlay.appendChild(fragment);
                 }
