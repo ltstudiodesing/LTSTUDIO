@@ -722,16 +722,16 @@
                 span.className = 'letter';
                 span.textContent = letter === ' ' ? '\u00A0' : letter;
                 span.style.color = '#666';
-                span.style.opacity = '0.3';
+                span.style.opacity = '0.5';
                 introText.appendChild(span);
                 letters.push(span);
             });
 
-            // Animar letra por letra con retraso
+            // Animar letra por letra con retraso más suave
             letters.forEach((letter, index) => {
                 setTimeout(() => {
-                    letter.style.animation = 'letterFillIn 0.8s ease forwards';
-                }, index * 100); // 100ms entre letras
+                    letter.style.animation = 'letterFillIn 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards';
+                }, index * 80); // 80ms entre letras para más fluidez
             });
         }
         
