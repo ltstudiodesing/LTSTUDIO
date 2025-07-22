@@ -920,7 +920,7 @@
             const text = 'LT STUDIO DESIGN';
 
             if (!introText) {
-                console.error('❌ No se encontró .intro-text');
+                console.error('❌ No se encontr�� .intro-text');
                 return;
             }
 
@@ -959,8 +959,8 @@
                                 setTimeout(() => {
                                     console.log(`💥 Explosión letra ${i}`);
 
-                                    // 3 copias volando por letra
-                                    for (let j = 0; j < 3; j++) {
+                                    // 5 fragmentos volando por letra para mayor espectacularidad
+                                    for (let j = 0; j < 5; j++) {
                                         const flying = letter.cloneNode(true);
                                         flying.style.position = 'fixed';
                                         flying.style.zIndex = '10000';
@@ -968,6 +968,7 @@
                                         flying.style.fontWeight = 'bold';
                                         flying.style.color = '#fff';
                                         flying.style.pointerEvents = 'none';
+                                        flying.style.willChange = 'transform';
 
                                         // Posición inicial igual a la letra original
                                         const rect = letter.getBoundingClientRect();
@@ -976,22 +977,26 @@
 
                                         document.body.appendChild(flying);
 
-                                        // Animación de vuelo
-                                        const angle = (Math.PI * 2 * j / 3) + (Math.random() * 0.5);
-                                        const distance = 300 + Math.random() * 400;
+                                        // Animación de vuelo usando requestAnimationFrame para garantizar la ejecución
+                                        const angle = (Math.PI * 2 * j / 5) + (Math.random() * 0.8 - 0.4);
+                                        const distance = 400 + Math.random() * 500;
                                         const endX = rect.left + Math.cos(angle) * distance;
-                                        const endY = rect.top + Math.sin(angle) * distance;
+                                        const endY = rect.top + Math.sin(angle) * distance + (Math.random() * 200 - 100);
 
-                                        flying.style.transition = 'all 2s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-                                        flying.style.transform = `translate(${endX - rect.left}px, ${endY - rect.top}px) rotate(${360 * 3}deg) scale(${0.1 + Math.random() * 0.3})`;
-                                        flying.style.opacity = '0';
+                                        flying.style.transition = `all ${1.5 + Math.random() * 1}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+
+                                        // Usar requestAnimationFrame para asegurar que la animación se ejecute
+                                        requestAnimationFrame(() => {
+                                            flying.style.transform = `translate(${endX - rect.left}px, ${endY - rect.top}px) rotate(${540 + Math.random() * 720}deg) scale(${0.1 + Math.random() * 0.4})`;
+                                            flying.style.opacity = '0';
+                                        });
 
                                         // Limpiar después de la animación
                                         setTimeout(() => {
                                             if (flying.parentNode) {
                                                 flying.parentNode.removeChild(flying);
                                             }
-                                        }, 2000);
+                                        }, 2500);
                                     }
 
                                     // Ocultar letra original con efecto
