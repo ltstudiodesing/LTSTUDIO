@@ -254,7 +254,7 @@
 
                     // NO forzar position, width, height ya que rompe el layout original
 
-                    // Agregar overlay solo si no existe
+                    // Agregar overlay muy simple solo si no existe
                     if (!targetElement.querySelector('.project-overlay')) {
                         const overlay = document.createElement('div');
                         overlay.className = 'project-overlay';
@@ -264,31 +264,27 @@
                             left: 0;
                             right: 0;
                             bottom: 0;
-                            background: rgba(0, 0, 0, 0.3);
+                            background: rgba(0, 0, 0, 0.2);
                             border-radius: inherit;
                             z-index: 1;
-                            transition: all 0.3s ease;
+                            transition: background 0.3s ease;
                             pointer-events: none;
                         `;
 
-                        // Asegurar que el contenido esté por encima
-                        const allChildren = targetElement.querySelectorAll('*');
-                        allChildren.forEach(child => {
-                            if (child !== overlay && !child.classList.contains('project-overlay')) {
-                                child.style.position = 'relative';
-                                child.style.zIndex = '2';
-                            }
-                        });
+                        // Solo asegurar que targetElement tenga position relative
+                        if (targetElement.style.position !== 'absolute' && targetElement.style.position !== 'fixed') {
+                            targetElement.style.position = 'relative';
+                        }
 
                         targetElement.appendChild(overlay);
 
-                        // Efecto hover
+                        // Efecto hover simple
                         targetElement.addEventListener('mouseenter', function() {
                             overlay.style.background = 'rgba(0, 0, 0, 0.1)';
                         });
 
                         targetElement.addEventListener('mouseleave', function() {
-                            overlay.style.background = 'rgba(0, 0, 0, 0.3)';
+                            overlay.style.background = 'rgba(0, 0, 0, 0.2)';
                         });
                     }
 
