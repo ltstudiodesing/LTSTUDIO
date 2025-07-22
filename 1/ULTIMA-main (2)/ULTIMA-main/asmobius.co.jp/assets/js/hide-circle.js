@@ -177,11 +177,15 @@
             // Buscar elementos con clases que contengan "canvas" o "target"
             const allElements = document.querySelectorAll('*');
             allElements.forEach(el => {
-                const className = el.className || '';
-                if ((className.includes('canvas') || className.includes('target') || className.includes('menu')) &&
-                    el.textContent && el.textContent.trim().length > 2 &&
-                    !projectElements.includes(el)) {
-                    projectElements.push(el);
+                try {
+                    const className = String(el.className || '');
+                    if ((className.includes('canvas') || className.includes('target') || className.includes('menu')) &&
+                        el.textContent && el.textContent.trim().length > 2 &&
+                        !projectElements.includes(el)) {
+                        projectElements.push(el);
+                    }
+                } catch(e) {
+                    // Skip elements that cause errors
                 }
             });
 
