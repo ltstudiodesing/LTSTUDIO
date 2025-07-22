@@ -236,7 +236,7 @@
                         <div class="detail-value">2023</div>
                     </div>
                     <div class="detail-item">
-                        <div class="detail-label">Área</div>
+                        <div class="detail-label">��rea</div>
                         <div class="detail-value">320 m²</div>
                     </div>
                     <div class="detail-item">
@@ -373,32 +373,10 @@
             });
         }
         
-        // MANEJAR SCROLL DEL HEADER
-        function handleHeaderScroll() {
-            const header = document.querySelector('.header');
-            const projectTitle = document.querySelector('.project-title');
-            const scrollY = window.scrollY;
-
-            if (scrollY > 100) {
-                header.classList.add('scrolled');
-                if (projectTitle) {
-                    projectTitle.style.transform = 'translateY(-50%) translateX(20px)';
-                    projectTitle.style.opacity = '0.7';
-                }
-            } else {
-                header.classList.remove('scrolled');
-                if (projectTitle) {
-                    projectTitle.style.transform = 'translateY(-50%) translateX(0)';
-                    projectTitle.style.opacity = '1';
-                }
-            }
-        }
-
         window.addEventListener('scroll', () => {
             updateScrollProgress();
             updateImageCounter();
             animateElements();
-            handleHeaderScroll();
             pauseAutoScroll();
         });
         
