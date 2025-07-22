@@ -30,72 +30,114 @@
         }
     });
 
-    // Aplicar imágenes de fondo solo a elementos LI específicos
+    // Aplicar imágenes de fondo al área principal del canvas/stage
     function applyCircleBackgrounds() {
-        console.log('🔄 Aplicando imágenes solo a elementos LI...');
+        console.log('🔄 Aplicando imágenes al área principal del stage...');
 
-        // Solo buscar elementos LI que son círculos de proyecto
-        const projectLiElements = document.querySelectorAll('.p-stage__menu li, ul li');
+        // Variable para rastrear el proyecto actual que se está mostrando
+        let currentProjectImage = '';
 
-        console.log('🔍 Elementos LI encontrados:', projectLiElements.length);
+        // Encontrar el proyecto actual basado en elementos visibles o activos
+        const projectLiElements = document.querySelectorAll('ul li');
+        let activeProject = '';
 
-        projectLiElements.forEach((li, index) => {
-            const text = li.textContent || '';
+        // Por defecto, empezar con Park Mansion
+        activeProject = 'PARK MANSION';
+        currentProjectImage = 'url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=800&fit=crop")';
 
-            // Solo procesar si el LI tiene texto de proyecto
-            if (text.length < 3) return;
+        // Buscar el área principal donde aplicar la imagen de fondo
+        const targetSelectors = [
+            'canvas',
+            '.p-stage',
+            '[style*="background-color: rgb(37, 37, 37)"]',
+            'div[style*="position: fixed"][style*="width: 100%"][style*="height: 100%"]'
+        ];
 
-            let backgroundImage = '';
-            let projectName = '';
+        let targetElement = null;
 
-            // Mapear proyectos específicos
-            if (text.toLowerCase().includes('park mansion') || text.toLowerCase().includes('minami')) {
-                backgroundImage = 'url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=400&fit=crop")';
-                projectName = 'Park Mansion';
-            } else if (text.toLowerCase().includes('kawana')) {
-                backgroundImage = 'url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&h=400&fit=crop")';
-                projectName = 'Kawana';
-            } else if (text.toLowerCase().includes('sevens')) {
-                backgroundImage = 'url("https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=400&h=400&fit=crop")';
-                projectName = 'Sevens Villa';
-            } else if (text.toLowerCase().includes('hikawa')) {
-                backgroundImage = 'url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=400&fit=crop")';
-                projectName = 'Hikawa';
-            } else if (text.toLowerCase().includes('proud')) {
-                backgroundImage = 'url("https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400&h=400&fit=crop")';
-                projectName = 'Proud';
-            } else if (text.toLowerCase().includes('jade')) {
-                backgroundImage = 'url("https://images.unsplash.com/photo-1600485154356-be6161a56a0c?w=400&h=400&fit=crop")';
-                projectName = 'Park le JADE';
-            } else if (text.toLowerCase().includes('one avenue')) {
-                backgroundImage = 'url("https://images.unsplash.com/photo-1600485154355-be6161a56a0c?w=400&h=400&fit=crop")';
-                projectName = 'One Avenue';
-            } else if (text.toLowerCase().includes('century')) {
-                backgroundImage = 'url("https://images.unsplash.com/photo-1600485154343-be6161a56a0c?w=400&h=400&fit=crop")';
-                projectName = 'Century Forest';
-            } else if (text.toLowerCase().includes('nishiazabu')) {
-                backgroundImage = 'url("https://images.unsplash.com/photo-1600485154354-be6161a56a0c?w=400&h=400&fit=crop")';
-                projectName = 'Nishiazabu';
-            } else if (text.toLowerCase().includes('azabu gardens')) {
-                backgroundImage = 'url("https://images.unsplash.com/photo-1600485154341-be6161a56a0c?w=400&h=400&fit=crop")';
-                projectName = 'Azabu Gardens';
-            }
-
-            if (backgroundImage && projectName) {
-                console.log('🎯 Aplicando imagen a LI:', projectName);
-
-                // SOLO aplicar background image al LI, nada más
-                if (!li.style.backgroundImage) {
-                    li.style.backgroundImage = backgroundImage;
-                    li.style.backgroundSize = 'cover';
-                    li.style.backgroundPosition = 'center';
-                    li.style.backgroundRepeat = 'no-repeat';
-
-                    // NO aplicar overlay ni cambiar position/width/height
-                    console.log('✅ Background aplicado a:', projectName);
+        // Buscar el elemento principal de background
+        targetSelectors.forEach(selector => {
+            if (!targetElement) {
+                const element = document.querySelector(selector);
+                if (element) {
+                    targetElement = element;
+                    console.log('🎯 Elemento encontrado con selector:', selector);
                 }
             }
         });
+
+        // Si no encontramos el elemento específico, buscar el div con backgroundColor rgb(37, 37, 37)
+        if (!targetElement) {
+            const allDivs = document.querySelectorAll('div');
+            allDivs.forEach(div => {
+                const style = window.getComputedStyle(div);
+                if (style.backgroundColor === 'rgb(37, 37, 37)' &&
+                    style.position === 'fixed' &&
+                    style.width === '100%') {
+                    targetElement = div;
+                    console.log('🎯 Elemento de background negro encontrado');
+                }
+            });
+        }
+
+        if (targetElement) {
+            console.log('✅ Aplicando imagen de fondo a:', activeProject);
+
+            // Aplicar la imagen de fondo al elemento principal
+            targetElement.style.backgroundImage = currentProjectImage;
+            targetElement.style.backgroundSize = 'cover';
+            targetElement.style.backgroundPosition = 'center';
+            targetElement.style.backgroundRepeat = 'no-repeat';
+
+            // Agregar un overlay semi-transparente para mantener legibilidad
+            if (!targetElement.querySelector('.main-stage-overlay')) {
+                const overlay = document.createElement('div');
+                overlay.className = 'main-stage-overlay';
+                overlay.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.4);
+                    z-index: 1;
+                    pointer-events: none;
+                `;
+                targetElement.appendChild(overlay);
+            }
+
+            console.log('🖼️ Imagen aplicada exitosamente al área principal');
+        } else {
+            console.log('❌ No se encontró el elemento principal para aplicar la imagen');
+        }
+
+        // Función para cambiar imagen según proyecto activo
+        window.changeProjectBackground = function(projectName) {
+            let newImage = '';
+
+            if (projectName.toLowerCase().includes('park mansion') || projectName.toLowerCase().includes('minami')) {
+                newImage = 'url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=800&fit=crop")';
+            } else if (projectName.toLowerCase().includes('kawana')) {
+                newImage = 'url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=800&fit=crop")';
+            } else if (projectName.toLowerCase().includes('sevens')) {
+                newImage = 'url("https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=800&fit=crop")';
+            } else if (projectName.toLowerCase().includes('hikawa')) {
+                newImage = 'url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=800&fit=crop")';
+            } else if (projectName.toLowerCase().includes('proud')) {
+                newImage = 'url("https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=800&fit=crop")';
+            } else if (projectName.toLowerCase().includes('jade')) {
+                newImage = 'url("https://images.unsplash.com/photo-1600485154356-be6161a56a0c?w=800&h=800&fit=crop")';
+            } else if (projectName.toLowerCase().includes('one avenue')) {
+                newImage = 'url("https://images.unsplash.com/photo-1600485154355-be6161a56a0c?w=800&h=800&fit=crop")';
+            } else if (projectName.toLowerCase().includes('century')) {
+                newImage = 'url("https://images.unsplash.com/photo-1600485154343-be6161a56a0c?w=800&h=800&fit=crop")';
+            }
+
+            if (newImage && targetElement) {
+                targetElement.style.backgroundImage = newImage;
+                console.log('🔄 Imagen cambiada a:', projectName);
+            }
+        };
     }
 
     function updateLogoAndSetupBackgrounds() {
