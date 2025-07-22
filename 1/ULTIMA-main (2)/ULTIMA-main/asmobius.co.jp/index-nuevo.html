@@ -553,7 +553,53 @@
             <div class="project-total">12</div>
         </div>
     </div>
-    
+
+    <!-- MODAL ALL PROJECTS -->
+    <div class="all-modal" id="all-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">All Projects</div>
+                <button class="close-modal" onclick="closeAllProjects()">×</button>
+            </div>
+            <div class="projects-grid" id="projects-grid">
+                <!-- Se llena dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ABOUT -->
+    <div class="all-modal" id="about-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">About LT Studio Design</div>
+                <button class="close-modal" onclick="closeAbout()">×</button>
+            </div>
+            <div style="line-height: 1.6; opacity: 0.9;">
+                <p style="margin-bottom: 20px;">
+                    LT Studio Design es un estudio de arquitectura contemporánea que se especializa en crear
+                    espacios únicos que combinan funcionalidad, estética y sostenibilidad.
+                </p>
+                <p style="margin-bottom: 20px;">
+                    Nuestro enfoque se centra en entender las necesidades específicas de cada cliente y
+                    traducirlas en diseños arquitectónicos innovadores que respetan el entorno y maximizan
+                    la experiencia del usuario.
+                </p>
+                <p style="margin-bottom: 20px;">
+                    Cada proyecto es una oportunidad para explorar nuevas formas de habitar el espacio,
+                    integrando tecnología avanzada con materiales nobles y técnicas constructivas sostenibles.
+                </p>
+                <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2);">
+                    <strong>Servicios:</strong><br>
+                    • Diseño Arquitectónico<br>
+                    • Planificación Urbana<br>
+                    • Diseño de Interiores<br>
+                    • Consultoría en Sostenibilidad<br>
+                    • Gestión de Proyectos
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // CONFIGURACIÓN
         const PROJECTS = [
@@ -790,7 +836,7 @@
             // Inicializar imágenes
             initProjectImages();
 
-            // Mostrar intro por 4 segundos (más tiempo para ver animaci��n)
+            // Mostrar intro por 4 segundos (más tiempo para ver animación)
             setTimeout(() => {
                 document.getElementById('intro-screen').classList.add('hidden');
                 document.getElementById('main-screen').classList.add('visible');
