@@ -718,12 +718,23 @@
             const text = 'LT STUDIO DESIGN';
             introText.innerHTML = '';
 
+            // Crear spans para cada letra
+            const letters = [];
             text.split('').forEach((letter, index) => {
                 const span = document.createElement('span');
                 span.className = 'letter';
                 span.textContent = letter === ' ' ? '\u00A0' : letter;
-                span.style.animationDelay = (index * 0.1) + 's';
+                span.style.color = '#666';
+                span.style.opacity = '0.3';
                 introText.appendChild(span);
+                letters.push(span);
+            });
+
+            // Animar letra por letra con retraso
+            letters.forEach((letter, index) => {
+                setTimeout(() => {
+                    letter.style.animation = 'letterFillIn 0.8s ease forwards';
+                }, index * 100); // 100ms entre letras
             });
         }
         
