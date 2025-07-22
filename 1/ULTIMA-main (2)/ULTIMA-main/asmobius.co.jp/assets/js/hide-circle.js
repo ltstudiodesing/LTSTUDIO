@@ -30,26 +30,68 @@
         }
     });
 
-    // Aplicar imágenes de fondo de manera simple y confiable
+    // Aplicar imágenes de fondo usando múltiples métodos para asegurar que funcione
     function applyCircleBackgrounds() {
-        console.log('🔄 Aplicando imagen de fondo simple...');
+        console.log('🔄 Aplicando imagen de fondo con múltiples métodos...');
 
-        // Buscar el div con background negro
-        const blackBackgroundDiv = document.querySelector('div[style*="background-color: rgb(37, 37, 37)"]');
+        let targetElement = null;
 
-        if (blackBackgroundDiv) {
-            console.log('✅ Elemento de fondo encontrado');
+        // Método 1: Buscar por estilo inline
+        targetElement = document.querySelector('div[style*="background-color: rgb(37, 37, 37)"]');
 
-            // Aplicar imagen directamente
+        // Método 2: Buscar por computed style
+        if (!targetElement) {
+            const allDivs = document.querySelectorAll('div');
+            for (const div of allDivs) {
+                const computedStyle = window.getComputedStyle(div);
+                if (computedStyle.backgroundColor === 'rgb(37, 37, 37)' &&
+                    computedStyle.position === 'fixed' &&
+                    computedStyle.width === '100%') {
+                    targetElement = div;
+                    break;
+                }
+            }
+        }
+
+        // Método 3: Buscar el canvas parent
+        if (!targetElement) {
+            const canvas = document.querySelector('canvas');
+            if (canvas) {
+                targetElement = canvas.closest('div');
+                console.log('🎯 Usando elemento padre del canvas');
+            }
+        }
+
+        // Método 4: Forzar con CSS
+        if (!targetElement) {
+            // Crear e insertar un div de fondo
+            targetElement = document.createElement('div');
+            targetElement.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgb(37, 37, 37);
+                z-index: -1;
+            `;
+            document.body.appendChild(targetElement);
+            console.log('🔨 Elemento de fondo creado forzadamente');
+        }
+
+        if (targetElement) {
+            console.log('✅ Elemento de fondo encontrado/creado');
+
+            // Usar CSS con !important para forzar la imagen
             const parkMansionImage = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=1200&fit=crop';
 
-            blackBackgroundDiv.style.backgroundImage = `url("${parkMansionImage}")`;
-            blackBackgroundDiv.style.backgroundSize = 'cover';
-            blackBackgroundDiv.style.backgroundPosition = 'center';
-            blackBackgroundDiv.style.backgroundRepeat = 'no-repeat';
+            targetElement.style.setProperty('background-image', `url("${parkMansionImage}")`, 'important');
+            targetElement.style.setProperty('background-size', 'cover', 'important');
+            targetElement.style.setProperty('background-position', 'center', 'important');
+            targetElement.style.setProperty('background-repeat', 'no-repeat', 'important');
 
             // Agregar overlay simple
-            if (!blackBackgroundDiv.querySelector('.simple-overlay')) {
+            if (!targetElement.querySelector('.simple-overlay')) {
                 const overlay = document.createElement('div');
                 overlay.className = 'simple-overlay';
                 overlay.style.cssText = `
@@ -58,16 +100,22 @@
                     left: 0;
                     right: 0;
                     bottom: 0;
-                    background: rgba(0, 0, 0, 0.3);
+                    background: rgba(0, 0, 0, 0.4);
                     z-index: 1;
                     pointer-events: none;
                 `;
-                blackBackgroundDiv.appendChild(overlay);
+                targetElement.appendChild(overlay);
             }
 
-            console.log('🖼️ Imagen aplicada exitosamente');
+            console.log('🖼️ Imagen aplicada exitosamente con !important');
+
+            // También aplicar al body como respaldo
+            document.body.style.setProperty('background-image', `url("${parkMansionImage}")`, 'important');
+            document.body.style.setProperty('background-size', 'cover', 'important');
+            document.body.style.setProperty('background-position', 'center', 'important');
+
         } else {
-            console.log('❌ No se encontró el elemento de fondo negro');
+            console.log('❌ No se pudo encontrar/crear elemento de fondo');
         }
     }
 
