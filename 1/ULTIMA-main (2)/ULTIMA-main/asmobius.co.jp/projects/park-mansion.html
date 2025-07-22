@@ -415,8 +415,16 @@
             </address>
         </aside>
 
-        <!-- Botón de regreso -->
-        <a href="../index.html" class="back-button">← Volver</a>
+        <!-- Logo de la web fijo arriba a la derecha -->
+        <a href="../index.html" class="site-logo">LT STUDIO</a>
+
+        <!-- Botón Back fijo -->
+        <a href="../index.html" class="back-button">← Back</a>
+
+        <!-- Contador fijo abajo a la derecha -->
+        <div class="gallery-counter">
+            <span id="current-image">1</span> / <span id="total-images">8</span>
+        </div>
 
         <!-- Contenido del Proyecto -->
         <div class="project-container">
@@ -426,38 +434,32 @@
                 <p class="project-subtitle">Exclusive residential project in the heart of Tokyo</p>
             </div>
 
+            <!-- Galería vertical con scroll -->
             <div class="gallery-section">
-                <div class="gallery-main">
-                    <div class="gallery-counter">
-                        <span id="current-image">1</span> / <span id="total-images">8</span>
-                    </div>
-                    
-                    <div class="gallery-controls">
-                        <button class="gallery-btn" id="prev-btn">← Anterior</button>
-                        <button class="gallery-btn" id="next-btn">Siguiente →</button>
-                    </div>
-                    
-                    <!-- 8 Imágenes - Aquí pondrás las tuyas más adelante -->
-                    <img class="gallery-image active" src="https://picsum.photos/1200/800?random=1" alt="Park Mansion - Imagen 1">
-                    <img class="gallery-image" src="https://picsum.photos/1200/800?random=2" alt="Park Mansion - Imagen 2">
-                    <img class="gallery-image" src="https://picsum.photos/1200/800?random=3" alt="Park Mansion - Imagen 3">
-                    <img class="gallery-image" src="https://picsum.photos/1200/800?random=4" alt="Park Mansion - Imagen 4">
-                    <img class="gallery-image" src="https://picsum.photos/1200/800?random=5" alt="Park Mansion - Imagen 5">
-                    <img class="gallery-image" src="https://picsum.photos/1200/800?random=6" alt="Park Mansion - Imagen 6">
-                    <img class="gallery-image" src="https://picsum.photos/1200/800?random=7" alt="Park Mansion - Imagen 7">
-                    <img class="gallery-image" src="https://picsum.photos/1200/800?random=8" alt="Park Mansion - Imagen 8">
+                <!-- 8 Imágenes verticales - Perfectas para 4K -->
+                <div class="gallery-image-container" data-index="0">
+                    <img class="gallery-image" src="https://picsum.photos/1200/1600?random=1" alt="Park Mansion - Imagen 1">
                 </div>
-                
-                <!-- Miniaturas -->
-                <div class="gallery-thumbnails">
-                    <img class="gallery-thumb active" src="https://picsum.photos/80/60?random=1" alt="Thumbnail 1" data-index="0">
-                    <img class="gallery-thumb" src="https://picsum.photos/80/60?random=2" alt="Thumbnail 2" data-index="1">
-                    <img class="gallery-thumb" src="https://picsum.photos/80/60?random=3" alt="Thumbnail 3" data-index="2">
-                    <img class="gallery-thumb" src="https://picsum.photos/80/60?random=4" alt="Thumbnail 4" data-index="3">
-                    <img class="gallery-thumb" src="https://picsum.photos/80/60?random=5" alt="Thumbnail 5" data-index="4">
-                    <img class="gallery-thumb" src="https://picsum.photos/80/60?random=6" alt="Thumbnail 6" data-index="5">
-                    <img class="gallery-thumb" src="https://picsum.photos/80/60?random=7" alt="Thumbnail 7" data-index="6">
-                    <img class="gallery-thumb" src="https://picsum.photos/80/60?random=8" alt="Thumbnail 8" data-index="7">
+                <div class="gallery-image-container" data-index="1">
+                    <img class="gallery-image" src="https://picsum.photos/1200/1600?random=2" alt="Park Mansion - Imagen 2">
+                </div>
+                <div class="gallery-image-container" data-index="2">
+                    <img class="gallery-image" src="https://picsum.photos/1200/1600?random=3" alt="Park Mansion - Imagen 3">
+                </div>
+                <div class="gallery-image-container" data-index="3">
+                    <img class="gallery-image" src="https://picsum.photos/1200/1600?random=4" alt="Park Mansion - Imagen 4">
+                </div>
+                <div class="gallery-image-container" data-index="4">
+                    <img class="gallery-image" src="https://picsum.photos/1200/1600?random=5" alt="Park Mansion - Imagen 5">
+                </div>
+                <div class="gallery-image-container" data-index="5">
+                    <img class="gallery-image" src="https://picsum.photos/1200/1600?random=6" alt="Park Mansion - Imagen 6">
+                </div>
+                <div class="gallery-image-container" data-index="6">
+                    <img class="gallery-image" src="https://picsum.photos/1200/1600?random=7" alt="Park Mansion - Imagen 7">
+                </div>
+                <div class="gallery-image-container" data-index="7">
+                    <img class="gallery-image" src="https://picsum.photos/1200/1600?random=8" alt="Park Mansion - Imagen 8">
                 </div>
             </div>
 
