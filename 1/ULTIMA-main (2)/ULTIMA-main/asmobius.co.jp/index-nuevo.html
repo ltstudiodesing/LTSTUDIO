@@ -49,7 +49,7 @@
             pointer-events: none;
         }
 
-        /* TRANSICIÓN FRAGMENTADA */
+        /* TRANSICIÓN FRAGMENTADA SIMPLIFICADA */
         .fragment-overlay {
             position: fixed;
             top: 0;
@@ -59,6 +59,7 @@
             z-index: 2000;
             pointer-events: none;
             opacity: 0;
+            background: #252525;
         }
 
         .fragment-overlay.active {
@@ -68,13 +69,11 @@
         .fragment {
             position: absolute;
             background: #252525;
-            transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transition: all 1s ease-out;
         }
 
-        .fragment.animate {
-            transform: translateX(var(--random-x)) translateY(var(--random-y)) rotateX(var(--random-rotation-x)) rotateY(var(--random-rotation-y)) rotateZ(var(--random-rotation-z)) scale(0.1);
+        .fragment.animate-out {
+            transform: translateX(var(--dx)) translateY(var(--dy)) rotate(var(--rotation)) scale(0);
             opacity: 0;
         }
         
