@@ -132,19 +132,27 @@
     
     // Ejecutar inmediatamente
     hideStuckCircle();
-    
+    updateLogoAndSetupBackgrounds();
+
     // Ejecutar cuando el DOM esté listo
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', hideStuckCircle);
+        document.addEventListener('DOMContentLoaded', function() {
+            hideStuckCircle();
+            updateLogoAndSetupBackgrounds();
+        });
     }
-    
+
     // Ejecutar después de que todo se haya cargado
-    window.addEventListener('load', hideStuckCircle);
-    
+    window.addEventListener('load', function() {
+        hideStuckCircle();
+        updateLogoAndSetupBackgrounds();
+    });
+
     // Ejecutar cada segundo durante los primeros 10 segundos por si acaso
     let attempts = 0;
     const interval = setInterval(() => {
         hideStuckCircle();
+        updateLogoAndSetupBackgrounds();
         attempts++;
         if (attempts >= 10) {
             clearInterval(interval);
