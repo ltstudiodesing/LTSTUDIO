@@ -736,10 +736,9 @@
                     isOverCircle = true;
                     cursor.style.transform = 'scale(2)';
                     cursor.style.mixBlendMode = 'exclusion';
-                    circleBorder.style.borderColor = 'rgba(255, 255, 255, 0.9)';
-                    circleBorder.style.transform = 'scale(1.05)';
+                    circleBorder.style.borderColor = 'rgba(255, 255, 255, 0.8)';
                     if (circleInner) {
-                        circleInner.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                        circleInner.style.borderColor = 'rgba(255, 255, 255, 0.2)';
                     }
                 });
 
@@ -748,20 +747,9 @@
                     cursor.style.transform = 'scale(1)';
                     cursor.style.mixBlendMode = 'difference';
                     circleBorder.style.borderColor = 'rgba(255, 255, 255, 0.4)';
-                    circleBorder.style.transform = 'scale(1)';
                     if (circleInner) {
                         circleInner.style.borderColor = 'rgba(255, 255, 255, 0.1)';
                     }
-                });
-
-                circleContainer.addEventListener('mousemove', (e) => {
-                    const rect = circleContainer.getBoundingClientRect();
-                    const centerX = rect.left + rect.width / 2;
-                    const centerY = rect.top + rect.height / 2;
-                    const deltaX = (e.clientX - centerX) * 0.05;
-                    const deltaY = (e.clientY - centerY) * 0.05;
-
-                    circleBorder.style.transform = `scale(1.05) translate(${deltaX}px, ${deltaY}px)`;
                 });
             }
         }
