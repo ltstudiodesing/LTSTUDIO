@@ -247,36 +247,44 @@
     // Ejecutar funciones básicas inmediatamente
     hideStuckCircle();
 
-    // Aplicar imágenes de fondo después de la intro pero no muy tarde
+    // Ejecutar aplicación de imágenes INMEDIATAMENTE
+    applyCircleBackgrounds();
+
+    // Y también en múltiples momentos
     setTimeout(() => {
-        console.log('🚀 Ejecutando aplicación de imágenes de fondo...');
+        console.log('🚀 Aplicación de imágenes - 1 segundo');
         applyCircleBackgrounds();
-    }, 3000);
+    }, 1000);
+
+    setTimeout(() => {
+        console.log('🚀 Aplicación de imágenes - 2 segundos');
+        applyCircleBackgrounds();
+    }, 2000);
+
+    setTimeout(() => {
+        console.log('🚀 Aplicación de imágenes - 4 segundos');
+        applyCircleBackgrounds();
+    }, 4000);
+
+    setTimeout(() => {
+        console.log('🚀 Aplicación de imágenes - 6 segundos');
+        applyCircleBackgrounds();
+    }, 6000);
 
     // También ejecutar cuando el DOM esté listo
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             hideStuckCircle();
-            setTimeout(() => {
-                applyCircleBackgrounds();
-            }, 2000);
+            applyCircleBackgrounds();
         });
     }
 
     // Ejecutar después de que todo se haya cargado
     window.addEventListener('load', function() {
         hideStuckCircle();
-        setTimeout(() => {
-            updateLogoAndSetupBackgrounds();
-            applyCircleBackgrounds();
-        }, 1000);
-    });
-
-    // Ejecutar una vez más después de 8 segundos para asegurar
-    setTimeout(() => {
-        console.log('🔄 Ejecución final de aplicación de imágenes...');
+        updateLogoAndSetupBackgrounds();
         applyCircleBackgrounds();
-    }, 8000);
+    });
 
     // Configurar navegación de proyectos
     function setupProjectNavigation() {
