@@ -601,6 +601,18 @@
             // Smooth scroll mejorado
             document.documentElement.style.scrollBehavior = 'smooth';
 
+            // Manejar aparición del encabezado fijo al hacer scroll
+            window.addEventListener('scroll', function() {
+                const headerRect = projectHeader.getBoundingClientRect();
+
+                // Si el encabezado original sale de la vista, mostrar el fijo
+                if (headerRect.bottom < 0) {
+                    projectHeaderFixed.classList.add('visible');
+                } else {
+                    projectHeaderFixed.classList.remove('visible');
+                }
+            });
+
             // Inicializar primera imagen como visible
             if (imageContainers.length > 0) {
                 imageContainers[0].classList.add('visible');
