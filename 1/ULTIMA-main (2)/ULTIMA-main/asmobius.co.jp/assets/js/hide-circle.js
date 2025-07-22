@@ -31,14 +31,27 @@
     });
 
     function updateLogoAndSetupBackgrounds() {
-        // Cambiar logo de "LT STUDIO DESIGN" a "LTSD"
-        const logoTexts = document.querySelectorAll('text');
+        // Cambiar logo específico en la navegación (no el de la intro)
+        const logoTexts = document.querySelectorAll('.p-stage__logo text, .js-stage__logo text, .stage__logo text');
         logoTexts.forEach(text => {
             if (text.textContent && text.textContent.includes('LT STUDIO DESIGN')) {
                 text.textContent = 'LTSD';
                 text.setAttribute('letter-spacing', '6px');
-                console.log('🎨 Logo actualizado a LTSD');
+                console.log('🎨 Logo de navegación actualizado a LTSD');
             }
+        });
+
+        // También buscar logos en elementos con clases específicas de navegación
+        const navElements = document.querySelectorAll('.p-stage__menu, .stage__menu, [class*="menu"] text');
+        navElements.forEach(element => {
+            const textElements = element.querySelectorAll('text');
+            textElements.forEach(text => {
+                if (text.textContent && text.textContent.includes('LT STUDIO DESIGN')) {
+                    text.textContent = 'LTSD';
+                    text.setAttribute('letter-spacing', '6px');
+                    console.log('🎨 Logo en navegación actualizado a LTSD');
+                }
+            });
         });
 
         // Buscar elementos de proyecto para aplicar imágenes de fondo
@@ -48,26 +61,29 @@
             const text = element.textContent || '';
             let backgroundImage = '';
 
-            // Mapear proyectos a sus primeras imágenes
+            // Mapear proyectos a sus primeras imágenes (usando la primera imagen de park mansion para ese proyecto)
             if (text.toLowerCase().includes('park mansion')) {
-                backgroundImage = 'url("https://picsum.photos/1200/1600?random=1")';
+                backgroundImage = 'url("https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80")';
             } else if (text.toLowerCase().includes('kawana')) {
-                backgroundImage = 'url("https://picsum.photos/1200/1600?random=2")';
+                backgroundImage = 'url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80")';
             } else if (text.toLowerCase().includes('sevens villa')) {
-                backgroundImage = 'url("https://picsum.photos/1200/1600?random=3")';
+                backgroundImage = 'url("https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80")';
             } else if (text.toLowerCase().includes('hikawa')) {
-                backgroundImage = 'url("https://picsum.photos/1200/1600?random=4")';
+                backgroundImage = 'url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80")';
             } else {
-                backgroundImage = `url("https://picsum.photos/1200/1600?random=${index + 5}")`;
+                backgroundImage = `url("https://images.unsplash.com/photo-${1600 + index}-${585154340 + index * 100}-be6161a56a0c?w=800&q=80")`;
             }
 
-            // Aplicar imagen de fondo al elemento
-            element.style.backgroundImage = backgroundImage;
-            element.style.backgroundSize = 'cover';
-            element.style.backgroundPosition = 'center';
-            element.style.borderRadius = '50%';
-            element.style.position = 'relative';
-            element.style.overflow = 'hidden';
+            // Aplicar imagen de fondo al elemento solo si es un círculo de proyecto
+            if (element.classList.contains('js-canvas__target') || element.querySelector('circle')) {
+                element.style.backgroundImage = backgroundImage;
+                element.style.backgroundSize = 'cover';
+                element.style.backgroundPosition = 'center';
+                element.style.borderRadius = '50%';
+                element.style.position = 'relative';
+                element.style.overflow = 'hidden';
+                console.log('🖼️ Imagen de fondo aplicada a círculo de proyecto:', text.substring(0, 20));
+            }
 
             // Agregar overlay para mejorar legibilidad del texto
             const overlay = document.createElement('div');
