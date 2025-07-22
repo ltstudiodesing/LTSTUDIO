@@ -162,7 +162,7 @@
     }
 
     function updateLogoAndSetupBackgrounds() {
-        // Función para reemplazar/ocultar el logo ASM problem��tico
+        // Función para reemplazar/ocultar el logo ASM problemático
         function replaceASMLogo() {
             let logoReplaced = false;
 
@@ -327,13 +327,18 @@
             'PARK MANSION': 'projects/park-mansion.html',
             'park mansion': 'projects/park-mansion.html',
             'pm_minami_azabu': 'projects/park-mansion.html',
-            'with Silence Kawana': 'projects/kawana-project.html',
-            'kawana': 'projects/kawana-project.html',
+            'with Silence Kawana': 'projects/kawana.html',
+            'kawana': 'projects/kawana.html',
             'SEVENS VILLA': 'projects/sevens-villa.html',
+            'sevens villa': 'projects/sevens-villa.html',
+            'sevens': 'projects/sevens-villa.html',
             'HIKAWA GARDENS': 'projects/hikawa-gardens.html',
+            'hikawa': 'projects/hikawa-gardens.html',
             'ONE AVENUE': 'projects/one-avenue.html',
             'CENTURY FOREST': 'projects/century-forest.html',
-            'PROUD': 'projects/proud-rokakoen.html'
+            'PROUD': 'projects/proud-rokakoen.html',
+            'JADE': 'projects/jade.html',
+            'jade': 'projects/jade.html'
         };
 
         // Interceptar todos los clics en elementos de proyecto
