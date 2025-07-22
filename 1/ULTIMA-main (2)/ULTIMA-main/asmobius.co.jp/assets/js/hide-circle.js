@@ -30,120 +30,82 @@
         }
     });
 
-    // Aplicar imágenes de fondo directamente al área negra
+    // Aplicar imágenes de fondo a TODOS los elementos negros posibles
     function applyCircleBackgrounds() {
-        console.log('🔄 Aplicando imágenes de fondo directamente...');
+        console.log('🔄 Aplicando imágenes a TODOS los elementos negros...');
 
-        // Imágenes para cada proyecto
-        const projectImages = {
-            'park mansion': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=1200&fit=crop',
-            'kawana': 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=1200&fit=crop',
-            'jade': 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=1200&fit=crop',
-            'sevens': 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200&h=1200&fit=crop',
-            'hikawa': 'https://images.unsplash.com/photo-1600485154340-be6161a56a0c?w=1200&h=1200&fit=crop',
-            'one avenue': 'https://images.unsplash.com/photo-1600485154355-be6161a56a0c?w=1200&h=1200&fit=crop',
-            'century': 'https://images.unsplash.com/photo-1600485154343-be6161a56a0c?w=1200&h=1200&fit=crop',
-            'proud': 'https://images.unsplash.com/photo-1600485154356-be6161a56a0c?w=1200&h=1200&fit=crop',
-            'roppongi': 'https://images.unsplash.com/photo-1600485154345-be6161a56a0c?w=1200&h=1200&fit=crop',
-            'nishiazabu': 'https://images.unsplash.com/photo-1600485154354-be6161a56a0c?w=1200&h=1200&fit=crop',
-            'azabu': 'https://images.unsplash.com/photo-1600485154341-be6161a56a0c?w=1200&h=1200&fit=crop',
-            'park house': 'https://images.unsplash.com/photo-1600485154342-be6161a56a0c?w=1200&h=1200&fit=crop'
-        };
+        const parkMansionImage = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=1200&fit=crop';
 
-        // Buscar el div negro principal usando múltiples métodos
-        function findBackgroundElement() {
-            // Método 1: Buscar por computed style específico
+        // Función para aplicar imagen a un elemento
+        function forceBackgroundImage(element, imageUrl) {
+            element.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
+            element.style.setProperty('background-size', 'cover', 'important');
+            element.style.setProperty('background-position', 'center', 'important');
+            element.style.setProperty('background-repeat', 'no-repeat', 'important');
+            console.log('🖼️ Imagen aplicada a elemento:', element.tagName, element.className);
+        }
+
+        // Aplicar a TODOS los divs negros posibles
+        function applyToAllBlackElements() {
             const allDivs = document.querySelectorAll('div');
-            for (const div of allDivs) {
+            let count = 0;
+
+            allDivs.forEach(div => {
                 const style = window.getComputedStyle(div);
-                if (style.backgroundColor === 'rgb(37, 37, 37)' &&
-                    style.zIndex === '110' &&
-                    style.position === 'absolute' &&
-                    style.width === '100%' &&
-                    style.height === '100%') {
-                    console.log('✅ Elemento de fondo encontrado (método 1)');
-                    return div;
+
+                // Aplicar a cualquier div negro grande
+                if ((style.backgroundColor === 'rgb(37, 37, 37)' ||
+                     style.backgroundColor === 'rgba(37, 37, 37, 1)') &&
+                    (style.width === '100%' || parseInt(style.width) > 500) &&
+                    (style.height === '100%' || parseInt(style.height) > 500)) {
+
+                    forceBackgroundImage(div, parkMansionImage);
+                    count++;
                 }
-            }
 
-            // Método 2: Buscar por background-color con cualquier z-index
-            for (const div of allDivs) {
-                const style = window.getComputedStyle(div);
+                // También aplicar a elementos con z-index alto
                 if (style.backgroundColor === 'rgb(37, 37, 37)' &&
-                    style.position === 'absolute' &&
-                    style.width === '100%') {
-                    console.log('✅ Elemento de fondo encontrado (método 2)');
-                    return div;
-                }
-            }
-
-            // Método 3: Usar el body como último recurso
-            console.log('⚠️ Usando body como elemento de fondo');
-            return document.body;
-        }
-
-        const backgroundElement = findBackgroundElement();
-
-        // Aplicar imagen inicial inmediatamente
-        function applyImage(imageUrl) {
-            console.log('🖼️ Aplicando imagen:', imageUrl);
-
-            // Forzar aplicación con !important
-            backgroundElement.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
-            backgroundElement.style.setProperty('background-size', 'cover', 'important');
-            backgroundElement.style.setProperty('background-position', 'center', 'important');
-            backgroundElement.style.setProperty('background-repeat', 'no-repeat', 'important');
-
-            // Agregar overlay solo una vez
-            if (!backgroundElement.querySelector('.image-overlay')) {
-                const overlay = document.createElement('div');
-                overlay.className = 'image-overlay';
-                overlay.style.cssText = `
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(0, 0, 0, 0.3);
-                    z-index: 1;
-                    pointer-events: none;
-                `;
-                backgroundElement.appendChild(overlay);
-            }
-        }
-
-        // Aplicar imagen inicial de Park Mansion
-        applyImage(projectImages['park mansion']);
-
-        // Cambiar imagen según proyecto activo
-        let currentProject = '';
-        function updateProjectImage() {
-            const projectList = document.querySelectorAll('ul li');
-
-            projectList.forEach(li => {
-                const rect = li.getBoundingClientRect();
-                const isInViewport = rect.top >= -200 && rect.top <= window.innerHeight + 200;
-
-                if (isInViewport) {
-                    const projectText = li.textContent.trim().toLowerCase();
-
-                    // Buscar imagen correspondiente
-                    for (const [key, imageUrl] of Object.entries(projectImages)) {
-                        if (projectText.includes(key) && projectText !== currentProject) {
-                            console.log('📋 Proyecto detectado:', projectText, '→', key);
-                            applyImage(imageUrl);
-                            currentProject = projectText;
-                            break;
-                        }
-                    }
+                    parseInt(style.zIndex) > 100) {
+                    forceBackgroundImage(div, parkMansionImage);
+                    count++;
                 }
             });
+
+            console.log(`✅ Imagen aplicada a ${count} elementos`);
+
+            // También aplicar al body y html como respaldo
+            forceBackgroundImage(document.body, parkMansionImage);
+            forceBackgroundImage(document.documentElement, parkMansionImage);
+
+            // Buscar canvas y aplicar a su contenedor
+            const canvas = document.querySelector('canvas');
+            if (canvas && canvas.parentElement) {
+                forceBackgroundImage(canvas.parentElement, parkMansionImage);
+                console.log('🎯 Imagen aplicada al contenedor del canvas');
+            }
         }
 
-        // Monitorear cambios cada segundo
-        setInterval(updateProjectImage, 1000);
+        // Ejecutar aplicación múltiples veces
+        applyToAllBlackElements();
 
-        console.log('✅ Sistema de imágenes de fondo inicializado');
+        // Repetir cada segundo para asegurar que persista
+        setInterval(() => {
+            applyToAllBlackElements();
+        }, 1000);
+
+        // También aplicar cuando hay cambios en el DOM
+        const observer = new MutationObserver(() => {
+            applyToAllBlackElements();
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['style', 'class']
+        });
+
+        console.log('🚀 Sistema agresivo de imágenes de fondo activado');
     }
 
     function updateLogoAndSetupBackgrounds() {
