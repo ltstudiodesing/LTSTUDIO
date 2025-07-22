@@ -969,6 +969,13 @@
             letters.forEach((letter, index) => {
                 setTimeout(() => {
                     letter.classList.add('filled');
+
+                    // Si es la última letra, programar transición fragmentada
+                    if (index === letters.length - 1) {
+                        setTimeout(() => {
+                            startFragmentTransition();
+                        }, 1000); // 1 segundo después de que termine la última letra
+                    }
                 }, index * 150); // 150ms entre letras para mejor visualización
             });
         }
