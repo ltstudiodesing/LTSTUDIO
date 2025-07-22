@@ -1115,6 +1115,15 @@
             // Limpiar intervalos
             if (progressTimer) clearInterval(progressTimer);
 
+            // Activar efecto agua en el borde
+            const circleBorder = document.querySelector('.circle-border');
+            if (circleBorder) {
+                circleBorder.classList.remove('water-effect');
+                setTimeout(() => {
+                    circleBorder.classList.add('water-effect');
+                }, 10);
+            }
+
             // Ocultar proyecto actual
             document.querySelectorAll('.project-text').forEach(text => {
                 text.classList.remove('active');
