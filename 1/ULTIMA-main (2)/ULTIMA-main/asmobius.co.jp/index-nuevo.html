@@ -816,6 +816,16 @@
             if (newBackground) newBackground.classList.add('active');
             if (newText) newText.classList.add('active');
 
+            // Actualizar fondo de inmersión
+            const immersionBg = document.getElementById('immersion-bg');
+            if (immersionBg && PROJECTS[index]) {
+                immersionBg.style.backgroundImage = `url("${PROJECTS[index].image}")`;
+                immersionBg.classList.remove('active');
+                setTimeout(() => {
+                    immersionBg.classList.add('active');
+                }, 100);
+            }
+
             currentProject = index;
 
             // Actualizar contador
