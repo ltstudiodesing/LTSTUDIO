@@ -1,6 +1,6 @@
-// SCRIPT SIMPLE Y LIGERO
+// SCRIPT PARA MANTENER IMAGEN FIJA DURANTE PROYECTO
 (function() {
-    console.log('✨ Script simple iniciado');
+    console.log('🔒 Script de imagen persistente');
 
     const PROJECT_IMAGES = {
         'PARK MANSION': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop',
@@ -9,33 +9,60 @@
     };
 
     let currentProject = 'PARK MANSION';
+    let lockImage = false;
 
-    // Aplicar imagen al canvas de forma simple
-    function applyImage() {
+    // Forzar imagen con !important para que no se quite
+    function lockImageToCanvas() {
         const canvas = document.querySelector('canvas');
         if (!canvas) return;
 
         const imageUrl = PROJECT_IMAGES[currentProject];
-        canvas.style.backgroundImage = `url("${imageUrl}")`;
-        canvas.style.backgroundSize = 'cover';
-        canvas.style.backgroundPosition = 'center';
 
-        console.log(`✅ Imagen aplicada: ${currentProject}`);
+        // Aplicar con !important para que no sea removida
+        canvas.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
+        canvas.style.setProperty('background-size', 'cover', 'important');
+        canvas.style.setProperty('background-position', 'center', 'important');
+        canvas.style.setProperty('background-repeat', 'no-repeat', 'important');
+
+        lockImage = true;
+        console.log(`🔒 Imagen bloqueada: ${currentProject}`);
     }
 
-    // Detectar proyecto simple
+    // Detectar proyecto actual
     function detectProject() {
         const ul = document.querySelector('ul');
-        if (!ul) return;
+        if (!ul) return currentProject;
 
-        const text = ul.textContent;
+        const text = ul.textContent.toUpperCase();
 
-        if (text.includes('KAWANA')) {
-            currentProject = 'KAWANA';
-        } else if (text.includes('SEVENS VILLA')) {
-            currentProject = 'SEVENS VILLA';
-        } else {
-            currentProject = 'PARK MANSION';
+        if (text.includes('KAWANA')) return 'KAWANA';
+        if (text.includes('SEVENS VILLA')) return 'SEVENS VILLA';
+        return 'PARK MANSION';
+    }
+
+    // Mantener imagen aplicada constantemente
+    function maintainImage() {
+        if (!lockImage) return;
+
+        const canvas = document.querySelector('canvas');
+        if (!canvas) return;
+
+        const imageUrl = PROJECT_IMAGES[currentProject];
+
+        // Re-aplicar constantemente para evitar que se quite
+        canvas.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
+        canvas.style.setProperty('background-size', 'cover', 'important');
+        canvas.style.setProperty('background-position', 'center', 'important');
+    }
+
+    // Cambiar proyecto solo cuando sea necesario
+    function checkProjectChange() {
+        const newProject = detectProject();
+
+        if (newProject !== currentProject) {
+            currentProject = newProject;
+            lockImageToCanvas();
+            console.log(`🔄 Proyecto cambiado a: ${currentProject}`);
         }
     }
 
@@ -45,16 +72,18 @@
         if (svg) svg.style.display = 'none';
     }
 
-    // Función principal
-    function main() {
+    // Inicializar
+    hideStuckCircle();
+    lockImageToCanvas();
+
+    // Mantener imagen cada 500ms para que no desaparezca
+    setInterval(maintainImage, 500);
+
+    // Verificar cambios de proyecto cada 2 segundos
+    setInterval(() => {
         hideStuckCircle();
-        detectProject();
-        applyImage();
-    }
+        checkProjectChange();
+    }, 2000);
 
-    // Ejecutar cada 3 segundos (mucho más ligero)
-    main();
-    setInterval(main, 3000);
-
-    console.log('🚀 Script ligero activo');
+    console.log('🚀 Script de persistencia activado');
 })();
