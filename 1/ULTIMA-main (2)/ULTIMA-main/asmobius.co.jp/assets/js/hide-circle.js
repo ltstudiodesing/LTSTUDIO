@@ -31,46 +31,92 @@
     });
 
     function updateLogoAndSetupBackgrounds() {
-        // Esperar a que la intro termine antes de cambiar logos
-        setTimeout(() => {
-            // Buscar específicamente el SVG con texto "architecture" y cambiarlo por "LTSD"
-            const allTexts = document.querySelectorAll('text');
-            allTexts.forEach(text => {
-                const parent = text.closest('svg');
-                const parentElement = parent ? parent.parentElement : null;
+        // Función para reemplazar/ocultar el logo ASM problemático
+        function replaceASMLogo() {
+            // Buscar el SVG específico que contiene "ASM" y "architecture"
+            const allSVGs = document.querySelectorAll('svg');
+            let logoReplaced = false;
 
-                // Buscar texto que dice "architecture" y reemplazarlo
-                if (text.textContent && text.textContent.toLowerCase().includes('architecture')) {
-                    // Verificar que NO esté en elementos de loading/intro
-                    const isInLoading = parent?.classList.contains('p-loading__logo') ||
-                                       text.classList.contains('st-logo-load') ||
-                                       text.classList.contains('st-logo-load-back') ||
-                                       parentElement?.classList.contains('p-loading__back') ||
-                                       parentElement?.classList.contains('p-loading__inner');
+            allSVGs.forEach(svg => {
+                const paths = svg.querySelectorAll('path');
+                const texts = svg.querySelectorAll('text');
 
-                    if (!isInLoading) {
+                // Verificar si este SVG contiene texto "architecture" o tiene paths que forman "ASM"
+                let hasArchitecture = false;
+                texts.forEach(text => {
+                    if (text.textContent && text.textContent.toLowerCase().includes('architecture')) {
+                        hasArchitecture = true;
+                        // Cambiar el texto "architecture" por "LTSD"
                         text.textContent = 'LTSD';
                         text.setAttribute('letter-spacing', '4px');
-                        text.setAttribute('font-size', '14');
-                        console.log('🎨 Logo "architecture" actualizado a "LTSD"');
+                        text.setAttribute('font-size', '12');
+                        console.log('🎨 Texto "architecture" cambiado a "LTSD"');
                     }
-                }
+                });
 
-                // También buscar y cambiar las letras "ASM" en el mismo SVG
-                if (text.textContent && (text.textContent.includes('ASM') || text.textContent.includes('A S M'))) {
-                    const isInLoading = parent?.classList.contains('p-loading__logo') ||
-                                       text.classList.contains('st-logo-load') ||
-                                       text.classList.contains('st-logo-load-back') ||
-                                       parentElement?.classList.contains('p-loading__back') ||
-                                       parentElement?.classList.contains('p-loading__inner');
+                // Si encontramos el SVG con "architecture", es probable que también tenga "ASM" en paths
+                if (hasArchitecture && paths.length > 0) {
+                    // Ocultar todo el SVG y crear uno nuevo con "LTSD"
+                    const parentElement = svg.parentElement;
+                    if (parentElement) {
+                        // Crear un nuevo elemento de texto simple
+                        const newLogo = document.createElement('div');
+                        newLogo.innerHTML = `
+                            <div style="
+                                position: relative;
+                                display: inline-block;
+                                font-family: 'butler_medium', serif;
+                                font-size: 14px;
+                                font-weight: 500;
+                                letter-spacing: 4px;
+                                color: #666;
+                                text-align: center;
+                            ">
+                                <div style="font-size: 16px; font-weight: bold; margin-bottom: 2px;">LTSD</div>
+                                <div style="font-size: 10px; letter-spacing: 2px;">DESIGN</div>
+                            </div>
+                        `;
 
-                    if (!isInLoading) {
-                        text.textContent = 'LTSD';
-                        text.setAttribute('letter-spacing', '6px');
-                        console.log('🎨 Logo "ASM" actualizado a "LTSD"');
+                        // Reemplazar el SVG con el nuevo logo
+                        parentElement.replaceChild(newLogo, svg);
+                        logoReplaced = true;
+                        console.log('🎨 Logo ASM reemplazado completamente por LTSD');
                     }
                 }
             });
+
+            return logoReplaced;
+        }
+
+        // Ejecutar después de que la intro termine
+        setTimeout(() => {
+            const replaced = replaceASMLogo();
+            if (!replaced) {
+                // Si no encontramos el logo específico, buscar por texto
+                const allTexts = document.querySelectorAll('text');
+                allTexts.forEach(text => {
+                    const parent = text.closest('svg');
+                    const parentElement = parent ? parent.parentElement : null;
+
+                    if (text.textContent && (
+                        text.textContent.toLowerCase().includes('architecture') ||
+                        text.textContent.includes('ASM') ||
+                        text.textContent.includes('A S M')
+                    )) {
+                        const isInLoading = parent?.classList.contains('p-loading__logo') ||
+                                           text.classList.contains('st-logo-load') ||
+                                           text.classList.contains('st-logo-load-back') ||
+                                           parentElement?.classList.contains('p-loading__back') ||
+                                           parentElement?.classList.contains('p-loading__inner');
+
+                        if (!isInLoading) {
+                            text.textContent = 'LTSD';
+                            text.setAttribute('letter-spacing', '4px');
+                            console.log('🎨 Texto del logo actualizado a "LTSD"');
+                        }
+                    }
+                });
+            }
         }, 3000); // Esperar 3 segundos para que la intro termine
 
         // Aplicar imágenes de fondo solo a círculos de proyecto
@@ -96,10 +142,13 @@
                     backgroundImage = `url("https://picsum.photos/800/1000?random=${index + 5}")`;
                 }
 
-                // Verificar si es realmente un círculo de proyecto
-                const hasCircle = element.querySelector('circle') || element.classList.contains('js-canvas__target');
-                
+                // Verificar si es realmente un círculo de proyecto y aplicar imagen
+                const hasCircle = element.querySelector('circle') ||
+                                element.classList.contains('js-canvas__target') ||
+                                element.classList.contains('p-stage__menu__item');
+
                 if (hasCircle && backgroundImage) {
+                    console.log('🔍 Aplicando imagen a círculo:', text.substring(0, 30), 'URL:', backgroundImage);
                     // Aplicar imagen de fondo
                     element.style.backgroundImage = backgroundImage;
                     element.style.backgroundSize = 'cover';
@@ -145,7 +194,9 @@
                         });
                     }
                     
-                    console.log('🖼️ Imagen de fondo aplicada a:', text.substring(0, 20));
+                    console.log('✅ Imagen de fondo aplicada exitosamente a:', text.substring(0, 20));
+                } else {
+                    console.log('❌ No se pudo aplicar imagen a:', text.substring(0, 20), 'hasCircle:', hasCircle, 'backgroundImage:', !!backgroundImage);
                 }
             });
         }, 2000);
