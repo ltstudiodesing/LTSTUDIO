@@ -30,82 +30,136 @@
         }
     });
 
-    // Aplicar imágenes de fondo a TODOS los elementos negros posibles
+    // Crear capa de fondo persistente que no se puede sobrescribir
     function applyCircleBackgrounds() {
-        console.log('🔄 Aplicando imágenes a TODOS los elementos negros...');
+        console.log('🔄 Creando capa de fondo persistente...');
 
-        const parkMansionImage = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=1200&fit=crop';
+        // Imágenes para cada proyecto
+        const projectImages = {
+            'park mansion': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'kawana': 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=1200&fit=crop',
+            'jade': 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=1200&fit=crop',
+            'sevens': 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200&h=1200&fit=crop',
+            'hikawa': 'https://images.unsplash.com/photo-1600485154340-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'one avenue': 'https://images.unsplash.com/photo-1600485154355-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'century': 'https://images.unsplash.com/photo-1600485154343-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'proud': 'https://images.unsplash.com/photo-1600485154356-be6161a56a0c?w=1200&h=1200&fit=crop'
+        };
 
-        // Función para aplicar imagen a un elemento
-        function forceBackgroundImage(element, imageUrl) {
-            element.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
-            element.style.setProperty('background-size', 'cover', 'important');
-            element.style.setProperty('background-position', 'center', 'important');
-            element.style.setProperty('background-repeat', 'no-repeat', 'important');
-            console.log('🖼️ Imagen aplicada a elemento:', element.tagName, element.className);
+        let currentImage = projectImages['park mansion'];
+        let backgroundLayer = null;
+
+        // Crear capa de fondo persistente
+        function createPersistentBackgroundLayer() {
+            // Verificar si ya existe
+            if (document.getElementById('persistent-background-layer')) {
+                backgroundLayer = document.getElementById('persistent-background-layer');
+                return;
+            }
+
+            backgroundLayer = document.createElement('div');
+            backgroundLayer.id = 'persistent-background-layer';
+            backgroundLayer.style.cssText = `
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                background-image: url("${currentImage}") !important;
+                background-size: cover !important;
+                background-position: center !important;
+                background-repeat: no-repeat !important;
+                z-index: -1 !important;
+                pointer-events: none !important;
+            `;
+
+            // Insertar al inicio del body para que esté atrás de todo
+            document.body.insertBefore(backgroundLayer, document.body.firstChild);
+            console.log('🎯 Capa de fondo persistente creada');
         }
 
-        // Aplicar a TODOS los divs negros posibles
-        function applyToAllBlackElements() {
-            const allDivs = document.querySelectorAll('div');
-            let count = 0;
-
-            allDivs.forEach(div => {
-                const style = window.getComputedStyle(div);
-
-                // Aplicar a cualquier div negro grande
-                if ((style.backgroundColor === 'rgb(37, 37, 37)' ||
-                     style.backgroundColor === 'rgba(37, 37, 37, 1)') &&
-                    (style.width === '100%' || parseInt(style.width) > 500) &&
-                    (style.height === '100%' || parseInt(style.height) > 500)) {
-
-                    forceBackgroundImage(div, parkMansionImage);
-                    count++;
-                }
-
-                // También aplicar a elementos con z-index alto
-                if (style.backgroundColor === 'rgb(37, 37, 37)' &&
-                    parseInt(style.zIndex) > 100) {
-                    forceBackgroundImage(div, parkMansionImage);
-                    count++;
-                }
-            });
-
-            console.log(`✅ Imagen aplicada a ${count} elementos`);
-
-            // También aplicar al body y html como respaldo
-            forceBackgroundImage(document.body, parkMansionImage);
-            forceBackgroundImage(document.documentElement, parkMansionImage);
-
-            // Buscar canvas y aplicar a su contenedor
-            const canvas = document.querySelector('canvas');
-            if (canvas && canvas.parentElement) {
-                forceBackgroundImage(canvas.parentElement, parkMansionImage);
-                console.log('🎯 Imagen aplicada al contenedor del canvas');
+        // Función para cambiar imagen
+        function changeBackgroundImage(imageUrl) {
+            if (backgroundLayer && currentImage !== imageUrl) {
+                currentImage = imageUrl;
+                backgroundLayer.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
+                console.log('🖼️ Imagen cambiada a:', imageUrl);
             }
         }
 
-        // Ejecutar aplicación múltiples veces
-        applyToAllBlackElements();
+        // Crear la capa inicial
+        createPersistentBackgroundLayer();
 
-        // Repetir cada segundo para asegurar que persista
+        // Monitorear proyectos y cambiar imagen
+        let currentProject = '';
+        function monitorProjects() {
+            const projectList = document.querySelectorAll('ul li');
+
+            projectList.forEach(li => {
+                const rect = li.getBoundingClientRect();
+                const isVisible = rect.top >= -200 && rect.top <= window.innerHeight + 200;
+
+                if (isVisible) {
+                    const projectText = li.textContent.trim().toLowerCase();
+
+                    if (projectText !== currentProject) {
+                        // Buscar imagen correspondiente
+                        for (const [key, imageUrl] of Object.entries(projectImages)) {
+                            if (projectText.includes(key)) {
+                                console.log('📋 Proyecto detectado:', projectText, '→', key);
+                                changeBackgroundImage(imageUrl);
+                                currentProject = projectText;
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Proteger la capa para que no sea removida o modificada
+        function protectBackgroundLayer() {
+            if (!document.getElementById('persistent-background-layer')) {
+                console.log('⚠️ Capa de fondo removida, recreando...');
+                createPersistentBackgroundLayer();
+            } else {
+                // Verificar que los estilos no hayan sido modificados
+                const layer = document.getElementById('persistent-background-layer');
+                if (layer.style.zIndex !== '-1') {
+                    layer.style.setProperty('z-index', '-1', 'important');
+                }
+                if (!layer.style.backgroundImage.includes(currentImage.split('/').pop())) {
+                    layer.style.setProperty('background-image', `url("${currentImage}")`, 'important');
+                }
+            }
+        }
+
+        // Ejecutar monitoreo cada 500ms
         setInterval(() => {
-            applyToAllBlackElements();
-        }, 1000);
+            protectBackgroundLayer();
+            monitorProjects();
+        }, 500);
 
-        // También aplicar cuando hay cambios en el DOM
-        const observer = new MutationObserver(() => {
-            applyToAllBlackElements();
+        // Observer para recrear la capa si es removida
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'childList') {
+                    mutation.removedNodes.forEach((node) => {
+                        if (node.id === 'persistent-background-layer') {
+                            console.log('🔄 Capa de fondo removida, recreando...');
+                            setTimeout(createPersistentBackgroundLayer, 100);
+                        }
+                    });
+                }
+            });
         });
 
         observer.observe(document.body, {
             childList: true,
-            subtree: true,
-            attributes: true,
-            attributeFilter: ['style', 'class']
+            subtree: true
         });
 
-        console.log('🚀 Sistema agresivo de imágenes de fondo activado');
+        console.log('✅ Sistema de capa de fondo persistente activado');
     }
 
     function updateLogoAndSetupBackgrounds() {
