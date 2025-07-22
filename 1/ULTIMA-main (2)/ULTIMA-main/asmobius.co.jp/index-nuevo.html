@@ -199,45 +199,72 @@
             text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
         }
         
+        /* NAVIGATION */
+        .navigation {
+            position: fixed;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            z-index: 200;
+            font-family: 'butler_medium', serif;
+        }
+
+        .nav-button {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            font-family: 'butler_medium', serif;
+            text-transform: uppercase;
+        }
+
+        .nav-button:hover {
+            color: white;
+        }
+
+        .nav-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* PROJECT COUNTER */
+        .project-counter {
+            color: white;
+            font-size: 16px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            font-family: 'butler_medium', serif;
+        }
+
+        .current-number {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
         /* PROGRESS BAR */
         .progress-container {
             position: fixed;
-            bottom: 100px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            width: 300px;
-            height: 2px;
+            width: 200px;
+            height: 1px;
             background: rgba(255, 255, 255, 0.2);
             z-index: 200;
         }
-        
+
         .progress-bar {
             height: 100%;
             background: white;
             width: 0%;
             transition: width 0.1s linear;
-        }
-        
-        /* PROJECT LIST */
-        .projects-list {
-            position: fixed;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            z-index: 200;
-        }
-        
-        .project-item {
-            opacity: 0.3;
-            font-size: 14px;
-            margin: 4px 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .project-item.active {
-            opacity: 1;
-            font-weight: 500;
         }
         
         /* CURSOR CUSTOM */
