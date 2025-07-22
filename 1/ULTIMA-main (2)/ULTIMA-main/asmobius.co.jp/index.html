@@ -157,7 +157,6 @@
             transform: scale(1);
         }
 
-
         
         /* LOGO */
         .logo {
@@ -506,7 +505,6 @@
             font-size: 16px;
             font-weight: 300;
         }
-
 
         
         /* CURSOR CUSTOM */
@@ -943,14 +941,89 @@
             letters.forEach((letter, index) => {
                 setTimeout(() => {
                     letter.classList.add('filled');
-                    console.log(`�� Letra ${index + 1} animada`);
+                    console.log(`📝 Letra ${index + 1} animada`);
 
-                    // Si es la última letra, programar transición fragmentada
+                    // Si es la última letra, hacer EXPLOSIÓN ESPECTACULAR
                     if (index === letters.length - 1) {
-                        console.log('🎯 Última letra completada, programando transición');
+                        console.log('🎯 Última letra completada, programando EXPLOSIÓN MEGA ESPECTACULAR');
                         setTimeout(() => {
-                            startFragmentTransition();
-                        }, 1000); // 1 segundo después de que termine la última letra
+                            console.log('💥 EXPLOSIÓN MEGA ESPECTACULAR INCOMING!');
+
+                            // CREAR EXPLOSIÓN DIRECTA AQUÍ
+                            const introScreen = document.getElementById('intro-screen');
+                            const mainScreen = document.getElementById('main-screen');
+
+                            // EXPLOTAR CADA LETRA
+                            letters.forEach((letter, i) => {
+                                setTimeout(() => {
+                                    console.log(`💥 Explosión letra ${i}`);
+
+                                    // 3 copias volando por letra
+                                    for (let j = 0; j < 3; j++) {
+                                        const flying = letter.cloneNode(true);
+                                        flying.style.position = 'fixed';
+                                        flying.style.zIndex = '10000';
+                                        flying.style.fontSize = '2rem';
+                                        flying.style.fontWeight = 'bold';
+                                        flying.style.color = '#fff';
+                                        flying.style.pointerEvents = 'none';
+
+                                        // Posición inicial igual a la letra original
+                                        const rect = letter.getBoundingClientRect();
+                                        flying.style.left = rect.left + 'px';
+                                        flying.style.top = rect.top + 'px';
+
+                                        document.body.appendChild(flying);
+
+                                        // Animación de vuelo
+                                        const angle = (Math.PI * 2 * j / 3) + (Math.random() * 0.5);
+                                        const distance = 300 + Math.random() * 400;
+                                        const endX = rect.left + Math.cos(angle) * distance;
+                                        const endY = rect.top + Math.sin(angle) * distance;
+
+                                        flying.style.transition = 'all 2s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                                        flying.style.transform = `translate(${endX - rect.left}px, ${endY - rect.top}px) rotate(${360 * 3}deg) scale(${0.1 + Math.random() * 0.3})`;
+                                        flying.style.opacity = '0';
+
+                                        // Limpiar después de la animación
+                                        setTimeout(() => {
+                                            if (flying.parentNode) {
+                                                flying.parentNode.removeChild(flying);
+                                            }
+                                        }, 2000);
+                                    }
+
+                                    // Ocultar letra original con efecto
+                                    letter.style.transition = 'all 0.5s ease-out';
+                                    letter.style.transform = 'scale(0)';
+                                    letter.style.opacity = '0';
+
+                                }, i * 100);
+                            });
+
+                            // Después de 4 segundos, hacer transición final
+                            setTimeout(() => {
+                                console.log('🌟 Completando transición a main screen');
+                                introScreen.style.transition = 'opacity 1s ease-out';
+                                introScreen.style.opacity = '0';
+
+                                setTimeout(() => {
+                                    introScreen.classList.add('hidden');
+                                    introScreen.style.display = 'none';
+
+                                    mainScreen.classList.add('visible');
+                                    mainScreen.style.opacity = '1';
+
+                                    // Inicializar main screen
+                                    setTimeout(() => {
+                                        changeProject(0);
+                                        startProgress();
+                                        console.log('✅ Main screen inicializado');
+                                    }, 300);
+                                }, 1000);
+                            }, 4000);
+
+                        }, 2000); // 2 segundos después de que termine la última letra
                     }
                 }, index * 150); // 150ms entre letras para mejor visualización
             });
