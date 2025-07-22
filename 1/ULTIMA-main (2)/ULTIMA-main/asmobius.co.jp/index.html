@@ -318,7 +318,34 @@
             border-radius: 50%;
             z-index: 3;
             mix-blend-mode: exclusion;
-            transition: border-color 0.3s ease;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .circle-border.water-effect {
+            animation: waterWave 1.5s ease-out;
+        }
+
+        @keyframes waterWave {
+            0% {
+                transform: scale(1);
+                border-color: rgba(255, 255, 255, 0.4);
+            }
+            25% {
+                transform: scale(1.02);
+                border-color: rgba(255, 255, 255, 0.7);
+            }
+            50% {
+                transform: scale(0.98);
+                border-color: rgba(255, 255, 255, 0.6);
+            }
+            75% {
+                transform: scale(1.01);
+                border-color: rgba(255, 255, 255, 0.5);
+            }
+            100% {
+                transform: scale(1);
+                border-color: rgba(255, 255, 255, 0.4);
+            }
         }
 
         .circle-inner {
