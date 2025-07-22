@@ -387,18 +387,24 @@
             </div>
         </div>
         
-        <!-- NAVEGACIÓN -->
-        <div class="navigation">
+        <!-- NAVEGACIÓN LATERAL -->
+        <div class="nav-prev">
             <button class="nav-button" id="prev-btn" onclick="previousProject()">prev</button>
-            <div class="project-counter">
-                <span class="current-number" id="current-num">01</span> / 08
-            </div>
+            <div class="nav-line"></div>
+        </div>
+
+        <div class="nav-next">
+            <div class="nav-line"></div>
             <button class="nav-button" id="next-btn" onclick="nextProject()">next</button>
         </div>
 
-        <!-- BARRA DE PROGRESO -->
-        <div class="progress-container">
-            <div class="progress-bar" id="progress-bar"></div>
+        <!-- PROGRESO ABAJO DERECHA -->
+        <div class="progress-info">
+            <div class="project-number" id="current-num">1</div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="project-total">8</div>
         </div>
     </div>
     
