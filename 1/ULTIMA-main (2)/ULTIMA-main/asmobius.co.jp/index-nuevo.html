@@ -796,16 +796,15 @@
                 const span = document.createElement('span');
                 span.className = 'letter';
                 span.textContent = letter === ' ' ? '\u00A0' : letter;
-                span.setAttribute('data-letter', letter === ' ' ? '\u00A0' : letter);
                 introText.appendChild(span);
                 letters.push(span);
             });
 
-            // Animar letra por letra con efecto de relleno progresivo
+            // Animar letra por letra de gris a blanco
             letters.forEach((letter, index) => {
                 setTimeout(() => {
                     letter.classList.add('filled');
-                }, index * 120); // 120ms entre letras
+                }, index * 100); // 100ms entre letras
             });
         }
         
