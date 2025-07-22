@@ -508,9 +508,25 @@
         // INICIALIZAR IMÁGENES DE PROYECTOS
         function initProjectImages() {
             const backgrounds = document.querySelectorAll('.project-background');
+            console.log(`🖼️ Inicializando ${backgrounds.length} imágenes de fondo`);
+
             backgrounds.forEach((bg, index) => {
                 if (PROJECTS[index]) {
-                    bg.style.backgroundImage = `url("${PROJECTS[index].image}")`;
+                    const imageUrl = PROJECTS[index].image;
+                    bg.style.backgroundImage = `url("${imageUrl}")`;
+                    bg.style.backgroundSize = 'cover';
+                    bg.style.backgroundPosition = 'center';
+                    bg.style.backgroundRepeat = 'no-repeat';
+
+                    console.log(`✅ Imagen ${index + 1} configurada: ${PROJECTS[index].name} - ${imageUrl}`);
+
+                    // Precargar imagen para asegurar que se descargue
+                    const img = new Image();
+                    img.onload = () => console.log(`📥 Imagen ${index + 1} cargada exitosamente`);
+                    img.onerror = () => console.log(`❌ Error cargando imagen ${index + 1}`);
+                    img.src = imageUrl;
+                } else {
+                    console.log(`⚠️ No hay proyecto para background ${index}`);
                 }
             });
         }
