@@ -1,126 +1,140 @@
-// SCRIPT DIRECTO PARA EL CÍRCULO SVG
+// SOLUCIÓN DEFINITIVA - CÍRCULO PROPIO CON IMÁGENES
 (function() {
-    console.log('🎯 Aplicando imagen al círculo SVG directamente');
+    console.log('🚀 CREANDO SOLUCIÓN PROPIA - SIN DEPENDER DEL SITIO');
 
-    const IMAGENES = {
-        'PARK MANSION': 'https://picsum.photos/800/800?random=1',
-        'KAWANA': 'https://picsum.photos/800/800?random=2',
-        'SEVENS VILLA': 'https://picsum.photos/800/800?random=3'
-    };
-
-    let proyectoActual = 'PARK MANSION';
-
-    // Encontrar el círculo SVG específico que me mostraste
-    function encontrarCirculoSVG() {
-        // Buscar círculo con cx=777, cy=476.5, r=333.55 aproximadamente
-        const circulos = document.querySelectorAll('circle');
-
-        for (let circulo of circulos) {
-            const cx = parseFloat(circulo.getAttribute('cx') || 0);
-            const cy = parseFloat(circulo.getAttribute('cy') || 0);
-            const r = parseFloat(circulo.getAttribute('r') || 0);
-
-            // Buscar el círculo grande que me mostraste
-            if (cx > 700 && cx < 800 && cy > 400 && cy < 500 && r > 300) {
-                console.log(`✅ Círculo SVG encontrado: cx=${cx}, cy=${cy}, r=${r}`);
-                return circulo;
-            }
+    // Imágenes de proyectos arquitectónicos
+    const PROYECTOS = [
+        {
+            nombre: 'PARK MANSION',
+            imagen: 'https://picsum.photos/600/600?random=1'
+        },
+        {
+            nombre: 'KAWANA',
+            imagen: 'https://picsum.photos/600/600?random=2'
+        },
+        {
+            nombre: 'SEVENS VILLA',
+            imagen: 'https://picsum.photos/600/600?random=3'
+        },
+        {
+            nombre: 'PARK LE JADE',
+            imagen: 'https://picsum.photos/600/600?random=4'
+        },
+        {
+            nombre: 'HIKAWA GARDENS',
+            imagen: 'https://picsum.photos/600/600?random=5'
         }
-        return null;
+    ];
+
+    let proyectoActual = 0;
+    let miCirculo = null;
+
+    // Crear MI PROPIO círculo completamente independiente
+    function crearMiCirculo() {
+        if (miCirculo) return miCirculo;
+
+        // Eliminar cualquier círculo previo
+        const circuloPrevio = document.getElementById('mi-circulo-imagenes');
+        if (circuloPrevio) circuloPrevio.remove();
+
+        miCirculo = document.createElement('div');
+        miCirculo.id = 'mi-circulo-imagenes';
+        miCirculo.style.cssText = `
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            width: 600px !important;
+            height: 600px !important;
+            border-radius: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            z-index: 50 !important;
+            pointer-events: none !important;
+            box-shadow: 0 0 50px rgba(0,0,0,0.3) !important;
+            border: 3px solid rgba(255,255,255,0.2) !important;
+            transition: background-image 1s ease-in-out !important;
+        `;
+
+        document.body.appendChild(miCirculo);
+        console.log('✅ MI CÍRCULO CREADO');
+        return miCirculo;
     }
 
-    // Aplicar imagen usando patrón SVG
-    function aplicarImagenSVG() {
-        const circulo = encontrarCirculoSVG();
-        if (!circulo) {
-            console.log('❌ No se encontró el círculo SVG');
-            return;
-        }
+    // Crear texto de proyecto
+    function crearTextoProyecto() {
+        const textoExistente = document.getElementById('mi-texto-proyecto');
+        if (textoExistente) textoExistente.remove();
 
-        const svg = circulo.closest('svg');
-        if (!svg) return;
+        const miTexto = document.createElement('div');
+        miTexto.id = 'mi-texto-proyecto';
+        miTexto.style.cssText = `
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            color: white !important;
+            font-family: 'butler_medium', serif !important;
+            font-size: 24px !important;
+            font-weight: bold !important;
+            text-align: center !important;
+            z-index: 60 !important;
+            pointer-events: none !important;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.8) !important;
+            transition: opacity 0.5s ease !important;
+        `;
 
-        const proyecto = proyectoActual;
-        const imagen = IMAGENES[proyecto];
-
-        // Crear patrón de imagen si no existe
-        let defs = svg.querySelector('defs');
-        if (!defs) {
-            defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-            svg.insertBefore(defs, svg.firstChild);
-        }
-
-        // Crear patrón de imagen
-        const patternId = 'imagen-proyecto';
-        let pattern = defs.querySelector(`#${patternId}`);
-        if (!pattern) {
-            pattern = document.createElementNS('http://www.w3.org/2000/svg', 'pattern');
-            pattern.setAttribute('id', patternId);
-            pattern.setAttribute('patternUnits', 'userSpaceOnUse');
-            pattern.setAttribute('width', '100%');
-            pattern.setAttribute('height', '100%');
-            defs.appendChild(pattern);
-        }
-
-        // Limpiar patrón anterior
-        pattern.innerHTML = '';
-
-        // Crear imagen dentro del patrón
-        const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-        image.setAttribute('href', imagen);
-        image.setAttribute('x', '0');
-        image.setAttribute('y', '0');
-        image.setAttribute('width', '100%');
-        image.setAttribute('height', '100%');
-        image.setAttribute('preserveAspectRatio', 'xMidYMid slice');
-        pattern.appendChild(image);
-
-        // Aplicar patrón al círculo
-        circulo.setAttribute('fill', `url(#${patternId})`);
-        circulo.style.opacity = '0.8';
-
-        console.log(`🖼️ Imagen SVG aplicada: ${proyecto}`);
+        document.body.appendChild(miTexto);
+        return miTexto;
     }
 
-    // Detectar proyecto
-    function detectarProyecto() {
-        const ul = document.querySelector('ul');
-        if (!ul) return 'PARK MANSION';
+    // Cambiar imagen y texto
+    function cambiarProyecto() {
+        const circulo = crearMiCirculo();
+        const texto = crearTextoProyecto();
 
-        const texto = ul.textContent.toUpperCase();
-        if (texto.includes('KAWANA')) return 'KAWANA';
-        if (texto.includes('SEVENS VILLA')) return 'SEVENS VILLA';
-        return 'PARK MANSION';
+        const proyecto = PROYECTOS[proyectoActual];
+
+        circulo.style.backgroundImage = `url("${proyecto.imagen}")`;
+        texto.textContent = proyecto.nombre;
+
+        console.log(`🖼️ PROYECTO ACTUAL: ${proyecto.nombre}`);
+
+        // Siguiente proyecto
+        proyectoActual = (proyectoActual + 1) % PROYECTOS.length;
     }
 
-    // Cambiar proyecto y aplicar imagen
-    function actualizarProyecto() {
-        const nuevoProyecto = detectarProyecto();
-
-        if (nuevoProyecto !== proyectoActual) {
-            proyectoActual = nuevoProyecto;
-            aplicarImagenSVG();
-            console.log(`🔄 Proyecto cambiado a: ${proyectoActual}`);
+    // Ocultar elementos molestos
+    function limpiarElementos() {
+        // Ocultar círculo problemático del header
+        const circuloProblematico = document.querySelector('svg[viewBox="0 0 60 60"]');
+        if (circuloProblematico) {
+            circuloProblematico.style.display = 'none';
         }
+
+        // Ocultar otros elementos giratorios molestos
+        const elementosGiratorios = document.querySelectorAll('[style*="animation-name: spin"]');
+        elementosGiratorios.forEach(el => {
+            el.style.display = 'none';
+        });
     }
 
-    // Ocultar círculo molesto
-    function ocultarCirculo() {
-        const svg = document.querySelector('svg[viewBox="0 0 60 60"]');
-        if (svg) svg.style.display = 'none';
+    // Inicializar todo
+    function inicializar() {
+        limpiarElementos();
+        cambiarProyecto();
+        console.log('🎉 SOLUCIÓN PROPIA INICIADA');
     }
 
-    // Aplicar imagen inicial
-    setTimeout(() => {
-        ocultarCirculo();
-        aplicarImagenSVG();
-    }, 1000);
+    // Comenzar inmediatamente
+    setTimeout(inicializar, 500);
 
-    // Verificar cambios cada 3 segundos
+    // Cambiar proyecto cada 4 segundos
     setInterval(() => {
-        ocultarCirculo();
-        actualizarProyecto();
-    }, 3000);
+        limpiarElementos();
+        cambiarProyecto();
+    }, 4000);
 
-    console.log('🚀 Script SVG listo');
+    console.log('🚀 SCRIPT PROPIO ACTIVADO - VA A FUNCIONAR SÍ O SÍ');
 })();
