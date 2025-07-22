@@ -906,19 +906,46 @@
         }
         
         // INICIAR BARRA DE PROGRESO
+        // CONFIGURACIÓN DE PROGRESO CIRCULAR
+        function setupCircularProgress() {
+            const progressCircle = document.getElementById('progress-circle');
+            if (progressCircle) {
+                const radius = progressCircle.r.baseVal.value;
+                const circumference = 2 * Math.PI * radius;
+                progressCircle.style.strokeDasharray = circumference;
+                progressCircle.style.strokeDashoffset = circumference;
+            }
+        }
+
         function startProgress() {
             const progressBar = document.getElementById('progress-bar');
+            const progressCircle = document.getElementById('progress-circle');
             const duration = PROJECTS[currentProject].duration;
             let progress = 0;
-            
+
             progressBar.style.width = '0%';
-            
+
+            // Resetear progreso circular
+            if (progressCircle) {
+                const radius = progressCircle.r.baseVal.value;
+                const circumference = 2 * Math.PI * radius;
+                progressCircle.style.strokeDashoffset = circumference;
+            }
+
             const increment = 100 / (duration / 50); // 50ms intervals
-            
+
             progressTimer = setInterval(() => {
                 progress += increment;
                 progressBar.style.width = progress + '%';
-                
+
+                // Actualizar progreso circular
+                if (progressCircle) {
+                    const radius = progressCircle.r.baseVal.value;
+                    const circumference = 2 * Math.PI * radius;
+                    const offset = circumference - (progress / 100) * circumference;
+                    progressCircle.style.strokeDashoffset = offset;
+                }
+
                 if (progress >= 100) {
                     clearInterval(progressTimer);
                     autoNextProject();
