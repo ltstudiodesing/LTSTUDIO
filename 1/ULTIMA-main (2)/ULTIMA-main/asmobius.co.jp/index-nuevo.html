@@ -925,15 +925,8 @@
 
             if (newText) newText.classList.add('active');
 
-            // Actualizar fondo completo
-            const fullBg = document.getElementById('full-bg');
-            if (fullBg && PROJECTS[index]) {
-                fullBg.style.backgroundImage = `url("${PROJECTS[index].image}")`;
-                fullBg.classList.remove('active');
-                setTimeout(() => {
-                    fullBg.classList.add('active');
-                }, 100);
-            }
+            // Actualizar imagen de fondo única
+            updateBackgroundImage(index);
 
             currentProject = index;
 
