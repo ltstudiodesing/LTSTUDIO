@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LTSD - LT Studio Design</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #252525;
+            color: white;
+            overflow: hidden;
+            cursor: none;
+        }
+        
+        /* INTRO SCREEN */
+        #intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #252525;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 1s ease, transform 1s ease;
+        }
+        
+        #intro-screen.hidden {
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+        
+        .intro-text {
+            font-size: 4rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            text-align: center;
+            opacity: 0;
+            animation: fadeInUp 2s ease forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* PARTICLES */
+        #particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(120deg); }
+            66% { transform: translateY(30px) rotate(240deg); }
+        }
+        
+        /* MAIN SCREEN */
+        #main-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #252525;
+            opacity: 0;
+            transform: scale(1.2);
+            transition: opacity 1s ease, transform 1s ease;
+            z-index: 100;
+        }
+        
+        #main-screen.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        /* LOGO */
+        .logo {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            z-index: 200;
+            mix-blend-mode: exclusion;
+        }
+        
+        /* CIRCLE CONTAINER */
+        .circle-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            z-index: 150;
+        }
+        
+        /* BACKGROUND IMAGES */
+        .project-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            z-index: 1;
+        }
+        
+        .project-background.active {
+            opacity: 0.8;
+        }
+        
+        /* CIRCLE BORDER */
+        .circle-border {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            z-index: 3;
+        }
+        
+        /* PROJECT TEXT */
+        .project-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 4;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .project-text.active {
+            opacity: 1;
+        }
+        
+        .project-name {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
+        }
+        
+        .project-location {
+            font-size: 16px;
+            font-weight: 300;
+            opacity: 0.8;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+        }
+        
+        /* PROGRESS BAR */
+        .progress-container {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 200;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: white;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+        
+        /* PROJECT LIST */
+        .projects-list {
+            position: fixed;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 200;
+        }
+        
+        .project-item {
+            opacity: 0.3;
+            font-size: 14px;
+            margin: 4px 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .project-item.active {
+            opacity: 1;
+            font-weight: 500;
+        }
+        
+        /* CURSOR CUSTOM */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: exclusion;
+            transition: transform 0.1s ease;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .intro-text {
+                font-size: 2.5rem;
+            }
+            
+            .circle-container {
+                width: 400px;
+                height: 400px;
+            }
+            
+            .project-name {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- CURSOR PERSONALIZADO -->
+    <div class="custom-cursor" id="cursor"></div>
+    
+    <!-- INTRO SCREEN -->
+    <div id="intro-screen">
+        <div id="particles"></div>
+        <div class="intro-text">LT Studio Design</div>
+    </div>
+    
+    <!-- MAIN SCREEN -->
+    <div id="main-screen">
+        <!-- LOGO -->
+        <div class="logo">LTSD</div>
+        
+        <!-- CÍRCULO INTERACTIVO -->
+        <div class="circle-container">
+            <!-- IMÁGENES DE FONDO -->
+            <div class="project-background" data-project="0"></div>
+            <div class="project-background" data-project="1"></div>
+            <div class="project-background" data-project="2"></div>
+            <div class="project-background" data-project="3"></div>
+            <div class="project-background" data-project="4"></div>
+            <div class="project-background" data-project="5"></div>
+            <div class="project-background" data-project="6"></div>
+            <div class="project-background" data-project="7"></div>
+            
+            <!-- BORDE DEL CÍRCULO -->
+            <div class="circle-border"></div>
+            
+            <!-- TEXTO DEL PROYECTO -->
+            <div class="project-text" data-project="0">
+                <div class="project-name">PARK MANSION</div>
+                <div class="project-location">Minami Azabu</div>
+            </div>
+            <div class="project-text" data-project="1">
+                <div class="project-name">KAWANA</div>
+                <div class="project-location">Silence Kawana</div>
+            </div>
+            <div class="project-text" data-project="2">
+                <div class="project-name">PARK LE JADE</div>
+                <div class="project-location">Shirokane Residence</div>
+            </div>
+            <div class="project-text" data-project="3">
+                <div class="project-name">SEVENS VILLA</div>
+                <div class="project-location">Karuizawa</div>
+            </div>
+            <div class="project-text" data-project="4">
+                <div class="project-name">HIKAWA GARDENS</div>
+                <div class="project-location">Tokyo</div>
+            </div>
+            <div class="project-text" data-project="5">
+                <div class="project-name">ONE AVENUE</div>
+                <div class="project-location">Central District</div>
+            </div>
+            <div class="project-text" data-project="6">
+                <div class="project-name">CENTURY FOREST</div>
+                <div class="project-location">Urban Integration</div>
+            </div>
+            <div class="project-text" data-project="7">
+                <div class="project-name">PROUD</div>
+                <div class="project-location">Rokakoen</div>
+            </div>
+        </div>
+        
+        <!-- BARRA DE PROGRESO -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <!-- LISTA DE PROYECTOS -->
+        <div class="projects-list">
+            <div class="project-item active">PARK MANSION</div>
+            <div class="project-item">KAWANA</div>
+            <div class="project-item">PARK LE JADE</div>
+            <div class="project-item">SEVENS VILLA</div>
+            <div class="project-item">HIKAWA GARDENS</div>
+            <div class="project-item">ONE AVENUE</div>
+            <div class="project-item">CENTURY FOREST</div>
+            <div class="project-item">PROUD</div>
+        </div>
+    </div>
+    
+    <script>
+        // CONFIGURACIÓN
+        const PROJECTS = [
+            {
+                name: 'PARK MANSION',
+                location: 'Minami Azabu',
+                image: 'https://picsum.photos/600/600?random=1',
+                duration: 4000
+            },
+            {
+                name: 'KAWANA',
+                location: 'Silence Kawana',
+                image: 'https://picsum.photos/600/600?random=2',
+                duration: 4000
+            },
+            {
+                name: 'PARK LE JADE',
+                location: 'Shirokane Residence',
+                image: 'https://picsum.photos/600/600?random=3',
+                duration: 4000
+            },
+            {
+                name: 'SEVENS VILLA',
+                location: 'Karuizawa',
+                image: 'https://picsum.photos/600/600?random=4',
+                duration: 4000
+            },
+            {
+                name: 'HIKAWA GARDENS',
+                location: 'Tokyo',
+                image: 'https://picsum.photos/600/600?random=5',
+                duration: 4000
+            },
+            {
+                name: 'ONE AVENUE',
+                location: 'Central District',
+                image: 'https://picsum.photos/600/600?random=6',
+                duration: 4000
+            },
+            {
+                name: 'CENTURY FOREST',
+                location: 'Urban Integration',
+                image: 'https://picsum.photos/600/600?random=7',
+                duration: 4000
+            },
+            {
+                name: 'PROUD',
+                location: 'Rokakoen',
+                image: 'https://picsum.photos/600/600?random=8',
+                duration: 4000
+            }
+        ];
+        
+        let currentProject = 0;
+        let projectTimer = null;
+        let progressTimer = null;
+        
+        // CURSOR PERSONALIZADO
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
+        });
+        
+        // CREAR PARTÍCULAS
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.width = (Math.random() * 4 + 1) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // INICIALIZAR IMÁGENES DE PROYECTOS
+        function initProjectImages() {
+            const backgrounds = document.querySelectorAll('.project-background');
+            backgrounds.forEach((bg, index) => {
+                if (PROJECTS[index]) {
+                    bg.style.backgroundImage = `url("${PROJECTS[index].image}")`;
+                }
+            });
+        }
+        
+        // CAMBIAR PROYECTO
+        function changeProject(index) {
+            // Ocultar proyecto actual
+            document.querySelectorAll('.project-background').forEach(bg => {
+                bg.classList.remove('active');
+            });
+            document.querySelectorAll('.project-text').forEach(text => {
+                text.classList.remove('active');
+            });
+            document.querySelectorAll('.project-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Mostrar nuevo proyecto
+            const newBackground = document.querySelector(`[data-project="${index}"]`);
+            const newText = document.querySelectorAll('.project-text')[index];
+            const newItem = document.querySelectorAll('.project-item')[index];
+            
+            if (newBackground) newBackground.classList.add('active');
+            if (newText) newText.classList.add('active');
+            if (newItem) newItem.classList.add('active');
+            
+            currentProject = index;
+            
+            console.log(`✅ Proyecto cambiado a: ${PROJECTS[index].name}`);
+        }
+        
+        // INICIAR BARRA DE PROGRESO
+        function startProgress() {
+            const progressBar = document.getElementById('progress-bar');
+            const duration = PROJECTS[currentProject].duration;
+            let progress = 0;
+            
+            progressBar.style.width = '0%';
+            
+            const increment = 100 / (duration / 50); // 50ms intervals
+            
+            progressTimer = setInterval(() => {
+                progress += increment;
+                progressBar.style.width = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(progressTimer);
+                    nextProject();
+                }
+            }, 50);
+        }
+        
+        // SIGUIENTE PROYECTO
+        function nextProject() {
+            const nextIndex = (currentProject + 1) % PROJECTS.length;
+            changeProject(nextIndex);
+            startProgress();
+        }
+        
+        // INICIALIZAR APLICACIÓN
+        function initApp() {
+            console.log('🚀 Inicializando aplicación LTSD');
+            
+            // Crear partículas
+            createParticles();
+            
+            // Inicializar imágenes
+            initProjectImages();
+            
+            // Mostrar intro por 3 segundos
+            setTimeout(() => {
+                document.getElementById('intro-screen').classList.add('hidden');
+                document.getElementById('main-screen').classList.add('visible');
+                
+                // Iniciar proyectos después de la transición
+                setTimeout(() => {
+                    changeProject(0);
+                    startProgress();
+                }, 1000);
+                
+            }, 3000);
+        }
+        
+        // CLICKS EN PROYECTOS (NAVEGACIÓN A PÁGINAS INDIVIDUALES)
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.circle-container')) {
+                const projectName = PROJECTS[currentProject].name.toLowerCase().replace(/ /g, '-');
+                window.location.href = `projects/${projectName}.html`;
+            }
+        });
+        
+        // INICIAR CUANDO LA PÁGINA CARGUE
+        document.addEventListener('DOMContentLoaded', initApp);
+        
+        console.log('🎉 LTSD App cargada completamente');
+    </script>
+</body>
+</html>
