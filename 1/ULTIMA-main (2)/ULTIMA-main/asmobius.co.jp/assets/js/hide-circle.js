@@ -1,6 +1,6 @@
-// SCRIPT DINÁMICO PARA PROYECTOS CON IMÁGENES INMERSIVAS
+// SCRIPT PARA FONDO DINÁMICO SIN INTERFERIR
 (function() {
-    console.log('🌟 INICIANDO SCRIPT DINÁMICO CON IMÁGENES POR PROYECTO');
+    console.log('🎯 INICIANDO SCRIPT DE FONDO DINÁMICO');
 
     // MAPEO DE IMÁGENES POR PROYECTO
     const PROJECT_IMAGES = {
@@ -15,50 +15,19 @@
     };
 
     let currentProject = '';
-    let fullScreenOverlay = null;
-
-    // Crear overlay de pantalla completa para inmersión
-    function createFullScreenOverlay() {
-        if (fullScreenOverlay) return fullScreenOverlay;
-
-        fullScreenOverlay = document.createElement('div');
-        fullScreenOverlay.id = 'project-immersion-overlay';
-        fullScreenOverlay.style.cssText = `
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            background-size: cover !important;
-            background-position: center !important;
-            background-repeat: no-repeat !important;
-            z-index: 5 !important;
-            pointer-events: none !important;
-            opacity: 0.8 !important;
-            transition: background-image 0.8s ease-in-out !important;
-        `;
-
-        document.body.appendChild(fullScreenOverlay);
-        console.log('✅ Overlay de pantalla completa creado');
-        return fullScreenOverlay;
-    }
 
     // Detectar proyecto actual
     function detectCurrentProject() {
-        // Buscar en la lista de proyectos visible
         const projectList = document.querySelector('ul');
         if (!projectList) return null;
 
         const listItems = projectList.querySelectorAll('li');
 
-        // Buscar el proyecto más visible o activo
         for (let item of listItems) {
             const style = window.getComputedStyle(item);
             const text = item.textContent.toUpperCase().trim();
 
-            // Si el item está visible y tiene opacidad alta
             if (style.opacity > 0.7 || style.transform.includes('scale(1)')) {
-                // Extraer nombre del proyecto
                 for (let projectName in PROJECT_IMAGES) {
                     if (text.includes(projectName)) {
                         return projectName;
@@ -66,11 +35,48 @@
                 }
             }
         }
-
         return null;
     }
 
-    // Aplicar imagen del proyecto actual
+    // Aplicar imagen solo a elementos de fondo existentes
+    function applyBackgroundImage(imageUrl) {
+        // Buscar elementos que ya son de fondo (z-index negativo o muy bajo)
+        const backgroundElements = [
+            // Divs con z-index negativo
+            ...Array.from(document.querySelectorAll('div')).filter(div => {
+                const style = window.getComputedStyle(div);
+                const zIndex = parseInt(style.zIndex) || 0;
+                return zIndex < 0 || zIndex <= 10;
+            }),
+            // Divs con backgroundColor gris/negro que parecen fondos
+            ...Array.from(document.querySelectorAll('div')).filter(div => {
+                const style = window.getComputedStyle(div);
+                return style.backgroundColor === 'rgb(37, 37, 37)' ||
+                       style.backgroundColor === 'rgb(0, 0, 0)';
+            }),
+            // Canvas que también puede ser fondo
+            ...document.querySelectorAll('canvas')
+        ];
+
+        console.log(`🎨 Encontrados ${backgroundElements.length} elementos de fondo`);
+
+        backgroundElements.forEach((element, index) => {
+            const style = window.getComputedStyle(element);
+            const zIndex = parseInt(style.zIndex) || 0;
+
+            // Solo aplicar a elementos que definitivamente son fondo
+            if (zIndex <= 10) {
+                element.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
+                element.style.setProperty('background-size', 'cover', 'important');
+                element.style.setProperty('background-position', 'center', 'important');
+                element.style.setProperty('background-repeat', 'no-repeat', 'important');
+
+                console.log(`✅ Imagen aplicada a elemento ${index} (z-index: ${zIndex})`);
+            }
+        });
+    }
+
+    // Actualizar imagen según proyecto
     function updateProjectImage() {
         const project = detectCurrentProject();
 
@@ -79,35 +85,10 @@
             const image = PROJECT_IMAGES[project];
 
             if (image) {
-                // Crear/actualizar overlay de pantalla completa
-                const overlay = createFullScreenOverlay();
-                overlay.style.setProperty('background-image', `url("${image}")`, 'important');
-
+                applyBackgroundImage(image);
                 console.log(`🖼️ Imagen cambiada a proyecto: ${project}`);
-                console.log(`🌐 URL de imagen: ${image}`);
             }
         }
-    }
-
-    // Observar cambios en el DOM para detectar rotación de proyectos
-    function observeProjectChanges() {
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'attributes' || mutation.type === 'childList') {
-                    updateProjectImage();
-                }
-            });
-        });
-
-        // Observar cambios en toda la página
-        observer.observe(document.body, {
-            attributes: true,
-            childList: true,
-            subtree: true,
-            attributeFilter: ['style', 'class']
-        });
-
-        console.log('👁️ Observer de cambios de proyecto activado');
     }
 
     // Ocultar círculo problemático del header
@@ -123,22 +104,28 @@
         hideStuckCircle();
         updateProjectImage();
 
-        // Si no hay proyecto detectado, usar imagen por defecto
+        // Si no hay proyecto, usar imagen por defecto
         if (!currentProject) {
-            const overlay = createFullScreenOverlay();
-            overlay.style.setProperty('background-image', `url("${PROJECT_IMAGES['PARK MANSION']}")`, 'important');
-            console.log('🔄 Aplicando imagen por defecto (PARK MANSION)');
+            applyBackgroundImage(PROJECT_IMAGES['PARK MANSION']);
+            console.log('🔄 Aplicando imagen por defecto');
         }
     }
 
-    // Inicializar sistema
-    main();
-    observeProjectChanges();
-
-    // Verificar cambios cada 2 segundos
-    setInterval(() => {
+    // Observer para cambios
+    const observer = new MutationObserver(() => {
         updateProjectImage();
-    }, 2000);
+    });
+
+    observer.observe(document.body, {
+        attributes: true,
+        childList: true,
+        subtree: true,
+        attributeFilter: ['style', 'class']
+    });
+
+    // Ejecutar
+    main();
+    setInterval(updateProjectImage, 2000);
 
     // Eventos del DOM
     if (document.readyState === 'loading') {
@@ -146,5 +133,5 @@
     }
     window.addEventListener('load', main);
 
-    console.log('🚀 Sistema din��mico de proyectos activado - Imágenes cambiarán automáticamente');
+    console.log('🚀 Script de fondo dinámico activado');
 })();
