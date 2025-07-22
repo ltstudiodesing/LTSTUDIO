@@ -392,7 +392,11 @@
                 totalItems.toString().padStart(2, '0');
             
             setTimeout(animateElements, 100);
-            setTimeout(startAutoScroll, 3000);
+            // Iniciar auto scroll después de 3 segundos
+            setTimeout(() => {
+                console.log('🔄 Iniciando auto-scroll');
+                startAutoScroll();
+            }, 3000);
             
             console.log('✅ Kawana cargado correctamente');
         });
