@@ -1,0 +1,22 @@
+PROYECTO: KAWANA (Silence Kawana)
+
+INSTRUCCIONES PARA AGREGAR IMÁGENES:
+
+1. Borra este archivo (INSTRUCCIONES.txt)
+2. Sube tus imágenes del proyecto y nómbralas exactamente así:
+   - 1.jpg (imagen principal)
+   - 2.jpg (segunda imagen)
+   - 3.jpg (tercera imagen)
+   - 4.jpg (cuarta imagen)
+   - 5.jpg (quinta imagen)
+   - 6.jpg (sexta imagen)
+   - 7.jpg (séptima imagen)
+   - 8.jpg (octava imagen)
+
+IMPORTANTE:
+- Los nombres DEBEN ser exactamente: 1.jpg, 2.jpg, 3.jpg, etc.
+- Formato recomendado: .jpg (también funciona .png)
+- Tamaño recomendado: mínimo 600x600 píxeles
+- La imagen 1.jpg será la imagen principal que aparece en el círculo
+
+Una vez que subas las imágenes, el sitio web las tomará automáticamente.
