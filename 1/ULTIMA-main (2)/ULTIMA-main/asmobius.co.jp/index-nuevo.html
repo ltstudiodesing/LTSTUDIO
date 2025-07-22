@@ -1146,11 +1146,30 @@
         function initApp() {
             console.log('🚀 Inicializando aplicación LTSD');
 
+            // Asegurar que intro esté visible y main oculto
+            const introScreen = document.getElementById('intro-screen');
+            const mainScreen = document.getElementById('main-screen');
+
+            if (introScreen) {
+                introScreen.classList.remove('hidden');
+                introScreen.style.opacity = '1';
+                introScreen.style.transform = 'scale(1)';
+                console.log('✅ Intro screen visible');
+            }
+
+            if (mainScreen) {
+                mainScreen.classList.remove('visible');
+                mainScreen.style.opacity = '0';
+                console.log('✅ Main screen oculto');
+            }
+
             // Crear partículas
             createParticles();
 
-            // Animar texto intro
-            animateIntroText();
+            // Animar texto intro (incluye transición automática)
+            setTimeout(() => {
+                animateIntroText();
+            }, 500); // Pequeño delay para asegurar que todo esté listo
 
             // Inicializar imágenes
             initProjectImages();
@@ -1160,11 +1179,6 @@
 
             // Configurar indicador de proyectos
             setupProjectIndicator();
-
-
-
-            // La transición ahora se maneja automáticamente en animateIntroText()
-            // después de que termine la animación de las letras
         }
         
         // FUNCIONES DE MODAL
