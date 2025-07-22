@@ -890,7 +890,7 @@
                 mainScreen.style.opacity = '1';
                 mainScreen.style.transform = 'scale(1)';
 
-                console.log('✅ Transición completada - Main screen visible');
+                console.log('✅ Transici��n completada - Main screen visible');
 
                 // Inicializar main screen después de la transición
                 setTimeout(() => {
@@ -1167,6 +1167,7 @@
 
         // ACTUALIZAR INDICADOR DE PROYECTOS
         function updateProjectIndicator(activeIndex) {
+            console.log(`📊 Actualizando indicador para proyecto ${activeIndex}`);
             const dots = document.querySelectorAll('.project-dot');
             dots.forEach((dot, index) => {
                 dot.classList.toggle('active', index === activeIndex);
@@ -1180,6 +1181,9 @@
                 const circumference = 2 * Math.PI * radius;
                 const offset = circumference - (progress * circumference);
                 progressCircle.style.strokeDashoffset = offset;
+                console.log(`🔄 Barra circular actualizada: progreso=${(progress * 100).toFixed(1)}%`);
+            } else {
+                console.error('❌ Progress circle no encontrado en updateProjectIndicator');
             }
         }
 
