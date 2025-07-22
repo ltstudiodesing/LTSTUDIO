@@ -862,6 +862,75 @@
             }
         }
         
+        // TRANSICIÓN FRAGMENTADA
+        function createFragmentTransition() {
+            const overlay = document.getElementById('fragment-overlay');
+            const fragmentSize = 40; // Tamaño de cada fragmento
+            const cols = Math.ceil(window.innerWidth / fragmentSize);
+            const rows = Math.ceil(window.innerHeight / fragmentSize);
+
+            overlay.innerHTML = '';
+
+            // Crear fragmentos
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const fragment = document.createElement('div');
+                    fragment.className = 'fragment';
+
+                    // Posición del fragmento
+                    fragment.style.left = col * fragmentSize + 'px';
+                    fragment.style.top = row * fragmentSize + 'px';
+                    fragment.style.width = fragmentSize + 'px';
+                    fragment.style.height = fragmentSize + 'px';
+
+                    // Variables CSS para animación aleatoria
+                    const randomX = (Math.random() - 0.5) * 800 + 'px';
+                    const randomY = (Math.random() - 0.5) * 600 + 'px';
+                    const randomRotation = (Math.random() - 0.5) * 360 + 'deg';
+
+                    fragment.style.setProperty('--random-x', randomX);
+                    fragment.style.setProperty('--random-y', randomY);
+                    fragment.style.setProperty('--random-rotation', randomRotation);
+
+                    overlay.appendChild(fragment);
+                }
+            }
+        }
+
+        function startFragmentTransition() {
+            console.log('🌟 Iniciando transición fragmentada');
+
+            // Crear fragmentos
+            createFragmentTransition();
+
+            const overlay = document.getElementById('fragment-overlay');
+            const fragments = overlay.querySelectorAll('.fragment');
+
+            // Mostrar overlay
+            overlay.classList.add('active');
+
+            // Animar fragmentos con retraso escalonado
+            fragments.forEach((fragment, index) => {
+                setTimeout(() => {
+                    fragment.classList.add('animate');
+                }, index * 15); // 15ms entre fragmentos para efecto wave
+            });
+
+            // Ocultar intro y mostrar main después de la transición
+            setTimeout(() => {
+                document.getElementById('intro-screen').classList.add('hidden');
+                document.getElementById('main-screen').classList.add('visible');
+
+                // Quitar overlay después de completar transición
+                setTimeout(() => {
+                    overlay.classList.remove('active');
+                    // Iniciar proyectos
+                    changeProject(0);
+                    startProgress();
+                }, 500);
+            }, 800); // Esperar que termine la mayor parte de la animación
+        }
+
         // CREAR PARTÍCULAS
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
