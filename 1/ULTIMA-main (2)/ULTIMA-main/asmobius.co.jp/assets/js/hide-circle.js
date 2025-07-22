@@ -186,7 +186,7 @@
 
     // INICIALIZAR SISTEMA COMPLETO
     function inicializar() {
-        eliminarTodoProblematico();
+        ocultarElementosProblematicos();
         crearMiSistema();
         actualizarProyecto();
         console.log('🎉 SISTEMA PROPIO FUNCIONANDO AL 100%');
