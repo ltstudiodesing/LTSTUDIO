@@ -246,17 +246,17 @@
         updateLogoAndSetupBackgrounds();
     });
 
-    // Ejecutar cada segundo durante los primeros 10 segundos por si acaso
+    // Ejecutar cada segundo durante los primeros 15 segundos para asegurar que se apliquen las imágenes
     let attempts = 0;
     const interval = setInterval(() => {
         hideStuckCircle();
-        if (attempts >= 3) { // Solo ejecutar updateLogoAndSetupBackgrounds 3 veces
-            clearInterval(interval);
-        } else {
-            updateLogoAndSetupBackgrounds();
-        }
+        updateLogoAndSetupBackgrounds();
         attempts++;
-    }, 2000);
+        if (attempts >= 15) {
+            clearInterval(interval);
+            console.log('🔄 Finalizados intentos de aplicar imágenes a círculos');
+        }
+    }, 1000);
 
     // Configurar navegación de proyectos
     function setupProjectNavigation() {
