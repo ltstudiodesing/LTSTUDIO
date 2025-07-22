@@ -60,26 +60,23 @@
         .intro-text .letter {
             display: inline-block;
             color: #666;
-            opacity: 0.3;
-            transition: all 0.6s ease;
-        }
-
-        .intro-text .letter.filled {
-            color: white;
-            opacity: 1;
+            opacity: 0.5;
+            transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             transform: translateY(0);
         }
 
         @keyframes letterFillIn {
             0% {
                 color: #666;
-                opacity: 0.3;
-                transform: translateY(10px);
+                opacity: 0.5;
+            }
+            50% {
+                color: #999;
+                opacity: 0.8;
             }
             100% {
                 color: white;
                 opacity: 1;
-                transform: translateY(0);
             }
         }
         
