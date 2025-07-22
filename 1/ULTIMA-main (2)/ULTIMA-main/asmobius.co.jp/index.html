@@ -954,65 +954,52 @@
                             const introScreen = document.getElementById('intro-screen');
                             const mainScreen = document.getElementById('main-screen');
 
-                            // EXPLOTAR TODAS LAS LETRAS AL MISMO TIEMPO
-                            console.log('💥 EXPLOSIÓN SIMULTÁNEA DE TODAS LAS LETRAS!');
-
+                            // EXPLOTAR CADA LETRA CON DELAY
                             letters.forEach((letter, i) => {
-                                console.log(`💥 FRAGMENTANDO letra ${i}: "${letter.textContent}"`);
+                                setTimeout(() => {
+                                    console.log(`💥 Explosión letra ${i}`);
 
-                                const rect = letter.getBoundingClientRect();
-                                const letterText = letter.textContent;
+                                    // 3 copias volando por letra
+                                    for (let j = 0; j < 3; j++) {
+                                        const flying = letter.cloneNode(true);
+                                        flying.style.position = 'fixed';
+                                        flying.style.zIndex = '10000';
+                                        flying.style.fontSize = '2rem';
+                                        flying.style.fontWeight = 'bold';
+                                        flying.style.color = '#fff';
+                                        flying.style.pointerEvents = 'none';
 
-                                // Crear múltiples fragmentos por letra (10-15 fragmentos)
-                                const fragmentCount = 10 + Math.floor(Math.random() * 6);
+                                        // Posición inicial igual a la letra original
+                                        const rect = letter.getBoundingClientRect();
+                                        flying.style.left = rect.left + 'px';
+                                        flying.style.top = rect.top + 'px';
 
-                                for (let j = 0; j < fragmentCount; j++) {
-                                    const fragment = document.createElement('div');
-                                    fragment.textContent = letterText;
-                                    fragment.style.position = 'fixed';
-                                    fragment.style.left = rect.left + 'px';
-                                    fragment.style.top = rect.top + 'px';
-                                    fragment.style.fontSize = '48px';
-                                    fragment.style.fontWeight = '300';
-                                    fragment.style.fontFamily = 'butler_medium, serif';
-                                    fragment.style.color = '#fff';
-                                    fragment.style.zIndex = '10000';
-                                    fragment.style.pointerEvents = 'none';
-                                    fragment.style.willChange = 'transform';
+                                        document.body.appendChild(flying);
 
-                                    // Añadir al DOM inmediatamente
-                                    document.body.appendChild(fragment);
+                                        // Animación de vuelo
+                                        const angle = (Math.PI * 2 * j / 3) + (Math.random() * 0.5);
+                                        const distance = 300 + Math.random() * 400;
+                                        const endX = rect.left + Math.cos(angle) * distance;
+                                        const endY = rect.top + Math.sin(angle) * distance;
 
-                                    // Calcular dirección aleatoria más explosiva
-                                    const angle = (Math.PI * 2 * j / fragmentCount) + (Math.random() * 1.0 - 0.5);
-                                    const velocity = 300 + Math.random() * 800;
-                                    const endX = rect.left + Math.cos(angle) * velocity;
-                                    const endY = rect.top + Math.sin(angle) * velocity + (Math.random() * 300 - 150);
+                                        flying.style.transition = 'all 2s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                                        flying.style.transform = `translate(${endX - rect.left}px, ${endY - rect.top}px) rotate(${360 * 3}deg) scale(${0.1 + Math.random() * 0.3})`;
+                                        flying.style.opacity = '0';
 
-                                    // Rotación más dramática
-                                    const rotation = (Math.random() * 1440 - 720); // -720 a +720 grados
-                                    const scale = 0.1 + Math.random() * 0.4;
+                                        // Limpiar después de la animación
+                                        setTimeout(() => {
+                                            if (flying.parentNode) {
+                                                flying.parentNode.removeChild(flying);
+                                            }
+                                        }, 2000);
+                                    }
 
-                                    // Animación inmediata MÁS RÁPIDA
-                                    requestAnimationFrame(() => {
-                                        fragment.style.transition = `all ${1.2 + Math.random() * 0.8}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
-                                        fragment.style.transform = `translate(${endX - rect.left}px, ${endY - rect.top}px) rotate(${rotation}deg) scale(${scale})`;
-                                        fragment.style.opacity = '0';
-                                    });
+                                    // Ocultar letra original con efecto
+                                    letter.style.transition = 'all 0.5s ease-out';
+                                    letter.style.transform = 'scale(0)';
+                                    letter.style.opacity = '0';
 
-                                    // Limpiar fragmento
-                                    setTimeout(() => {
-                                        if (fragment.parentNode) {
-                                            fragment.parentNode.removeChild(fragment);
-                                        }
-                                    }, 2500);
-                                }
-
-                                // Ocultar letra original inmediatamente
-                                letter.style.transition = 'all 0.3s ease-out';
-                                letter.style.opacity = '0';
-                                letter.style.transform = 'scale(0)';
-                            });
+                                }, i * 100);
                             });
 
                             // Después de 4 segundos, hacer transición final
@@ -1032,7 +1019,7 @@
                                     setTimeout(() => {
                                         changeProject(0);
                                         startProgress();
-                                        console.log('✅ Main screen inicializado');
+                                        console.log('�� Main screen inicializado');
                                     }, 300);
                                 }, 1000);
                             }, 4000);
