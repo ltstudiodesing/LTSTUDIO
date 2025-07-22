@@ -1,0 +1,16 @@
+📁 EJEMPLO: En esta carpeta pon tus imágenes así:
+
+✅ main.jpg        → Imagen que aparece en el círculo principal
+✅ 01.jpg          → Primera imagen de la página del proyecto  
+✅ 02.jpg          → Segunda imagen
+✅ 03.jpg          → Tercera imagen
+✅ 04.jpg          → etc...
+
+📋 RECOMENDACIONES:
+- main.jpg: 800x800px (cuadrada)
+- Otras: 1200x800px (rectangular)
+- Formato: JPG o PNG
+- Nombres sin espacios ni caracteres especiales
+- Solo minúsculas y números
+
+🗑️ Puedes borrar este archivo después de subir tus imágenes.
