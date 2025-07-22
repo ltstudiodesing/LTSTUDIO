@@ -899,7 +899,7 @@
                         bg.style.backgroundImage = `url("${finalUrl}")`;
                     };
                     img.onerror = () => {
-                        console.log(`�� Error cargando imagen ${index + 1}, usando fallback`);
+                        console.log(`❌ Error cargando imagen ${index + 1}, usando fallback`);
                         const fallbackUrl = `https://picsum.photos/seed/backup-${index}-${timestamp}/600/600`;
                         bg.style.backgroundImage = `url("${fallbackUrl}")`;
                     };
@@ -916,18 +916,13 @@
             if (progressTimer) clearInterval(progressTimer);
 
             // Ocultar proyecto actual
-            document.querySelectorAll('.project-background').forEach(bg => {
-                bg.classList.remove('active');
-            });
             document.querySelectorAll('.project-text').forEach(text => {
                 text.classList.remove('active');
             });
 
             // Mostrar nuevo proyecto
-            const newBackground = document.querySelector(`.project-background[data-project="${index}"]`);
             const newText = document.querySelector(`.project-text[data-project="${index}"]`);
 
-            if (newBackground) newBackground.classList.add('active');
             if (newText) newText.classList.add('active');
 
             // Actualizar fondo completo
