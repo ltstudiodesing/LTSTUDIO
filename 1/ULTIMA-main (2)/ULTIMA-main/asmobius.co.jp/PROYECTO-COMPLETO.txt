@@ -1,0 +1,42 @@
+🎯 PROYECTO LTSD - ARCHIVO PRINCIPAL
+=================================
+
+📁 ESTRUCTURA DEL PROYECTO:
+- index-nuevo.html (ARCHIVO PRINCIPAL)
+- assets/projects/ (carpetas para tus imágenes)
+
+🚀 URL DE TRABAJO:
+https://51403c7a13224ef2bd938d663bfc9678-ec379a80eed043379939aba14.fly.dev/index-nuevo
+
+📋 CARACTERÍSTICAS IMPLEMENTADAS:
+✅ Intro con animación de texto letra por letra
+✅ Transición elegante tipo iris de cámara
+✅ Círculo principal con navegación de proyectos
+✅ Progreso circular alrededor del círculo
+✅ Navegación automática con pausa en hover
+✅ Páginas de proyecto con auto-scroll
+✅ Header sticky en páginas de proyecto
+✅ Sistema de carpetas para imágenes locales
+
+📂 CARPETAS DE IMÁGENES:
+- assets/projects/park-mansion/main.jpg
+- assets/projects/kawana/main.jpg
+- assets/projects/park-le-jade/main.jpg
+- assets/projects/sevens-villa/main.jpg
+- assets/projects/hikawa-gardens/main.jpg
+- assets/projects/one-avenue/main.jpg
+- assets/projects/century-forest/main.jpg
+- assets/projects/proud/main.jpg
+- assets/projects/nishiazabu-residence/main.jpg
+- assets/projects/itohpia-jiyugaoka/main.jpg
+- assets/projects/urban-villa/main.jpg
+- assets/projects/modern-house/main.jpg
+
+🎨 ARCHIVO PRINCIPAL: index-nuevo.html
+Este es tu archivo de trabajo con todo implementado.
+
+💡 INSTRUCCIONES:
+1. Descarga este proyecto
+2. Abre index-nuevo.html en tu navegador
+3. Sube tus imágenes a las carpetas assets/projects/
+4. ¡Listo!
