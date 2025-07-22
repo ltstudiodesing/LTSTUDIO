@@ -1,89 +1,74 @@
-// SCRIPT PARA MANTENER IMAGEN FIJA DURANTE PROYECTO
+// SCRIPT SIMPLE PARA PONER IMÁGENES
 (function() {
-    console.log('🔒 Script de imagen persistente');
+    console.log('🎯 Iniciando script simple en español');
 
-    const PROJECT_IMAGES = {
-        'PARK MANSION': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop',
-        'KAWANA': 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop',
-        'SEVENS VILLA': 'https://images.unsplash.com/photo-1600563438938-a42d1c941a96?w=800&h=600&fit=crop'
+    const IMAGENES = {
+        'PARK MANSION': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop',
+        'KAWANA': 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=800&fit=crop',
+        'SEVENS VILLA': 'https://images.unsplash.com/photo-1600563438938-a42d1c941a96?w=1200&h=800&fit=crop'
     };
 
-    let currentProject = 'PARK MANSION';
-    let lockImage = false;
+    let divImagen = null;
+    let proyectoActual = 'PARK MANSION';
 
-    // Forzar imagen con !important para que no se quite
-    function lockImageToCanvas() {
-        const canvas = document.querySelector('canvas');
-        if (!canvas) return;
+    // Crear div para la imagen
+    function crearDivImagen() {
+        if (divImagen) return divImagen;
 
-        const imageUrl = PROJECT_IMAGES[currentProject];
+        divImagen = document.createElement('div');
+        divImagen.id = 'imagen-proyecto';
+        divImagen.style.cssText = `
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background-size: cover !important;
+            background-position: center !important;
+            z-index: 0 !important;
+            pointer-events: none !important;
+        `;
 
-        // Aplicar con !important para que no sea removida
-        canvas.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
-        canvas.style.setProperty('background-size', 'cover', 'important');
-        canvas.style.setProperty('background-position', 'center', 'important');
-        canvas.style.setProperty('background-repeat', 'no-repeat', 'important');
-
-        lockImage = true;
-        console.log(`🔒 Imagen bloqueada: ${currentProject}`);
+        document.body.appendChild(divImagen);
+        console.log('✅ Div de imagen creado');
+        return divImagen;
     }
 
-    // Detectar proyecto actual
-    function detectProject() {
-        const ul = document.querySelector('ul');
-        if (!ul) return currentProject;
+    // Rotar proyectos automáticamente cada 3 segundos
+    function rotarProyecto() {
+        const proyectos = Object.keys(IMAGENES);
+        const indiceActual = proyectos.indexOf(proyectoActual);
+        const siguienteIndice = (indiceActual + 1) % proyectos.length;
+        proyectoActual = proyectos[siguienteIndice];
 
-        const text = ul.textContent.toUpperCase();
-
-        if (text.includes('KAWANA')) return 'KAWANA';
-        if (text.includes('SEVENS VILLA')) return 'SEVENS VILLA';
-        return 'PARK MANSION';
+        console.log(`🔄 Cambiando a: ${proyectoActual}`);
     }
 
-    // Mantener imagen aplicada constantemente
-    function maintainImage() {
-        if (!lockImage) return;
+    // Aplicar imagen
+    function aplicarImagen() {
+        const div = crearDivImagen();
+        const imagen = IMAGENES[proyectoActual];
 
-        const canvas = document.querySelector('canvas');
-        if (!canvas) return;
-
-        const imageUrl = PROJECT_IMAGES[currentProject];
-
-        // Re-aplicar constantemente para evitar que se quite
-        canvas.style.setProperty('background-image', `url("${imageUrl}")`, 'important');
-        canvas.style.setProperty('background-size', 'cover', 'important');
-        canvas.style.setProperty('background-position', 'center', 'important');
+        div.style.backgroundImage = `url("${imagen}")`;
+        console.log(`🖼️ Imagen aplicada: ${proyectoActual}`);
     }
 
-    // Cambiar proyecto solo cuando sea necesario
-    function checkProjectChange() {
-        const newProject = detectProject();
-
-        if (newProject !== currentProject) {
-            currentProject = newProject;
-            lockImageToCanvas();
-            console.log(`🔄 Proyecto cambiado a: ${currentProject}`);
-        }
-    }
-
-    // Ocultar círculo problemático
-    function hideStuckCircle() {
+    // Ocultar círculo molesto
+    function ocultarCirculo() {
         const svg = document.querySelector('svg[viewBox="0 0 60 60"]');
         if (svg) svg.style.display = 'none';
     }
 
     // Inicializar
-    hideStuckCircle();
-    lockImageToCanvas();
+    ocultarCirculo();
+    aplicarImagen();
 
-    // Mantener imagen cada 500ms para que no desaparezca
-    setInterval(maintainImage, 500);
-
-    // Verificar cambios de proyecto cada 2 segundos
+    // Cambiar proyecto cada 3 segundos
     setInterval(() => {
-        hideStuckCircle();
-        checkProjectChange();
-    }, 2000);
+        ocultarCirculo();
+        rotarProyecto();
+        aplicarImagen();
+    }, 3000);
 
-    console.log('🚀 Script de persistencia activado');
+    console.log('🚀 Script activado - Las imágenes van a aparecer');
 })();
