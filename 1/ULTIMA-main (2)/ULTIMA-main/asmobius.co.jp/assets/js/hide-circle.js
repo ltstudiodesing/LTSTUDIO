@@ -30,114 +30,212 @@
         }
     });
 
-    // Aplicar imágenes de fondo al área principal del canvas/stage
+    // Sistema de imágenes de fondo con transiciones suaves y detección de cambios
     function applyCircleBackgrounds() {
-        console.log('🔄 Aplicando imágenes al área principal del stage...');
+        console.log('🔄 Inicializando sistema de imágenes de fondo...');
 
-        // Variable para rastrear el proyecto actual que se está mostrando
-        let currentProjectImage = '';
+        // Mapeo de proyectos a imágenes
+        const projectImages = {
+            'park mansion': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'minami': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'kawana': 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=1200&fit=crop',
+            'jade': 'https://images.unsplash.com/photo-1600485154356-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'sevens': 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=1200&fit=crop',
+            'hikawa': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'one avenue': 'https://images.unsplash.com/photo-1600485154355-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'century': 'https://images.unsplash.com/photo-1600485154343-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'proud': 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200&h=1200&fit=crop',
+            'roppongi': 'https://images.unsplash.com/photo-1600485154345-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'nishiazabu': 'https://images.unsplash.com/photo-1600485154354-be6161a56a0c?w=1200&h=1200&fit=crop',
+            'azabu gardens': 'https://images.unsplash.com/photo-1600485154341-be6161a56a0c?w=1200&h=1200&fit=crop'
+        };
 
-        // Encontrar el proyecto actual basado en elementos visibles o activos
-        const projectLiElements = document.querySelectorAll('ul li');
-        let activeProject = '';
+        // Encontrar el elemento de fondo negro principal
+        let backgroundElement = null;
 
-        // Por defecto, empezar con Park Mansion
-        activeProject = 'PARK MANSION';
-        currentProjectImage = 'url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=800&fit=crop")';
-
-        // Buscar el área principal donde aplicar la imagen de fondo
-        const targetSelectors = [
-            'canvas',
-            '.p-stage',
-            '[style*="background-color: rgb(37, 37, 37)"]',
-            'div[style*="position: fixed"][style*="width: 100%"][style*="height: 100%"]'
-        ];
-
-        let targetElement = null;
-
-        // Buscar el elemento principal de background
-        targetSelectors.forEach(selector => {
-            if (!targetElement) {
-                const element = document.querySelector(selector);
-                if (element) {
-                    targetElement = element;
-                    console.log('🎯 Elemento encontrado con selector:', selector);
-                }
+        // Buscar el div con background negro
+        const allDivs = document.querySelectorAll('div');
+        allDivs.forEach(div => {
+            const style = window.getComputedStyle(div);
+            if (style.backgroundColor === 'rgb(37, 37, 37)' &&
+                style.position === 'fixed' &&
+                style.width === '100%' &&
+                style.height === '100%') {
+                backgroundElement = div;
+                console.log('🎯 Elemento de fondo principal encontrado');
             }
         });
 
-        // Si no encontramos el elemento específico, buscar el div con backgroundColor rgb(37, 37, 37)
-        if (!targetElement) {
-            const allDivs = document.querySelectorAll('div');
-            allDivs.forEach(div => {
-                const style = window.getComputedStyle(div);
-                if (style.backgroundColor === 'rgb(37, 37, 37)' &&
-                    style.position === 'fixed' &&
-                    style.width === '100%') {
-                    targetElement = div;
-                    console.log('🎯 Elemento de background negro encontrado');
+        if (!backgroundElement) {
+            console.log('❌ No se pudo encontrar el elemento de fondo');
+            return;
+        }
+
+        // Crear contenedor para las imágenes con transiciones
+        if (!backgroundElement.querySelector('.image-transition-container')) {
+            const imageContainer = document.createElement('div');
+            imageContainer.className = 'image-transition-container';
+            imageContainer.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 1;
+                pointer-events: none;
+            `;
+
+            // Crear dos capas para crossfade
+            const layer1 = document.createElement('div');
+            layer1.className = 'bg-layer bg-layer-1';
+            layer1.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                opacity: 1;
+                transition: opacity 1.5s ease-in-out;
+            `;
+
+            const layer2 = document.createElement('div');
+            layer2.className = 'bg-layer bg-layer-2';
+            layer2.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                opacity: 0;
+                transition: opacity 1.5s ease-in-out;
+            `;
+
+            // Overlay para mantener legibilidad
+            const overlay = document.createElement('div');
+            overlay.className = 'main-stage-overlay';
+            overlay.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.3);
+                z-index: 10;
+                pointer-events: none;
+            `;
+
+            imageContainer.appendChild(layer1);
+            imageContainer.appendChild(layer2);
+            imageContainer.appendChild(overlay);
+            backgroundElement.appendChild(imageContainer);
+
+            // Establecer imagen inicial
+            layer1.style.backgroundImage = `url("${projectImages['park mansion']}")`;
+
+            console.log('✅ Sistema de transiciones de imagen inicializado');
+        }
+
+        // Variables para monitorear cambios
+        let currentProject = '';
+        let activeLayer = 1; // 1 o 2
+
+        // Función para cambiar imagen con transición suave
+        function changeBackgroundImage(projectName) {
+            const container = backgroundElement.querySelector('.image-transition-container');
+            if (!container) return;
+
+            const layer1 = container.querySelector('.bg-layer-1');
+            const layer2 = container.querySelector('.bg-layer-2');
+
+            // Encontrar imagen correspondiente al proyecto
+            let imageUrl = '';
+            for (const [key, url] of Object.entries(projectImages)) {
+                if (projectName.toLowerCase().includes(key)) {
+                    imageUrl = url;
+                    break;
                 }
+            }
+
+            if (!imageUrl) return;
+
+            console.log('🔄 Transicionando a proyecto:', projectName);
+
+            // Crossfade entre capas
+            if (activeLayer === 1) {
+                // Preparar layer2 con nueva imagen
+                layer2.style.backgroundImage = `url("${imageUrl}")`;
+                // Crossfade: ocultar layer1, mostrar layer2
+                layer1.style.opacity = '0';
+                layer2.style.opacity = '1';
+                activeLayer = 2;
+            } else {
+                // Preparar layer1 con nueva imagen
+                layer1.style.backgroundImage = `url("${imageUrl}")`;
+                // Crossfade: ocultar layer2, mostrar layer1
+                layer2.style.opacity = '0';
+                layer1.style.opacity = '1';
+                activeLayer = 1;
+            }
+        }
+
+        // Monitorear cambios en los proyectos
+        function monitorProjectChanges() {
+            const projectList = document.querySelectorAll('ul li');
+
+            const observer = new MutationObserver(() => {
+                // Buscar proyecto visible o activo
+                projectList.forEach(li => {
+                    const rect = li.getBoundingClientRect();
+                    const style = window.getComputedStyle(li);
+
+                    // Si el elemento es visible o está en una posición específica
+                    if (style.display !== 'none' && (rect.width > 0 || rect.height > 0)) {
+                        const projectText = li.textContent.trim();
+                        if (projectText && projectText !== currentProject) {
+                            currentProject = projectText;
+                            changeBackgroundImage(projectText);
+                        }
+                    }
+                });
             });
+
+            // Observar cambios en el DOM
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['style', 'class']
+            });
+
+            // También monitorear cada segundo para detectar cambios
+            setInterval(() => {
+                projectList.forEach((li, index) => {
+                    const style = window.getComputedStyle(li);
+                    const transform = style.transform;
+
+                    // Detectar si este proyecto está "activo" basado en transformaciones
+                    if (transform && transform !== 'none' && transform.includes('matrix')) {
+                        const projectText = li.textContent.trim();
+                        if (projectText && projectText !== currentProject) {
+                            currentProject = projectText;
+                            changeBackgroundImage(projectText);
+                        }
+                    }
+                });
+            }, 500);
         }
 
-        if (targetElement) {
-            console.log('✅ Aplicando imagen de fondo a:', activeProject);
+        // Iniciar monitoreo
+        setTimeout(monitorProjectChanges, 2000);
 
-            // Aplicar la imagen de fondo al elemento principal
-            targetElement.style.backgroundImage = currentProjectImage;
-            targetElement.style.backgroundSize = 'cover';
-            targetElement.style.backgroundPosition = 'center';
-            targetElement.style.backgroundRepeat = 'no-repeat';
-
-            // Agregar un overlay semi-transparente para mantener legibilidad
-            if (!targetElement.querySelector('.main-stage-overlay')) {
-                const overlay = document.createElement('div');
-                overlay.className = 'main-stage-overlay';
-                overlay.style.cssText = `
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(0, 0, 0, 0.4);
-                    z-index: 1;
-                    pointer-events: none;
-                `;
-                targetElement.appendChild(overlay);
-            }
-
-            console.log('🖼️ Imagen aplicada exitosamente al área principal');
-        } else {
-            console.log('❌ No se encontró el elemento principal para aplicar la imagen');
-        }
-
-        // Función para cambiar imagen según proyecto activo
-        window.changeProjectBackground = function(projectName) {
-            let newImage = '';
-
-            if (projectName.toLowerCase().includes('park mansion') || projectName.toLowerCase().includes('minami')) {
-                newImage = 'url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=800&fit=crop")';
-            } else if (projectName.toLowerCase().includes('kawana')) {
-                newImage = 'url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=800&fit=crop")';
-            } else if (projectName.toLowerCase().includes('sevens')) {
-                newImage = 'url("https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=800&fit=crop")';
-            } else if (projectName.toLowerCase().includes('hikawa')) {
-                newImage = 'url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=800&fit=crop")';
-            } else if (projectName.toLowerCase().includes('proud')) {
-                newImage = 'url("https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=800&fit=crop")';
-            } else if (projectName.toLowerCase().includes('jade')) {
-                newImage = 'url("https://images.unsplash.com/photo-1600485154356-be6161a56a0c?w=800&h=800&fit=crop")';
-            } else if (projectName.toLowerCase().includes('one avenue')) {
-                newImage = 'url("https://images.unsplash.com/photo-1600485154355-be6161a56a0c?w=800&h=800&fit=crop")';
-            } else if (projectName.toLowerCase().includes('century')) {
-                newImage = 'url("https://images.unsplash.com/photo-1600485154343-be6161a56a0c?w=800&h=800&fit=crop")';
-            }
-
-            if (newImage && targetElement) {
-                targetElement.style.backgroundImage = newImage;
-                console.log('🔄 Imagen cambiada a:', projectName);
-            }
-        };
+        // Función global para cambio manual
+        window.changeProjectBackground = changeBackgroundImage;
     }
 
     function updateLogoAndSetupBackgrounds() {
