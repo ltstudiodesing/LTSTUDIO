@@ -485,73 +485,79 @@
     </div>
 
     <!-- Scripts -->
-    <script src="../assets/js/background-dots.js"></script>
     <script>
-        // Funcionalidad de la galería
+        // NO cargar background-dots.js para mantener diseño minimalista
+
         document.addEventListener('DOMContentLoaded', function() {
-            const images = document.querySelectorAll('.gallery-image');
-            const thumbs = document.querySelectorAll('.gallery-thumb');
-            const prevBtn = document.getElementById('prev-btn');
-            const nextBtn = document.getElementById('next-btn');
+            const imageContainers = document.querySelectorAll('.gallery-image-container');
+            const videoItems = document.querySelectorAll('.video-item');
+            const videosTitle = document.querySelector('.videos-title');
             const currentImageSpan = document.getElementById('current-image');
-            
-            let currentIndex = 0;
-            const totalImages = images.length;
-            
-            function showImage(index) {
-                // Ocultar todas las imágenes
-                images.forEach(img => img.classList.remove('active'));
-                thumbs.forEach(thumb => thumb.classList.remove('active'));
-                
-                // Mostrar imagen actual
-                images[index].classList.add('active');
-                thumbs[index].classList.add('active');
-                
-                // Actualizar contador
-                currentImageSpan.textContent = index + 1;
-                
-                // Actualizar botones
-                prevBtn.disabled = index === 0;
-                nextBtn.disabled = index === totalImages - 1;
-                
-                currentIndex = index;
-            }
-            
-            // Navegación con botones
-            prevBtn.addEventListener('click', function() {
-                if (currentIndex > 0) {
-                    showImage(currentIndex - 1);
-                }
-            });
-            
-            nextBtn.addEventListener('click', function() {
-                if (currentIndex < totalImages - 1) {
-                    showImage(currentIndex + 1);
-                }
-            });
-            
-            // Navegación con miniaturas
-            thumbs.forEach((thumb, index) => {
-                thumb.addEventListener('click', function() {
-                    showImage(index);
+            const totalImages = imageContainers.length;
+
+            // Intersection Observer para animaciones de aparición
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '-10% 0px -10% 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+
+                        // Actualizar contador según imagen visible
+                        if (entry.target.classList.contains('gallery-image-container')) {
+                            const index = parseInt(entry.target.getAttribute('data-index'));
+                            currentImageSpan.textContent = index + 1;
+                        }
+                    }
                 });
+            }, observerOptions);
+
+            // Observar todas las imágenes
+            imageContainers.forEach(container => {
+                observer.observe(container);
             });
-            
-            // Navegación con teclado
+
+            // Observar videos
+            videoItems.forEach(item => {
+                observer.observe(item);
+            });
+
+            // Observar título de videos
+            if (videosTitle) {
+                observer.observe(videosTitle);
+            }
+
+            // Navegación con teclado para scroll suave
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'ArrowLeft' && currentIndex > 0) {
-                    showImage(currentIndex - 1);
-                } else if (e.key === 'ArrowRight' && currentIndex < totalImages - 1) {
-                    showImage(currentIndex + 1);
+                if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    window.scrollBy({
+                        top: window.innerHeight * 0.8,
+                        behavior: 'smooth'
+                    });
+                } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    window.scrollBy({
+                        top: -window.innerHeight * 0.8,
+                        behavior: 'smooth'
+                    });
                 }
             });
-            
-            // Inicializar
-            showImage(0);
-            
-            console.log('✅ Park Mansion project loaded successfully');
+
+            // Smooth scroll mejorado
+            document.documentElement.style.scrollBehavior = 'smooth';
+
+            // Inicializar primera imagen como visible
+            if (imageContainers.length > 0) {
+                imageContainers[0].classList.add('visible');
+            }
+
+            console.log('✅ Park Mansion minimalista cargado correctamente');
         });
-        
+
         // Prevenir errores de CORS
         window.addEventListener('error', function(e) {
             if (e.target && e.target.tagName === 'IMG') {
