@@ -76,4 +76,47 @@
             clearInterval(interval);
         }
     }, 1000);
+
+    // Configurar navegación de proyectos
+    function setupProjectNavigation() {
+        // Mapeo de proyectos a páginas locales
+        const projectMap = {
+            'PARK MANSION': 'projects/park-mansion.html',
+            'park mansion': 'projects/park-mansion.html',
+            'pm_minami_azabu': 'projects/park-mansion.html',
+            'with Silence Kawana': 'projects/kawana-project.html',
+            'kawana': 'projects/kawana-project.html',
+            'SEVENS VILLA': 'projects/sevens-villa.html',
+            'HIKAWA GARDENS': 'projects/hikawa-gardens.html',
+            'ONE AVENUE': 'projects/one-avenue.html',
+            'CENTURY FOREST': 'projects/century-forest.html',
+            'PROUD': 'projects/proud-rokakoen.html'
+        };
+
+        // Interceptar todos los clics en elementos de proyecto
+        document.addEventListener('click', function(e) {
+            const target = e.target;
+            const clickedElement = target.closest('.js-canvas__target, .p-stage__menu__item, li');
+
+            if (clickedElement) {
+                const text = clickedElement.textContent || '';
+
+                // Buscar coincidencia en el mapeo de proyectos
+                for (const [key, url] of Object.entries(projectMap)) {
+                    if (text.toLowerCase().includes(key.toLowerCase())) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔗 Navegando a proyecto:', key, '→', url);
+                        window.location.href = url;
+                        return false;
+                    }
+                }
+            }
+        }, true); // useCapture = true para interceptar antes que otros handlers
+
+        console.log('🔗 Navegación de proyectos configurada');
+    }
+
+    // Configurar navegación después de un delay
+    setTimeout(setupProjectNavigation, 1000);
 })();
