@@ -245,35 +245,52 @@
     // Ejecutar inmediatamente solo para ocultar círculo problemático
     hideStuckCircle();
 
-    // Ejecutar solo funciones básicas inmediatamente
+    // Ejecutar funciones básicas inmediatamente
     hideStuckCircle();
 
-    // NO ejecutar nada más hasta estar seguros de que terminaron TODAS las transiciones
+    // Ejecutar aplicación de imágenes en múltiples momentos para asegurar que funcione
+    console.log('🚀 Ejecutando inmediatamente...');
+    applyCircleBackgrounds();
 
-    // Esperar mucho tiempo antes de aplicar cualquier imagen (15 segundos)
     setTimeout(() => {
-        console.log('🚀 Iniciando después de 15 segundos - todas las transiciones deberían haber terminado');
+        console.log('🚀 Ejecutando a los 2 segundos...');
+        applyCircleBackgrounds();
+    }, 2000);
+
+    setTimeout(() => {
+        console.log('🚀 Ejecutando a los 5 segundos...');
+        applyCircleBackgrounds();
+    }, 5000);
+
+    setTimeout(() => {
+        console.log('🚀 Ejecutando a los 8 segundos...');
         applyCircleBackgrounds();
         updateLogoAndSetupBackgrounds();
+    }, 8000);
+
+    setTimeout(() => {
+        console.log('🚀 Ejecutando a los 12 segundos...');
+        applyCircleBackgrounds();
+    }, 12000);
+
+    setTimeout(() => {
+        console.log('🚀 Ejecutando a los 15 segundos...');
+        applyCircleBackgrounds();
     }, 15000);
 
-    // También ejecutar cuando el DOM esté listo (pero esperar aún más)
+    // También ejecutar cuando el DOM esté listo
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             hideStuckCircle();
-            setTimeout(() => {
-                applyCircleBackgrounds();
-            }, 20000); // 20 segundos para estar seguros
+            applyCircleBackgrounds();
         });
     }
 
-    // Ejecutar después de que todo se haya cargado (con retraso adicional)
+    // Ejecutar después de que todo se haya cargado
     window.addEventListener('load', function() {
         hideStuckCircle();
-        setTimeout(() => {
-            updateLogoAndSetupBackgrounds();
-            applyCircleBackgrounds();
-        }, 12000); // 12 segundos adicionales
+        updateLogoAndSetupBackgrounds();
+        applyCircleBackgrounds();
     });
 
     // Configurar navegación de proyectos
