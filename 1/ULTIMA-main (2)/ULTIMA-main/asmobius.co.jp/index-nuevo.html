@@ -873,7 +873,7 @@
             // Transición suave sin fragmentos complejos
             introScreen.style.transition = 'opacity 1s ease-out, transform 1s ease-out';
             introScreen.style.opacity = '0';
-            introScreen.style.transform = 'scale(0.8)';
+            // ¡NO MÁS SCALE! Solo opacity
 
             setTimeout(() => {
                 // Ocultar intro completamente
@@ -943,7 +943,7 @@
             letters.forEach((letter, index) => {
                 setTimeout(() => {
                     letter.classList.add('filled');
-                    console.log(`✅ Letra ${index + 1} animada`);
+                    console.log(`�� Letra ${index + 1} animada`);
 
                     // Si es la última letra, programar transición fragmentada
                     if (index === letters.length - 1) {
