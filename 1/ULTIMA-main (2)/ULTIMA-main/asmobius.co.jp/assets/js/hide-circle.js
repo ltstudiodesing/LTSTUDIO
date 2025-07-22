@@ -280,23 +280,27 @@
     // Ejecutar inmediatamente solo para ocultar círculo problemático
     hideStuckCircle();
 
-    // Ejecutar solo funciones básicas inmediatamente
+    // Ejecutar funciones básicas inmediatamente
     hideStuckCircle();
 
-    // NO ejecutar imágenes inmediatamente - esperar a que termine la transición
+    // Aplicar imágenes después de la intro (4 segundos)
+    setTimeout(() => {
+        console.log('🚀 Aplicando imágenes después de intro...');
+        applyCircleBackgrounds();
+    }, 4000);
 
-    // Ejecutar logos y navegación después de la intro pero sin imágenes
+    // Ejecutar logos después de la intro
     setTimeout(() => {
         updateLogoAndSetupBackgrounds();
-    }, 7000);
+    }, 5000);
 
-    // SOLO ejecutar imágenes cuando la función interna detecte que terminó la transición
-    applyCircleBackgrounds();
-
-    // También ejecutar cuando el DOM esté listo (pero solo funciones básicas)
+    // También ejecutar cuando el DOM esté listo
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             hideStuckCircle();
+            setTimeout(() => {
+                applyCircleBackgrounds();
+            }, 3000);
         });
     }
 
@@ -305,7 +309,8 @@
         hideStuckCircle();
         setTimeout(() => {
             updateLogoAndSetupBackgrounds();
-        }, 6000);
+            applyCircleBackgrounds();
+        }, 2000);
     });
 
     // Configurar navegación de proyectos
