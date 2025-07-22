@@ -857,6 +857,8 @@
                     if (isDragging) {
                         isDragging = false;
                         circleContainer.style.cursor = '';
+                        circleContainer.style.transform = 'translate(-50%, -50%) scale(1)'; // Restore scale
+                        console.log('🎯 Drag terminado, reiniciando progreso');
                         // Restart progress after drag
                         setTimeout(() => {
                             startProgress();
