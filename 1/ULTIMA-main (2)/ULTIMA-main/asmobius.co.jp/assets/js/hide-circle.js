@@ -264,12 +264,8 @@
             }
         }, 3000); // Esperar 3 segundos para que la intro termine
 
-        // Ejecutar aplicación de imágenes múltiples veces con diferentes intervalos
-        setTimeout(applyCircleBackgrounds, 500);
-        setTimeout(applyCircleBackgrounds, 1500);
-        setTimeout(applyCircleBackgrounds, 3000);
-        setTimeout(applyCircleBackgrounds, 5000);
-        setTimeout(applyCircleBackgrounds, 8000);
+        // NO ejecutar durante la intro - solo después de que termine
+        // (La función applyCircleBackgrounds se ejecuta internamente después de 3 segundos)
     }
 
     function hideStuckCircle() {
