@@ -871,12 +871,25 @@
 
             // Actualizar fondo de inmersión
             const immersionBg = document.getElementById('immersion-bg');
-            if (immersionBg && PROJECTS[index]) {
-                immersionBg.style.backgroundImage = `url("${PROJECTS[index].image}")`;
-                immersionBg.classList.remove('active');
-                setTimeout(() => {
-                    immersionBg.classList.add('active');
-                }, 100);
+            const fullBg = document.getElementById('full-bg');
+            if (PROJECTS[index]) {
+                // Fondo de inmersión (círculo)
+                if (immersionBg) {
+                    immersionBg.style.backgroundImage = `url("${PROJECTS[index].image}")`;
+                    immersionBg.classList.remove('active');
+                    setTimeout(() => {
+                        immersionBg.classList.add('active');
+                    }, 100);
+                }
+
+                // Fondo completo (toda la página)
+                if (fullBg) {
+                    fullBg.style.backgroundImage = `url("${PROJECTS[index].image}")`;
+                    fullBg.classList.remove('active');
+                    setTimeout(() => {
+                        fullBg.classList.add('active');
+                    }, 100);
+                }
             }
 
             currentProject = index;
